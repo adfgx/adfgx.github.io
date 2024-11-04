@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      background-color: rgb(235, 116, 116);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #demo {
+      font-size: 400px;
+      color: black;
+      font-family: Arial;
+    }
+    #start-btn {
+      font-size: 24px;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Start Button -->
+  <button id="start-btn">Start</button>
+  <div id="demo"></div>
+
+  <!-- Audio elements for each word -->
+  <audio id="kick-sound" src="kick.mp3"></audio>
+  <audio id="jab-sound" src="jab.mp3"></audio>
+  <audio id="cross-sound" src="cross.mp3"></audio>
+  <audio id="hook-sound" src="hook.mp3"></audio>
+
+  <script>
+    const arr = ['kick', 'jab', 'cross', 'hook'];
+    const el = document.querySelector('#demo');
+    const startBtn = document.querySelector('#start-btn');
+
+    function log(arr, el) {
+      let copy = [...arr];
+
+      function loop() {
+        const rnd = Math.floor(Math.random() * copy.length);
+        const word = copy.splice(rnd, 1)[0];
+        el.textContent = word;
+        
+        // Play sound for the current word
+        const audio = document.getElementById(`${word}-sound`);
+        if (audio) {
+          audio.currentTime = 0;  // Reset to start
+          audio.play();
+        }
+
+        if (!copy.length) copy = [...arr];
+        setTimeout(loop, 1000);
+      }
+
+      loop();
+    }
+
+    // Start function on button click
+    startBtn.addEventListener('click', () => {
+      log(arr, el);
+      startBtn.style.display = 'none'; // Hide the start button after clicking
+    });
+  </script>
+</body>
+</html>

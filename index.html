@@ -2,7 +2,7 @@
 <html>
 <head>
   <style>
-     body {
+    body {
       background-color: rgb(235, 116, 116);
       display: flex;
       flex-direction: column;
@@ -35,6 +35,15 @@
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
+      margin-top: 100px; /* Space below buttons */
+    }
+    /* Timer display */
+    #timer {
+      font-size: 4vw;
+      color: black;
+      font-family: Arial;
+      text-align: center;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -42,12 +51,15 @@
   <!-- Button container at the top -->
   <div id="button-container">
     <button id="start-btn">Basic 4 Strikes</button>
-    <button id="second-btn">striking & takedowns</button>
+    <button id="second-btn">Striking & Takedowns</button>
     <button id="third-btn">Sample</button>
   </div>
 
   <!-- Centered word display -->
   <div id="demo"></div>
+  
+  <!-- Timer display -->
+  <div id="timer"></div>
 
   <!-- Audio elements for Basic 4 Strikes -->
   <audio id="kick-sound" src="kick.mp3"></audio>
@@ -55,7 +67,7 @@
   <audio id="cross-sound" src="cross.mp3"></audio>
   <audio id="hook-sound" src="hook.mp3"></audio>
 
-  <!-- Audio elements for striking & takedowns -->
+  <!-- Audio elements for Striking & Takedowns -->
   <audio id="blt-sound" src="blt.mp3"></audio>
   <audio id="ht-sound" src="ht.mp3"></audio>
   <audio id="sprawl-sound" src="sprawl.mp3"></audio>
@@ -69,11 +81,44 @@
   <!-- JavaScript -->
   <script>
     const demoElement = document.querySelector('#demo');
+    const timerElement = document.querySelector('#timer');
     const startBtn = document.querySelector('#start-btn');
     const secondBtn = document.querySelector('#second-btn');
     const thirdBtn = document.querySelector('#third-btn');
 
-    let timeoutId; // Variable to store the timeout ID
+    let loopTimeoutId; // Loop timeout ID
+    let endTimeoutId; // End timeout ID to stop the loop after 90 seconds
+    let countdownIntervalId; // Interval ID for the countdown timer
+    let remainingTime; // Remaining time in seconds
+
+    // Function to start the countdown timer
+    function startTimer(duration) {
+      remainingTime = duration;
+      updateTimerDisplay(remainingTime);
+      
+      countdownIntervalId = setInterval(() => {
+        remainingTime--;
+        if (remainingTime <= 0) {
+          clearInterval(countdownIntervalId);
+          timerElement.textContent = '';
+        } else {
+          updateTimerDisplay(remainingTime);
+        }
+      }, 1000);
+    }
+
+    // Function to update the timer display
+    function updateTimerDisplay(time) {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      timerElement.textContent = `Time Remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    // Function to stop the countdown timer
+    function stopTimer() {
+      clearInterval(countdownIntervalId);
+      timerElement.textContent = '';
+    }
 
     // Function for Basic 4 Strikes
     function logBasic() {
@@ -90,17 +135,30 @@
           audio.currentTime = 0;
           audio.play();
         }
-        const delay = word === 'kick' ? 2000 : 1000;
+
+        // Set custom delays for specific words
+        const delay = (word === 'kick') ? 2000 : 1000;
+
         if (!copy.length) copy = [...basicWords];
-        timeoutId = setTimeout(loop, delay ); // Store the timeout ID
+        loopTimeoutId = setTimeout(loop, delay);
       }
 
       loop();
+
+      // Set a timeout to stop the loop after 90 seconds
+      endTimeoutId = setTimeout(() => {
+        clearTimeout(loopTimeoutId);
+        demoElement.textContent = ''; // Clear the word display
+        stopTimer(); // Stop the countdown
+      }, 90000); // 90,000 ms = 90 seconds
+
+      // Start the countdown timer
+      startTimer(90);
     }
 
-    // Function for striking & takedowns
+    // Function for Striking & Takedowns
     function logAdvanced() {
-      const advancedWords = ['hook', 'kick', 'jab', 'cross', 'blt', 'ht', 'sprawl',];
+      const advancedWords = ['hook', 'kick', 'jab', 'cross', 'blt', 'ht', 'sprawl'];
       let copy = [...advancedWords];
 
       function loop() {
@@ -113,17 +171,30 @@
           audio.currentTime = 0;
           audio.play();
         }
-        const delay = word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht'? 2000 : 1000;
+
+        // Set custom delays for specific words
+        const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 2000 : 1000;
+
         if (!copy.length) copy = [...advancedWords];
-        timeoutId = setTimeout(loop, delay); // Store the timeout ID
+        loopTimeoutId = setTimeout(loop, delay);
       }
 
       loop();
+
+      // Set a timeout to stop the loop after 90 seconds
+      endTimeoutId = setTimeout(() => {
+        clearTimeout(loopTimeoutId);
+        demoElement.textContent = ''; // Clear the word display
+        stopTimer(); // Stop the countdown
+      }, 90000); // 90,000 ms = 90 seconds
+
+      // Start the countdown timer
+      startTimer(90);
     }
 
     // Function for Sample
     function logSample() {
-      const thirdWords = ['sample', 'samplee', 'sampleeee', 'sampleeee'];
+      const thirdWords = ['sample', 'samplee', 'sampleee', 'sampleeee'];
       let copy = [...thirdWords];
 
       function loop() {
@@ -137,29 +208,48 @@
           audio.play();
         }
 
+        // Set custom delays for specific words
+        const delay = (word === 'sample') ? 2000 : 1000; // Example, adjust as needed
+
         if (!copy.length) copy = [...thirdWords];
-        timeoutId = setTimeout(loop, 1000); // Store the timeout ID
+        loopTimeoutId = setTimeout(loop, delay);
       }
 
       loop();
+
+      // Set a timeout to stop the loop after 90 seconds
+      endTimeoutId = setTimeout(() => {
+        clearTimeout(loopTimeoutId);
+        demoElement.textContent = ''; // Clear the word display
+        stopTimer(); // Stop the countdown
+      }, 90000); // 90,000 ms = 90 seconds
+
+      // Start the countdown timer
+      startTimer(90);
     }
 
     // Event listeners for buttons
     startBtn.addEventListener('click', () => {
-      clearTimeout(timeoutId); // Stop the current function
+      clearTimeout(loopTimeoutId); // Stop the current function
+      clearTimeout(endTimeoutId); // Clear any previous end timeout
+      stopTimer(); // Clear any existing timer
       logBasic(); // Start the Basic 4 Strikes function
     });
 
     secondBtn.addEventListener('click', () => {
-      clearTimeout(timeoutId); // Stop the current function
-      logAdvanced(); // Start the striking & takedowns
+      clearTimeout(loopTimeoutId);
+      clearTimeout(endTimeoutId);
+      stopTimer();
+      logAdvanced(); // Start the Striking & Takedowns function
     });
 
     thirdBtn.addEventListener('click', () => {
-      clearTimeout(timeoutId); // Stop the current function
+      clearTimeout(loopTimeoutId);
+      clearTimeout(endTimeoutId);
+      stopTimer();
       logSample(); // Start the Sample function
     });
-  
+
   </script>
 </body>
 </html>

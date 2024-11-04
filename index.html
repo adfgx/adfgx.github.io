@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+     body {
+      background-color: rgb(235, 116, 116);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    /* Container for buttons at the top */
+    #button-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 10px;
+      position: absolute;
+      top: 0;
+    }
+    /* Style for buttons */
+    #start-btn, #second-btn, #third-btn {
+      font-size: 24px;
+      padding: 10px 20px;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+    /* Centered word display */
+    #demo {
+      font-size: 10vw; /* Responsive font size based on viewport width */
+      color: black;
+      font-family: Arial;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- Button container at the top -->
+  <div id="button-container">
+    <button id="start-btn">Basic 4 Strikes</button>
+    <button id="second-btn">striking & takedowns</button>
+    <button id="third-btn">Sample</button>
+  </div>
+
+  <!-- Centered word display -->
+  <div id="demo"></div>
+
+  <!-- Audio elements for Basic 4 Strikes -->
+  <audio id="kick-sound" src="kick.mp3"></audio>
+  <audio id="jab-sound" src="jab.mp3"></audio>
+  <audio id="cross-sound" src="cross.mp3"></audio>
+  <audio id="hook-sound" src="hook.mp3"></audio>
+
+  <!-- Audio elements for striking & takedowns -->
+  <audio id="blt-sound" src="blt.mp3"></audio>
+  <audio id="ht-sound" src="ht.mp3"></audio>
+  <audio id="sprawl-sound" src="sprawl.mp3"></audio>
+
+  <!-- Audio elements for Sample -->
+  <audio id="sample-sound" src="kick.mp3"></audio>
+  <audio id="samplee-sound" src="jab.mp3"></audio>
+  <audio id="sampleee-sound" src="cross.mp3"></audio>
+  <audio id="sampleeee-sound" src="hook.mp3"></audio>
+
+  <script>
+    const demoElement = document.querySelector('#demo');
+    const startBtn = document.querySelector('#start-btn');
+    const secondBtn = document.querySelector('#second-btn');
+    const thirdBtn = document.querySelector('#third-btn');
+
+    let timeoutId; // Variable to store the timeout ID
+
+    // Function for Basic 4 Strikes
+    function logBasic() {
+      const basicWords = ['kick', 'jab', 'cross', 'hook'];
+      let copy = [...basicWords];
+
+      function loop() {
+        const rnd = Math.floor(Math.random() * copy.length);
+        const word = copy.splice(rnd, 1)[0];
+        demoElement.textContent = word;
+
+        const audio = document.getElementById(`${word}-sound`);
+        if (audio) {
+          audio.currentTime = 0;
+          audio.play();
+        }
+
+        if (!copy.length) copy = [...basicWords];
+        timeoutId = setTimeout(loop, 1500); // Store the timeout ID
+      }
+
+      loop();
+    }
+
+    // Function for striking & takedowns
+    function logAdvanced() {
+      const advancedWords = ['hook', 'kick', 'jab', 'cross', 'blt', 'ht', 'sprawl',];
+      let copy = [...advancedWords];
+
+      function loop() {
+        const rnd = Math.floor(Math.random() * copy.length);
+        const word = copy.splice(rnd, 1)[0];
+        demoElement.textContent = word;
+
+        const audio = document.getElementById(`${word}-sound`);
+        if (audio) {
+          audio.currentTime = 0;
+          audio.play();
+        }
+
+        if (!copy.length) copy = [...advancedWords];
+        timeoutId = setTimeout(loop, 1500); // Store the timeout ID
+      }
+
+      loop();
+    }
+
+    // Function for Sample
+    function logSample() {
+      const thirdWords = ['sample', 'samplee', 'sampleeee', 'sampleeee'];
+      let copy = [...thirdWords];
+
+      function loop() {
+        const rnd = Math.floor(Math.random() * copy.length);
+        const word = copy.splice(rnd, 1)[0];
+        demoElement.textContent = word;
+
+        const audio = document.getElementById(`${word}-sound`);
+        if (audio) {
+          audio.currentTime = 0;
+          audio.play();
+        }
+
+        if (!copy.length) copy = [...thirdWords];
+        timeoutId = setTimeout(loop, 1500); // Store the timeout ID
+      }
+
+      loop();
+    }
+
+    // Event listeners for buttons
+    startBtn.addEventListener('click', () => {
+      clearTimeout(timeoutId); // Stop the current function
+      logBasic(); // Start the Basic 4 Strikes function
+    });
+
+    secondBtn.addEventListener('click', () => {
+      clearTimeout(timeoutId); // Stop the current function
+      logAdvanced(); // Start the striking & takedowns
+    });
+
+    thirdBtn.addEventListener('click', () => {
+      clearTimeout(timeoutId); // Stop the current function
+      logSample(); // Start the Sample function
+    });
+  
+  </script>
+</body>
+</html>

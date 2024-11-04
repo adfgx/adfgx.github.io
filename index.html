@@ -66,6 +66,7 @@
   <audio id="sampleee-sound" src="cross.mp3"></audio>
   <audio id="sampleeee-sound" src="hook.mp3"></audio>
 
+  <!-- JavaScript -->
   <script>
     const demoElement = document.querySelector('#demo');
     const startBtn = document.querySelector('#start-btn');
@@ -89,9 +90,9 @@
           audio.currentTime = 0;
           audio.play();
         }
-
+        const delay = word === 'kick' ? 2000 : 1000;
         if (!copy.length) copy = [...basicWords];
-        timeoutId = setTimeout(loop, 1500); // Store the timeout ID
+        timeoutId = setTimeout(loop, delay ); // Store the timeout ID
       }
 
       loop();
@@ -112,9 +113,9 @@
           audio.currentTime = 0;
           audio.play();
         }
-
+        const delay = word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht'? 2000 : 1000;
         if (!copy.length) copy = [...advancedWords];
-        timeoutId = setTimeout(loop, 1500); // Store the timeout ID
+        timeoutId = setTimeout(loop, delay); // Store the timeout ID
       }
 
       loop();
@@ -137,7 +138,7 @@
         }
 
         if (!copy.length) copy = [...thirdWords];
-        timeoutId = setTimeout(loop, 1500); // Store the timeout ID
+        timeoutId = setTimeout(loop, 1000); // Store the timeout ID
       }
 
       loop();

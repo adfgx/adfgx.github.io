@@ -52,7 +52,7 @@
   <div id="button-container">
     <button id="start-btn">Basic 4 Strikes</button>
     <button id="second-btn">Striking & Takedowns</button>
-    <button id="third-btn">longer striking & takedowns</button>
+    <button id="third-btn">Longer Striking & Takedowns</button>
   </div>
 
   <!-- Centered word display -->
@@ -72,7 +72,7 @@
   <audio id="ht-sound" src="ht.mp3"></audio>
   <audio id="sprawl-sound" src="sprawl.mp3"></audio>
 
-  <!-- Audio elements for Sample -->
+  <!-- Audio elements for Longer Striking & Takedowns -->
   <audio id="sample-sound" src="kick.mp3"></audio>
   <audio id="samplee-sound" src="jab.mp3"></audio>
   <audio id="sampleee-sound" src="cross.mp3"></audio>
@@ -122,7 +122,7 @@
 
     // Function for Basic 4 Strikes
     function logBasic() {
-      const basicWords = ['kick', 'jab', 'cross', 'hook'];
+      const basicWords = ['kick', 'jab', 'jab', 'cross', 'hook'];
       let copy = [...basicWords];
 
       function loop() {
@@ -192,9 +192,9 @@
       startTimer(90);
     }
 
-    // Function for Sample
+    // Function for Longer Striking & Takedowns
     function logSample() {
-      const thirdWords = ['hook', 'kick', 'jab', 'cross', 'blt', 'ht', 'sprawl'];
+      const thirdWords = ['jab', 'jab', 'jab', 'cross', 'cross', 'hook', 'hook', 'kick', 'kick', 'blt', 'ht', 'sprawl'];
       let copy = [...thirdWords];
 
       function loop() {
@@ -209,7 +209,7 @@
         }
 
         // Set custom delays for specific words
-        const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 3000 : 2000;
+        const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 3000 : 1500;
 
         if (!copy.length) copy = [...thirdWords];
         loopTimeoutId = setTimeout(loop, delay);
@@ -237,17 +237,17 @@
     });
 
     secondBtn.addEventListener('click', () => {
-      clearTimeout(loopTimeoutId);
-      clearTimeout(endTimeoutId);
-      stopTimer();
+      clearTimeout(loopTimeoutId); // Stop the current function
+      clearTimeout(endTimeoutId); // Clear any previouw end timeout
+      stopTimer(); // Clear any existing timer
       logAdvanced(); // Start the Striking & Takedowns function
     });
 
     thirdBtn.addEventListener('click', () => {
-      clearTimeout(loopTimeoutId);
-      clearTimeout(endTimeoutId);
-      stopTimer();
-      logSample(); // Start the Sample function
+      clearTimeout(loopTimeoutId); // Stop the current function
+      clearTimeout(endTimeoutId); // Clear any previous end timeout
+      stopTimer(); // Clear any existing timer
+      logSample(); // Start the Longer Striking & Takedowns function
     });
 
   </script>

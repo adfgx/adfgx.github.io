@@ -22,8 +22,8 @@
     }
     /* Style for buttons */
     #start-btn, #second-btn, #third-btn {
-      font-size: 24px;
-      padding: 10px 20px;
+      font-size: 30px;
+      padding: 5px 10px;
       margin: 0 10px;
       cursor: pointer;
     }
@@ -50,7 +50,7 @@
 <body>
   <!-- Button container at the top -->
   <div id="button-container">
-    <button id="start-btn">Basic 4 Strikes</button>
+    <button id="start-btn">Basic Strikes</button>
     <button id="second-btn">Striking & Takedowns</button>
     <button id="third-btn">Longer Striking & Takedowns</button>
   </div>
@@ -61,7 +61,7 @@
   <!-- Timer display -->
   <div id="timer"></div>
 
-  <!-- Audio elements for Basic 4 Strikes -->
+  <!-- Audio elements for Basic Strikes -->
   <audio id="kick-sound" src="kick.mp3"></audio>
   <audio id="jab-sound" src="jab.mp3"></audio>
   <audio id="cross-sound" src="cross.mp3"></audio>
@@ -73,10 +73,7 @@
   <audio id="sprawl-sound" src="sprawl.mp3"></audio>
 
   <!-- Audio elements for Longer Striking & Takedowns -->
-  <audio id="sample-sound" src="kick.mp3"></audio>
-  <audio id="samplee-sound" src="jab.mp3"></audio>
-  <audio id="sampleee-sound" src="cross.mp3"></audio>
-  <audio id="sampleeee-sound" src="hook.mp3"></audio>
+  <audio id="" src=""></audio>
 
   <!-- JavaScript -->
   <script>
@@ -120,7 +117,7 @@
       timerElement.textContent = '';
     }
 
-    // Function for Basic 4 Strikes
+    // Function for Basic Strikes
     function logBasic() {
       const basicWords = ['kick', 'jab', 'jab', 'cross', 'hook'];
       let copy = [...basicWords];
@@ -158,7 +155,7 @@
 
     // Function for Striking & Takedowns
     function logAdvanced() {
-      const advancedWords = ['hook', 'kick', 'jab', 'cross', 'blt', 'ht', 'sprawl'];
+      const advancedWords = ['hook', 'hook', 'kick', 'kick', 'jab', 'jab', 'cross', 'cross', 'blt', 'ht', 'sprawl'];
       let copy = [...advancedWords];
 
       function loop() {
@@ -209,7 +206,7 @@
         }
 
         // Set custom delays for specific words
-        const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 3000 : 1500;
+        const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 2500 : 1500;
 
         if (!copy.length) copy = [...thirdWords];
         loopTimeoutId = setTimeout(loop, delay);
@@ -233,7 +230,7 @@
       clearTimeout(loopTimeoutId); // Stop the current function
       clearTimeout(endTimeoutId); // Clear any previous end timeout
       stopTimer(); // Clear any existing timer
-      logBasic(); // Start the Basic 4 Strikes function
+      logBasic(); // Start the Basic Strikes function
     });
 
     secondBtn.addEventListener('click', () => {

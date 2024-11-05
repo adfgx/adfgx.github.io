@@ -52,7 +52,7 @@
   <div id="button-container">
     <button id="start-btn">Basic 4 Strikes</button>
     <button id="second-btn">Striking & Takedowns</button>
-    <button id="third-btn">Sample</button>
+    <button id="third-btn">longer striking & takedowns</button>
   </div>
 
   <!-- Centered word display -->
@@ -194,7 +194,7 @@
 
     // Function for Sample
     function logSample() {
-      const thirdWords = ['sample', 'samplee', 'sampleee', 'sampleeee'];
+      const thirdWords = ['hook', 'kick', 'jab', 'cross', 'blt', 'ht', 'sprawl'];
       let copy = [...thirdWords];
 
       function loop() {
@@ -209,7 +209,7 @@
         }
 
         // Set custom delays for specific words
-        const delay = (word === 'sample') ? 2000 : 1000; // Example, adjust as needed
+        const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 3000 : 1000;
 
         if (!copy.length) copy = [...thirdWords];
         loopTimeoutId = setTimeout(loop, delay);

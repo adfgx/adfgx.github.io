@@ -61,19 +61,14 @@
   <!-- Timer display -->
   <div id="timer"></div>
 
-  <!-- Audio elements for B Strikes -->
+  <!-- Audio elements -->
   <audio id="kick-sound" src="kick.mp3"></audio>
   <audio id="jab-sound" src="jab.mp3"></audio>
   <audio id="cross-sound" src="cross.mp3"></audio>
   <audio id="hook-sound" src="hook.mp3"></audio>
-
-  <!-- Audio elements for B Strikes & B Takedowns -->
   <audio id="blt-sound" src="blt.mp3"></audio>
   <audio id="ht-sound" src="ht.mp3"></audio>
   <audio id="sprawl-sound" src="sprawl.mp3"></audio>
-
-  <!-- Audio elements for L B Strikes & B Takedowns -->
-  <audio id="" src=""></audio>
 
   <!-- JavaScript -->
   <script>
@@ -86,7 +81,25 @@
     let loopTimeoutId; // Loop timeout ID
     let endTimeoutId; // End timeout ID to stop the loop after 90 seconds
     let countdownIntervalId; // Interval ID for the countdown timer
+    let startCountdownIntervalId; // Interval ID for the 5 seconds pre-loop countdown
     let remainingTime; // Remaining time in seconds
+    
+    // Function to display the countdown before starting the loop
+    function startPreLoopCountdown(callback) {
+    let countdownTime = 5;
+    timerElement.textContent = `Starting in: ${countdownTime}`;
+
+    startCountdownIntervalId = setInterval(() => {
+      countdownTime--;
+      if (countdownTime <= 0) {
+        clearInterval(startCountdownIntervalId);
+        timerElement.textContent = ''; // Clear the countdown timer display
+        callback(); // Start the loop function after countdown ends
+      } else {
+        timerElement.textContent = `Starting in: ${countdownTime}`;
+      }
+    }, 1000);
+  }
 
     // Function to start the countdown timer
     function startTimer(duration) {
@@ -230,21 +243,24 @@
       clearTimeout(loopTimeoutId); // Stop the current function
       clearTimeout(endTimeoutId); // Clear any previous end timeout
       stopTimer(); // Clear any existing timer
-      logBasic(); // Start the B Strikes function
+      clearInterval(startCountdownIntervalId); // Stop any existing pre-loop countdown
+      startPreLoopCountdown(logBasic); // Start the 5-second countdown, then call logBasic
     });
 
     secondBtn.addEventListener('click', () => {
       clearTimeout(loopTimeoutId); // Stop the current function
       clearTimeout(endTimeoutId); // Clear any previouw end timeout
       stopTimer(); // Clear any existing timer
-      logAdvanced(); // Start the B Strikes & B Takedowns function
+      clearInterval(startCountdownIntervalId); // Stop any existing pre-loop countdown
+      startPreLoopCountdown(logAdvanced); // Start the 5-second countdown, then call logAdvanced
     });
 
     thirdBtn.addEventListener('click', () => {
       clearTimeout(loopTimeoutId); // Stop the current function
       clearTimeout(endTimeoutId); // Clear any previous end timeout
       stopTimer(); // Clear any existing timer
-      logSample(); // Start the L B Strikes & B Takedowns function
+      clearInterval(startCountdownIntervalId); // Stop any existing pre-loop countdown
+      startPreLoopCountdown(logSample); // Start the 5-second countdown, then call logSample
     });
 
   </script>

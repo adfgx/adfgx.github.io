@@ -50,9 +50,9 @@
 <body>
   <!-- Button container at the top -->
   <div id="button-container">
-    <button id="start-btn">Basic Strikes</button>
-    <button id="second-btn">Striking & Takedowns</button>
-    <button id="third-btn">Longer Striking & Takedowns</button>
+    <button id="start-btn">B Strikes</button>
+    <button id="second-btn">B Strikes & B Takedowns</button>
+    <button id="third-btn">L B Strikes & B Takedowns</button>
   </div>
 
   <!-- Centered word display -->
@@ -61,18 +61,18 @@
   <!-- Timer display -->
   <div id="timer"></div>
 
-  <!-- Audio elements for Basic Strikes -->
+  <!-- Audio elements for B Strikes -->
   <audio id="kick-sound" src="kick.mp3"></audio>
   <audio id="jab-sound" src="jab.mp3"></audio>
   <audio id="cross-sound" src="cross.mp3"></audio>
   <audio id="hook-sound" src="hook.mp3"></audio>
 
-  <!-- Audio elements for Striking & Takedowns -->
+  <!-- Audio elements for B Strikes & B Takedowns -->
   <audio id="blt-sound" src="blt.mp3"></audio>
   <audio id="ht-sound" src="ht.mp3"></audio>
   <audio id="sprawl-sound" src="sprawl.mp3"></audio>
 
-  <!-- Audio elements for Longer Striking & Takedowns -->
+  <!-- Audio elements for L B Strikes & B Takedowns -->
   <audio id="" src=""></audio>
 
   <!-- JavaScript -->
@@ -117,7 +117,7 @@
       timerElement.textContent = '';
     }
 
-    // Function for Basic Strikes
+    // Function for B Strikes
     function logBasic() {
       const basicWords = ['kick', 'jab', 'jab', 'cross', 'hook'];
       let copy = [...basicWords];
@@ -153,7 +153,7 @@
       startTimer(90);
     }
 
-    // Function for Striking & Takedowns
+    // Function for B Strikes & B Takedowns
     function logAdvanced() {
       const advancedWords = ['hook', 'hook', 'kick', 'kick', 'jab', 'jab', 'cross', 'cross', 'blt', 'ht', 'sprawl'];
       let copy = [...advancedWords];
@@ -189,7 +189,7 @@
       startTimer(90);
     }
 
-    // Function for Longer Striking & Takedowns
+    // Function for L B Strikes & B Takedowns
     function logSample() {
       const thirdWords = ['jab', 'jab', 'jab', 'jab', 'cross', 'cross', 'cross', 'hook', 'hook', 'hook', 'kick', 'kick','kick' ,'blt', 'ht', 'sprawl'];
       let copy = [...thirdWords];
@@ -230,21 +230,21 @@
       clearTimeout(loopTimeoutId); // Stop the current function
       clearTimeout(endTimeoutId); // Clear any previous end timeout
       stopTimer(); // Clear any existing timer
-      logBasic(); // Start the Basic Strikes function
+      logBasic(); // Start the B Strikes function
     });
 
     secondBtn.addEventListener('click', () => {
       clearTimeout(loopTimeoutId); // Stop the current function
       clearTimeout(endTimeoutId); // Clear any previouw end timeout
       stopTimer(); // Clear any existing timer
-      logAdvanced(); // Start the Striking & Takedowns function
+      logAdvanced(); // Start the B Strikes & B Takedowns function
     });
 
     thirdBtn.addEventListener('click', () => {
       clearTimeout(loopTimeoutId); // Stop the current function
       clearTimeout(endTimeoutId); // Clear any previous end timeout
       stopTimer(); // Clear any existing timer
-      logSample(); // Start the Longer Striking & Takedowns function
+      logSample(); // Start the L B Strikes & B Takedowns function
     });
 
   </script>

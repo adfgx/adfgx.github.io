@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interval Timers</title>
+  <style>
+    body {
+      background-color: rgb(235, 116, 116);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow-y: auto; /* Enable vertical scrolling for the page */
+    }
+    #button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      padding: 10px;
+    }
+    .timer1, .timer2, .timer3, .timer4, .timer5 {
+      font-size: 3vw;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    #display {
+      font-size: 6vw;
+      color: black;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+    #flexdance {
+      height: 15vh;
+      width: 25vh;
+      margin-top: 5px;
+    }
+    /* Container for information text */
+    .info-container {
+      width: 90%;
+      max-width: 800px;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+    /* Style for button information text */
+    .button-info {
+      font-size: 1.2vw;
+      color: white;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!--BUTTON CONTAINER-->
+  <div id="button-container">
+    <button class="timer1" data-timer1="1">30sw, 10sr, 3s</button>
+    <button class="timer2" data-timer="2">30sw, 10sr, 4s</button>
+    <button class="timer3" data-timer="3">60sw, 20sr, 3s</button>
+    <button class="timer4" data-timer="4">Endurance Board</button>
+  </div>
+
+  <!--Animated image-->
+  <img id="flexdance" src="../videos/flex-dance.gif">
+
+  <!--Display area-->
+  <div id="display">Display Area</div>
+
+  <!-- Information Text Container with Sample Text -->
+  <div class="info-container">
+    <div class="button-info">
+      30sw, 10sr, 3s → 30 seconds of work followed by 10 seconds of rest for 3 sets. Sound played at each interval change.
+    </div>
+    <div class="button-info">
+      30sw, 10sr, 4s → 30 seconds of work followed by 10 seconds of rest for 4 sets. Sound played at each interval change.
+    </div>
+    <div class="button-info">
+      60sw, 20sr, 3s → 60 seconds of work followed by 20 seconds of rest for 3 sets. Sound played at each interval change.
+    </div>
+    <div class="button-info">
+      Endurance board → 10 seconds of work followed by 5 seconds of rest for 8 sets. Sound played at each interval change.
+    </div>
+  </div>
+
+  <!-- AUDIO ELEMENTS IDENTIFICATION -->
+  <audio id="audio-3" src="../sound files/3.wav"></audio>
+  <audio id="audio-2" src="../sound files/2.wav"></audio>
+  <audio id="audio-1" src="../sound files/1.wav"></audio>
+  <audio id="audio-rest" src="../sound files/rest.mp3"></audio>
+  <audio id="audio-work" src="../sound files/work.mp3"></audio>
+
+  <script>
+    //FUNCTION ASSOCIATIONS
+    const displayElement = document.getElementById('display');
+    const timer1 = document.querySelectorAll('.timer1');
+    const timer2 = document.querySelectorAll('.timer2');
+    const timer3 = document.querySelectorAll('.timer3');
+    const timer4 = document.querySelectorAll('.timer4');
+    let countdownInterval; // Stores the interval for clearing
+
+    // FUNCTION TO PLAY AUDIO BY ID
+    function playAudio(id) {
+      const audio = document.getElementById(id);
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play();
+      }
+    }
+
+    // COUNTDOWN FUNCTION WITH VOICEOVER AND CUSTOM DISPLAY TEXT
+    function startCountdown(duration, endSound, displayText, callback) {
+      let timeLeft = duration;
+      displayElement.textContent = `${displayText}: ${timeLeft} seconds`;
+      
+      countdownInterval = setInterval(() => {
+        if (timeLeft <= 3) playAudio(`audio-${timeLeft}`); // Play voiceover for last 3 seconds
+        
+        timeLeft--;
+        
+        if (timeLeft < 0) {
+          clearInterval(countdownInterval);
+          playAudio(endSound); // Play "rest" or "work" sound
+          callback();
+        } else {
+          displayElement.textContent = `${displayText}: ${timeLeft} seconds`;
+        }
+      }, 1000);
+    }
+
+    // SEQUENCE FUNCTION timer1 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startTimer1Sequence() {
+      let cycleCount = 0;
+
+      function cycle() {
+        if (cycleCount < 3) { // Repeat 3 times
+          startCountdown(29, 'audio-rest', 'Work', () => {  // 30 seconds "Work" phase
+            startCountdown(9, 'audio-work', 'Rest', () => {  // 10 seconds "Rest" phase
+              cycleCount++;
+              cycle(); // Start the next cycle
+            });
+          });
+        } else {
+          displayElement.textContent = "Timer 1 Complete!";
+        }
+      }
+
+      cycle(); // Start the first cycle
+    }
+
+    // SEQUENCE FUNCTION timer2 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startTimer2Sequence() {
+      let cycleCount = 0;
+
+      function cycle() {
+        if (cycleCount < 4) { // Repeat 4 times
+          startCountdown(29, 'audio-rest', 'Work', () => {  // 30 seconds "Work" phase
+            startCountdown(9, 'audio-work', 'Rest', () => {  // 10 seconds "Rest" phase
+              cycleCount++;
+              cycle(); // Start the next cycle
+            });
+          });
+        } else {
+          displayElement.textContent = "Timer 1 Complete!";
+        }
+      }
+
+      cycle(); // Start the first cycle
+    }
+
+    // SEQUENCE FUNCTION timer3 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startTimer3Sequence() {
+      let cycleCount = 0;
+
+      function cycle() {
+        if (cycleCount < 3) { // Repeat 4 times
+          startCountdown(59, 'audio-rest', 'Work', () => {  // 60 seconds "Work" phase
+            startCountdown(19, 'audio-work', 'Rest', () => {  // 20 seconds "Rest" phase
+              cycleCount++;
+              cycle(); // Start the next cycle
+            });
+          });
+        } else {
+          displayElement.textContent = "Timer 1 Complete!";
+        }
+      }
+
+      cycle(); // Start the first cycle
+    }
+
+    // SEQUENCE FUNCTION timer4 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startTimer4Sequence() {
+      let cycleCount = 0;
+
+      function cycle() {
+        if (cycleCount < 8) { // Repeat 8 times
+          startCountdown(9, 'audio-rest', 'Work', () => {  // 10 seconds "Work" phase
+            startCountdown(4, 'audio-work', 'Rest', () => {  // 5 seconds "Rest" phase
+              cycleCount++;
+              cycle(); // Start the next cycle
+            });
+          });
+        } else {
+          displayElement.textContent = "Timer 1 Complete!";
+        }
+      }
+
+      cycle(); // Start the first cycle
+    }
+
+    // EVENT LISTENER FOR BUTTONS
+
+    // Event listener for timer 1 button
+    timer1.forEach(button => {
+      button.addEventListener('click', () => {
+        clearInterval(countdownInterval); // Stop any existing countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startTimer1Sequence); // Initial 10-sec countdown
+      });
+    });
+
+    // Event listener for timer 2 button
+    timer2.forEach(button => {
+      button.addEventListener('click', () => {
+        clearInterval(countdownInterval); // Stop any existing countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startTimer2Sequence); // Initial 10-sec countdown
+      });
+    });
+
+    // Event listener for timer 3 button
+    timer3.forEach(button => {
+      button.addEventListener('click', () => {
+        clearInterval(countdownInterval); // Stop any existing countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startTimer3Sequence); // Initial 10-sec countdown
+      });
+    });
+
+    // Event listener for timer 4 button
+    timer4.forEach(button => {
+      button.addEventListener('click', () => {
+        clearInterval(countdownInterval); // Stop any existing countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startTimer4Sequence); // Initial 10-sec countdown
+      });
+    });
+
+  </script>
+</body>
+</html>

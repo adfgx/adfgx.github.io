@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive Map with Visible Areas</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #dbc2c2;
+      font-family: Arial, sans-serif;
+    }
+    .map-container {
+      position: relative;
+      max-width: 90%;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      border: 2px solid #333;
+      border-radius: 5px;
+    }
+    /* Visible overlays for clickable areas */
+    .area-overlay {
+      position: absolute;
+      background-color: rgba(0, 0, 255, 0.3); /* Semi-transparent blue for visibility */
+      border: 2px solid blue; /* Blue border */
+      cursor: pointer;
+    }
+    p {
+      margin-top: 10px;
+      font-size: 1.2em;
+      color: #333;
+      text-align: center;
+      padding: 0 20px;
+    }
+    #spongebob {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 15vh;
+      width: 20vh;
+      margin: 0;
+    }
+    
+  </style>
+  <!-- Include the image map resizer library for responsive areas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/image-map-resizer/1.0.10/js/imageMapResizer.min.js"></script>
+</head>
+<body>
+  <div class="map-container">
+    <!-- Interactive image map -->
+    <img src="../images/map.png" usemap="#interactive-map" alt="Interactive Map">
+    
+    <!-- Visible overlays for each area (for testing) left=x1, top=y1, width=(x2-x1) → x2= width + left, height=(y2-y1) → y2= height + top--
+    <div class="area-overlay" style="left: 375px; top: 40px; width: 185px; height: 35px;" title="Section 1"></div>
+    !--Add more overlays for other areas as needed -->
+  </div>
+
+  <!-- INTERACTIVE MAP HYPERLINKS -->
+  <map name="interactive-map">
+        
+    <!-- coords = "x1, y1, x2, y2"
+    example with section 1
+    first coords parameter → x1 = left = 375
+    second coords parameter → y1 = top = 40
+    third coords parameter → width = (x2-x1) → 185 = (x2-375) → 560 = x2 
+    fourth coords parameter → height = (y2-y1) → 35px = (y2-40) → 75 = y2 
+    -->
+    
+    <!--TAKEDOWNS coords parameters; left, top, right, bottom from top left of image-->
+
+    <!--takedowns sprint 1 wrestling basics made easy-->
+    <area shape="rect" coords="455,200,725,260" href="../webpages/takedowns/1 wrestling basics made easy.html">
+        
+    <!--takedowns sprint 2 terrifying takedowns-->
+    <area shape="rect" coords="450,40,680,100" href="../webpages/takedowns/2 terrifying takedowns.html">
+        
+    <!--takedowns sprint 3 takedown defense-->
+    <area shape="rect" coords="775,100,1020,170" href="../webpages/takedowns/3 taleddown defense.html">
+        
+    <!--takedowns sprint 4 underhooks made easy-->
+    <area shape="rect" coords="1085,10,1330,75" href="../webpages/takedowns/4 underhooks made easy.html">
+        
+    <!--takedowns sprint 5 underhooks made easy-->
+    <area shape="rect" coords="1055,200,1300,270" href="../webpages/takedowns/5 overhooks made easy.html">
+        
+    <!--STRIKING coords parameters; left, top, right, bottom from top left of image-->
+    
+    <!--striking sprint 1 boxing basics-->
+    <area shape="rect" coords="305,400,550,465" href="../webpages/striking/1 boxing basics.html">
+    
+    <!--striking sprint 2 faster-->
+    <area shape="rect" coords="20,500,260,560" href="../webpages/striking/2 faster.html">
+      
+    <!--catastrophic kicking 1-->
+    <area shape="rect" coords="300,595,530,660" href="../webpages/striking/3 catastrophic kicking.html">
+    
+    <!--catastrophic kicking 2-->
+    <area shape="rect" coords="20,710,260,775" href="../webpages/striking/4 catastrophic kicking 2.html">
+    
+    <!--core combinations-->
+    <area shape="rect" coords="335,745,575,805" href="../webpages/striking/5 core combinations.html">
+    
+    <!--counter punch mastery, closed stance-->
+    <area shape="rect" coords="615,865,850,925" href="../webpages/striking/6 counter punch mastery_closed stance.html">
+    
+    <!--counter punch mastery, open stance-->
+    <area shape="rect" coords="275,870,515,930" href="../webpages/striking/7 counter punch mastery_open stance.html">
+    
+    <!--BJJ coords parameters; left, top, right, bottom from top left of image-->
+
+    <!--bjj basics sprint 1 guard retention basics-->
+    <area shape="rect" coords="1170,405,1405,460" href="../webpages/bjj/1 guard retention basics.html">
+
+    <!--bjj basics sprint 2 guard passing basics-->
+    <area shape="rect" coords="1450,235,1685,300" href="../webpages/bjj/2 guard passing basics.html">
+
+    <!--bjj basics sprint 3 attacks from guard-->
+    <area shape="rect" coords="1485,390,1720,450" href="../webpages/bjj/3 attacks from guard.html">
+    
+    <!--bjj basics sprint 4 mount-->
+    <area shape="rect" coords="1565,530,1800,590" href="../webpages/bjj/4 mount.html">
+    
+    <!--bjj basics sprint 5 chokes-->
+    <area shape="rect" coords="1240,525,1480,585" href="../webpages/bjj/5 chokes.html">
+    
+    <!--bjj basics sprint 6 leg entanglements made easy-->
+    <area shape="rect" coords="1275,655,1535,715" href="../webpages/bjj/6 leg entanglements made easy.html">
+    
+    <!--bjj escapes, back-->
+    <area shape="rect" coords="1525,760,1765,825" href="../webpages/bjj/7 escapes_back.html">
+    
+    <!--bjj escapes, side control-->
+    <area shape="rect" coords="1185,790,1420,850" href="../webpages/bjj/8 escapes_side control.html">
+    
+    <!--bjj advanced, become unpassable-->
+    <area shape="rect" coords="1255,930,1490,1000" href="../webpages/bjj/9 become unpassable.html">
+    
+    <!--bjj advanced, terrifying triangles-->
+    <area shape="rect" coords="910,880,1150,940" href="../webpages/bjj/10 terrifying triangles.html">
+    
+    <!--juji club-->
+    <area shape="rect" coords="910,1015,1150,1080" href="../webpages/bjj/11 juji club.html">
+
+  </map>
+
+  <p>Interactive map with links. Cross-hatch fill means work in progress, Solid fill means completed, and empty fill means not started.</p>
+
+  <img id="spongebob" src="../videos/sponge.gif">
+
+  <script>
+    // Initialize image map resizer for responsive areas
+    document.addEventListener("DOMContentLoaded", function() {
+      imageMapResize();
+    });
+  </script>
+</body>
+</html>

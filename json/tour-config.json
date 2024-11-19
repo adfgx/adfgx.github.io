@@ -1,0 +1,54 @@
+{
+    "default": {
+        "firstScene": "scene1",
+        "sceneFadeDuration": 1000
+    },
+    "scenes": {
+        "scene1": {
+            "title": "Panorama 1",
+            "panorama": "https://i.imgur.com/DzDTsXz.jpg",
+            "hotSpots": [
+                {
+                    "pitch": 0,
+                    "yaw": 100,
+                    "type": "scene",
+                    "text": "Go to Panorama 2",
+                    "sceneId": "scene2"
+                }
+            ]
+        },
+        "scene2": {
+            "title": "Panorama 2",
+            "panorama": "https://i.imgur.com/zdg4kpH.jpg",
+            "hotSpots": [
+                {
+                    "pitch": 0,
+                    "yaw": -100,
+                    "type": "scene",
+                    "text": "Go to Panorama 1",
+                    "sceneId": "scene1"
+                },
+                {
+                    "pitch": 10,
+                    "yaw": 50,
+                    "type": "scene",
+                    "text": "Go to Panorama 3",
+                    "sceneId": "scene3"
+                }
+            ]
+        },
+        "scene3": {
+            "title": "Panorama 3",
+            "panorama": "https://i.imgur.com/fXnRDHl.jpg",
+            "hotSpots": [
+                {
+                    "pitch": 0,
+                    "yaw": 150,
+                    "type": "scene",
+                    "text": "Go to Panorama 2",
+                    "sceneId": "scene2"
+                }
+            ]
+        }
+    }
+}

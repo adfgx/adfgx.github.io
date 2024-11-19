@@ -9,7 +9,7 @@
             "panorama": "https://i.imgur.com/DzDTsXz.jpg",
             "hotSpots": [
                 {
-                    "pitch": 0,
+                    "pitch": -5,
                     "yaw": 45,
                     "type": "scene",
                     "text": "Go to Panorama 2",
@@ -22,14 +22,14 @@
             "panorama": "https://i.imgur.com/zdg4kpH.jpg",
             "hotSpots": [
                 {
-                    "pitch": 0,
-                    "yaw": -40,
+                    "pitch": -5,
+                    "yaw": -45,
                     "type": "scene",
                     "text": "Go to Panorama 1",
                     "sceneId": "scene1"
                 },
                 {
-                    "pitch": 0,
+                    "pitch": -5,
                     "yaw": 40,
                     "type": "scene",
                     "text": "Go to Panorama 3",
@@ -42,7 +42,7 @@
             "panorama": "https://i.imgur.com/fXnRDHl.jpg",
             "hotSpots": [
                 {
-                    "pitch": 0,
+                    "pitch": -5,
                     "yaw": -40,
                     "type": "scene",
                     "text": "Go to Panorama 2",

@@ -55,6 +55,21 @@
                     "sceneId": "scene2"
                 }
             ]
+        },
+        "scene4": {
+            "title":"Panorama 4",
+            "panorama":"https://i.imgur.com/QSqpSZe.jpg",
+            "autoRotate":-4,
+            "autoRotateInactivityDelay":2000,
+            "hotSpots":[
+                {
+                    "pitch": -15,
+                    "yaw": 35,
+                    "type":"scene",
+                    "text":"Go to Panorama 1",
+                    "sceneId":"scene1"
+                }
+            ]
         }
     }
 }

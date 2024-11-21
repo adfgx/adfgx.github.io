@@ -13,17 +13,37 @@
             padding-bottom: 56.25%; /* 16:9 aspect ratio */
             height: 0;
         }
-        /* Responsive iframe */
         .video-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            max-width: 100%;
         }
-        body{
+        body {
             background-color: #dbc2c2;
+            font-family: Arial, sans-serif;
+        }
+        /* Playlist styling */
+        .playlist {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .playlist ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .playlist li {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -34,5 +54,32 @@
         allowfullscreen="true"
         loading="lazy"></iframe>
     </div>
+    <div class="playlist">
+        <h2>Playlist Videos</h2>
+        <ul id="video-list">
+            <!-- Video titles will be appended here by JavaScript -->
+        </ul>
+    </div>
+
+    <script>
+        // YouTube Data API key (replace with your actual key)
+        const apiKey = 'AIzaSyAcEodu3_2EVb9B4wx7IsTNbAb8MkmHQgg';
+        const playlistId = 'PLejUuuK2Hwuucf4zfWsDYVLM20t2ViIRT';
+        const apiURL = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}`;
+
+        // Fetch playlist data and display video titles
+        fetch(apiURL)
+            .then(response => response.json())
+            .then(data => {
+                const videoList = document.getElementById('video-list');
+                data.items.forEach(item => {
+                    const videoTitle = item.snippet.title;
+                    const videoElement = document.createElement('li');
+                    videoElement.textContent = videoTitle;
+                    videoList.appendChild(videoElement);
+                });
+            })
+            .catch(error => console.error('Error fetching playlist:', error));
+    </script>
 </body>
 </html>

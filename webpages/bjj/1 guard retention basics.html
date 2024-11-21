@@ -44,12 +44,16 @@
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 3px;
+            cursor: pointer; /* Add hover effect */
+        }
+        .playlist li:hover {
+            background-color: #e8e8e8;
         }
     </style>
 </head>
 <body>
     <div class="video-wrapper">
-        <iframe src="https://www.youtube.com/embed?vq=hd1080&autoplay=1&listType=playlist&list=PLejUuuK2Hwuucf4zfWsDYVLM20t2ViIRT"
+        <iframe id="player" src="https://www.youtube.com/embed?vq=hd1080&autoplay=1&listType=playlist&list=PLejUuuK2Hwuucf4zfWsDYVLM20t2ViIRT"
         allow="autoplay; picture-in-picture"
         allowfullscreen="true"
         loading="lazy"></iframe>
@@ -72,10 +76,19 @@
             .then(response => response.json())
             .then(data => {
                 const videoList = document.getElementById('video-list');
+                const player = document.getElementById('player');
+
                 data.items.forEach(item => {
                     const videoTitle = item.snippet.title;
+                    const videoId = item.snippet.resourceId.videoId; // Get the video ID
                     const videoElement = document.createElement('li');
+                    
                     videoElement.textContent = videoTitle;
+                    videoElement.addEventListener('click', () => {
+                        // Update iframe source to load the selected video
+                        player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                    });
+
                     videoList.appendChild(videoElement);
                 });
             })

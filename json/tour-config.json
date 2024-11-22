@@ -45,6 +45,13 @@
                     "type": "scene",
                     "text": "Go to Panorama 3",
                     "sceneId": "scene3"
+                },
+                {
+                    "pitch": 30,
+                    "yaw": -35,
+                    "type": "scene",
+                    "text": "Go to Panorama 4",
+                    "sceneId": "scene4"
                 }
             ]
         },
@@ -71,10 +78,17 @@
             "hotSpots":[
                 {
                     "pitch": -35,
-                    "yaw": 65,
+                    "yaw": 70,
                     "type":"scene",
                     "text":"Go to Panorama 1",
                     "sceneId":"scene1"
+                },
+                {
+                    "pitch": -20,
+                    "yaw": -5,
+                    "type": "scene",
+                    "text": "Go to Panorama 2",
+                    "sceneId": "scene2"
                 }
             ]
         }

@@ -77,7 +77,7 @@
             "autoRotateInactivityDelay":2500,
             "hotSpots":[
                 {
-                    "pitch": -35,
+                    "pitch": -30,
                     "yaw": 70,
                     "type":"scene",
                     "text":"Go to Panorama 1",

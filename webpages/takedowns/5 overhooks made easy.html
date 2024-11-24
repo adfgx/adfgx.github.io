@@ -13,26 +13,99 @@
             padding-bottom: 56.25%; /* 16:9 aspect ratio */
             height: 0;
         }
-        /* Responsive iframe */
         .video-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            max-width: 100%;
         }
-        body{
+        body {
             background-color: #dbc2c2;
+            font-family: Arial, sans-serif;
+        }
+        /* Playlist styling */
+        .playlist {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .playlist ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .playlist li {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer; /* Add hover effect */
+        }
+        .playlist li:hover {
+            background-color: #e8e8e8;
         }
     </style>
 </head>
 <body>
     <div class="video-wrapper">
-        <iframe src="https://www.youtube.com/embed?vq=hd1080&autoplay=1&listType=playlist&list=PLejUuuK2HwusT87jmq16dRTyZgYyaoJca"
+        <iframe id="player" src="https://www.youtube.com/embed?vq=hd1080&autoplay=1&listType=playlist&list=PLejUuuK2HwusT87jmq16dRTyZgYyaoJca"
         allow="autoplay; picture-in-picture"
         allowfullscreen="true"
         loading="lazy"></iframe>
     </div>
+    <div class="playlist">
+        <h2>Playlist Videos</h2>
+        <h3 id="playlist-description">Playlist Description</h3>
+        <ul id="video-list">
+            <!-- Video titles will be appended here by JavaScript -->
+        </ul>
+    </div>
+
+    <script>
+        const apiKey = 'AIzaSyAcEodu3_2EVb9B4wx7IsTNbAb8MkmHQgg'; // Replace with your actual API key
+        const playlistId = 'PLejUuuK2HwusT87jmq16dRTyZgYyaoJca';
+
+        // API URLs
+        const playlistItemsAPI = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}`;
+        const playlistInfoAPI = `https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=${playlistId}&key=${apiKey}`;
+
+        // Fetch and display the playlist description
+        fetch(playlistInfoAPI)
+            .then(response => response.json())
+            .then(data => {
+                const descriptionElement = document.getElementById('playlist-description');
+                const playlistDescription = data.items[0].snippet.description; // Extract the description
+                descriptionElement.textContent = playlistDescription; // Update the <h3> tag
+            })
+            .catch(error => console.error('Error fetching playlist info:', error));
+
+        // Fetch and display the playlist videos
+        fetch(playlistItemsAPI)
+            .then(response => response.json())
+            .then(data => {
+                const videoList = document.getElementById('video-list');
+                const player = document.getElementById('player');
+
+                data.items.forEach(item => {
+                    const videoTitle = item.snippet.title;
+                    const videoId = item.snippet.resourceId.videoId; // Get the video ID
+                    const videoElement = document.createElement('li');
+                    
+                    videoElement.textContent = videoTitle;
+                    videoElement.addEventListener('click', () => {
+                        // Update iframe source to load the selected video
+                        player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                    });
+
+                    videoList.appendChild(videoElement);
+                });
+            })
+            .catch(error => console.error('Error fetching playlist items:', error));
+    </script>
 </body>
 </html>

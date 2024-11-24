@@ -75,7 +75,7 @@
   <!-- Button container at the top -->
   <div id="button-container">
     <button id="start-btn">B Strikes (1750-1000ms)</button>
-    <button id="second-btn">B Strikes & B Takedowns (2250-1250ms)</button>
+    <button id="second-btn">B Strikes & B Takedowns (2500-1500ms)</button>
     <button id="third-btn">F B Strikes & B Takedowns (2000-1000ms)</button>
     <button id="four-btn">tick (1000ms)</button>
     <button id="five-btn">tick (1500ms)</button>
@@ -97,7 +97,7 @@
       B Strikes → Command timer where the words; jab, cross, hook, and kick are displayed with sound on a loop randomly at 1000ms for punch words and 1750 ms for kicks. For 90 seconds.
     </div>
     <div class="button-info">
-      B Strikes & B Takedowns → Command timer where the words; jab, cross, hook, kick, blt, ht, and sprawl are displayed with sound on a loop randomly at 1250ms for punch words and 2250ms for kicks and takedowns. For 90 seconds.
+      B Strikes & B Takedowns → Command timer where the words; jab, cross, hook, kick, blt, ht, and sprawl are displayed with sound on a loop randomly at 1500ms for punch words and 2500ms for kicks and takedowns. For 90 seconds.
     </div>
     <div class="button-info">
       F B Strikes & B Takedowns → Command timer where the words; jab, cross, hook, kick, blt, ht, and sprawl are displayed with sound on a loop randomly at 1000ms for punch words and 2000ms for kicks and takedowns. For 90 seconds.
@@ -346,7 +346,7 @@
         }
 
         // Set custom delays for specific words
-        const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 2250 : 1250;
+        const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 2500 : 1500;
 
         if (!copy.length) copy = [...advancedWords];
         loopTimeoutId = setTimeout(loop, delay);

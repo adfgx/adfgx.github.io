@@ -46,6 +46,25 @@
       width: 20vh;
       margin: 0;
     }
+    /* Container for buttons at the top */
+    #button-link-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      padding: 10px;
+    }
+    /* Style for buttons */
+    #index, #stats {
+      font-size: 3vw;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+    }
     
   </style>
   <!-- Include the image map resizer library for responsive areas -->
@@ -152,6 +171,12 @@
   <p>Interactive map with links. Cross-hatch fill means work in progress, Solid fill means completed, and empty fill means not started.</p>
 
   <img id="spongebob" src="../videos/sponge.gif">
+
+  <!-- Button container at the bottom -->
+  <div id="button-link-container">
+    <a id="index" href="../index.html">main page</a>
+    <a id="stats" href="stats.html">stats</a>
+  </div>
 
   <script>
     // Initialize image map resizer for responsive areas

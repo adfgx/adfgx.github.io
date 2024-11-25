@@ -59,6 +59,26 @@
       color: white;
       margin-top: 10px;
     }
+    /* Container for buttons at the bottom */
+    #button-link-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      padding: 10px;
+    }
+    /* Style for buttons at the bottom */
+    #index, #command-timer, #map {
+      font-size: 3vw;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+      color: white;
+      background-color: #a31b81;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
@@ -91,6 +111,12 @@
     <div class="button-info">
       Endurance board → 10 seconds of work followed by 5 seconds of rest for 8 sets. Sound played at each interval change.
     </div>
+  </div>
+  <!-- Button container at the bottom -->
+  <div id="button-link-container">
+    <a id="index" href="../index.html">back to the lobby</a>
+    <a id="map" href="../webpages/map.html">map</a>
+    <a id="command-timer" href="../webpages/interactive.html">command timers</a>
   </div>
 
   <!-- AUDIO ELEMENTS IDENTIFICATION -->

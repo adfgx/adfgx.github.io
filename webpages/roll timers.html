@@ -79,7 +79,7 @@
       padding: 10px;
     }
     /* Style for buttons at the bottom */
-    #index, #command-timer, #map {
+    #index, #command-timer, #map, #interval-timer {
       font-size: 3vw;
       padding: 10px;
       margin: 5px;
@@ -113,10 +113,10 @@
   <!-- Information Text Container with Sample Text -->
   <div class="info-container">
     <div class="button-info">
-      saple text 1
+      Duo timers; two sets, rest is half of working set.
     </div>
     <div class="button-info">
-      sample text 2
+      Trio timers; six sets, rest is 30 seconds.
     </div>
   </div>
   <!-- Button container at the bottom -->
@@ -124,6 +124,8 @@
     <a id="index" href="../index.html">back to the lobby</a>
     <a id="map" href="../webpages/map.html">map</a>
     <a id="command-timer" href="../webpages/interactive.html">command timers</a>
+    <a id="interval-timer" href="../webpages/interval timers.html">interval timers</a>
+
   </div>
 
   <!-- AUDIO ELEMENTS IDENTIFICATION -->
@@ -214,7 +216,7 @@
       let cycleCount = 0;
 
       function cycle() {
-        if (cycleCount < 3) { // Repeat 3 times
+        if (cycleCount < 2) { // Repeat 3 times
           startCountdown(179, 'audio-rest', 'Work', () => {  // 180 seconds "Work" phase
             startCountdown(89, 'audio-work', 'Rest', () => {  // 90 seconds "Rest" phase
               cycleCount++;
@@ -234,7 +236,7 @@
       let cycleCount = 0;
 
       function cycle() {
-        if (cycleCount < 3) { // Repeat 3 times
+        if (cycleCount < 2) { // Repeat 3 times
           startCountdown(299, 'audio-rest', 'Work', () => {  // 300 seconds "Work" phase
             startCountdown(149, 'audio-work', 'Rest', () => {  // 150 seconds "Rest" phase
               cycleCount++;

@@ -21,7 +21,7 @@
       width: 100%;
       padding: 10px;
     }
-    .timer1, .timer2, .timer3, .timer4, .button3 {
+    .timer1, .timer2, .timer3, .timer4 {
       font-size: 3vw;
       padding: 10px;
       margin: 5px;
@@ -32,7 +32,7 @@
       border-radius: 5px;
       display: none;
     }
-    .button1, .button2 {
+    .button1, .button2, .button3 {
       font-size: 3vw;
       padding: 10px;
       margin: 5px;
@@ -41,6 +41,12 @@
       color: white;
       border: none;
       border-radius: 5px;
+    }
+    #display-area {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      margin-top: 20px;
     }
     #display {
       font-size: 6vw;
@@ -90,6 +96,12 @@
       border-radius: 5px;
       text-decoration: none;
     }
+    #work-cycle-list {
+      font-size: 3vw;
+      color: black;
+      text-align: center;
+      margin-left: 50px;
+    }
   </style>
 </head>
 <body>
@@ -100,7 +112,7 @@
     <button class="timer2" data-timer="2">5 min d</button>
     <button class="timer3" data-timer="3">3 min t</button>
     <button class="timer4" data-timer="4">5 min t</button>
-    <button class="button3" data-timer="7">Sample button</button>
+    <!--<button class="button3" data-timer="7">Sample button</button>-->
     <button class="button1" data-timer="5">Duo</button>
     <button class="button2" data-timer="6">Trio</button>
   </div>
@@ -108,19 +120,23 @@
   <!--Animated image-->
   <img id="flexdance" src="../videos/dance-lisa-simpson.gif">
 
-  <!--Display area-->
-  <div id="display">Display Area</div>
+  <!-- Display and Work Cycle Area -->
+   <div id="display-area">
+    <div id="display">Display Area</div>
+    <div id="work-cycle-list"></div>
+  </div>
+
 
   <!-- Information Text Container with Sample Text -->
   <div class="info-container">
     <div class="button-info">
-      Positions;
+      
     </div>
     <div class="button-info">
       Duo timers; two sets, rest is half of working set.
     </div>
     <div class="button-info">
-      Trio timers; six sets, rest is 30 seconds.
+      Trio timers; every participant rolls every combination with a minute rest. Each participant is associated with a letter; "A", "C", "T" 
     </div>
   </div>
   <!-- Button container at the bottom -->
@@ -143,13 +159,14 @@
 
     //FUNCTION ASSOCIATIONS
     const displayElement = document.getElementById('display');
+    const workCycleList = document.getElementById('work-cycle-list');
     const timer1 = document.querySelector('.timer1');
     const timer2 = document.querySelector('.timer2');
     const timer3 = document.querySelector('.timer3');
     const timer4 = document.querySelector('.timer4');
     const button1 = document.querySelector('.button1');
     const button2 = document.querySelector('.button2');
-    const button3 = document.querySelector('.button3');
+    //const button3 = document.querySelector('.button3');
 
     let countdownInterval; // Stores the interval for clearing
 
@@ -181,7 +198,7 @@
       const displayStyle = areTimersHidden ? 'none' : 'inline-block';
       timer3.style.display = displayStyle;
       timer4.style.display = displayStyle;
-      button3.style.display = displayStyle;
+      
 
       displayElement.textContent = areTimersHidden
         ? "Display Area"
@@ -195,6 +212,14 @@
       if (audio) {
         audio.currentTime = 0;
         audio.play();
+      }
+    }
+    
+    // Function to shuffle an array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
       }
     }
 
@@ -258,46 +283,52 @@
       cycle(); // Start the first cycle
     }
 
-    // SEQUENCE FUNCTION timer3 TO CYCLE THROUGH WORK AND REST PERIODS
-    function startTimer3Sequence() {
-      let cycleCount = 0;
+  // SEQUENCE FUNCTION timer3 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RENDOMIZED NAMES
+function startTimer3Sequence(workNamesTrio1) {
+  let cycleCount = 0;
 
-      function cycle() {
-        if (cycleCount < 6) { // Repeat 6 times
-          startCountdown(179, 'audio-rest', 'Work', () => {  // 180 seconds "Work" phase
-            startCountdown(59, 'audio-work', 'Rest', () => {  // 60 seconds "Rest" phase
-              cycleCount++;
-              cycle(); // Start the next cycle
-            });
-          });
-        } else {
-          displayElement.textContent = "Timer 3 Complete!";
-        }
-      }
+  function cycle() {
+    if (cycleCount < 6) {
+      const currentWorkName = workNamesTrio1[cycleCount];
 
-      cycle(); // Start the first cycle
+      // Start the work phase
+      startCountdown(179, 'audio-rest', currentWorkName, () => {
+        // Start the rest phase
+        startCountdown(59, 'audio-work', 'Rest', () => {
+          cycleCount++;
+          cycle(); // Start the next cycle
+        });
+      });
+    } else {
+      displayElement.textContent = "Timer 3";
     }
-    
+  }
 
-    // SEQUENCE FUNCTION timer4 TO CYCLE THROUGH WORK AND REST PERIODS
-    function startTimer4Sequence() {
-      let cycleCount = 0;
+  cycle(); // Start the first cycle
+}
+  // SEQUENCE FUNCTION timer4 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RANDOMIZED NAMES
+    function startTimer4Sequence(workNamesTrio2) {
+  let cycleCount = 0;
 
-      function cycle() {
-        if (cycleCount < 6) { // Repeat 6 times
-          startCountdown(299, 'audio-rest', 'Work', () => {  // 300 seconds "Work" phase
-            startCountdown(59, 'audio-work', 'Rest', () => {  // 60 seconds "Rest" phase
-              cycleCount++;
-              cycle(); // Start the next cycle
-            });
-          });
-        } else {
-          displayElement.textContent = "Timer 4 Complete!";
-        }
-      }
+  function cycle() {
+    if (cycleCount < 6) {
+      const currentWorkName = workNamesTrio2[cycleCount];
 
-      cycle(); // Start the first cycle
+      // Start the work phase
+      startCountdown(299, 'audio-rest', currentWorkName, () => {
+        // Start the rest phase
+        startCountdown(59, 'audio-work', 'Rest', () => {
+          cycleCount++;
+          cycle(); // Start the next cycle
+        });
+      });
+    } else {
+      displayElement.textContent = "Timer 4";
     }
+  }
+
+  cycle(); // Start the first cycle
+}
 
     // EVENT LISTENER FOR BUTTONS
 
@@ -316,13 +347,27 @@
     // Event listener for timer 3 button
     timer3.addEventListener('click', () => {
         clearInterval(countdownInterval); // Stop any existing countdown
-        startCountdown(10, 'audio-work', 'Get Ready', startTimer3Sequence); // Initial 10-sec countdown
+
+        // Generate and display the randomized work cycle session
+        const workNamesTrio1 = ["A-T", "T-C", "C-A", "A-C", "T-A", "C-T"];
+        shuffleArray(workNamesTrio1);// Shuffle once and pass it along
+        workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio1.join('<br>')}`;
+
+        //Start the "Get Ready" countdown
+        startCountdown(10, 'audio-work', 'Get Ready', () => startTimer3Sequence(workNamesTrio1)); // Initial 10-sec countdown
     });
    
     // Event listener for timer 4 button
     timer4.addEventListener('click', () => {
         clearInterval(countdownInterval); // Stop any existing countdown
-        startCountdown(10, 'audio-work', 'Get Ready', startTimer4Sequence); // Initial 10-sec countdown
+
+        // Generate and display the randomized work cycle session
+        const workNamesTrio2 = ["A-T", "T-C", "C-A", "A-C", "T-A", "C-T"];
+        shuffleArray(workNamesTrio2);// Shuffle once and pass it along
+        workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio2.join('<br>')}`;
+
+        //Start the "Get Ready" countdown
+        startCountdown(10, 'audio-work', 'Get Ready', () => startTimer4Sequence(workNamesTrio2)); // Initial 10-sec countdown
     });
     
 

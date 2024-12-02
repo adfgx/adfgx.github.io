@@ -21,7 +21,7 @@
       width: 100%;
       padding: 10px;
     }
-    .timer1, .timer2, .timer3, .timer4 {
+    .timer1, .timer2, .timer3, .timer4, .button3 {
       font-size: 3vw;
       padding: 10px;
       margin: 5px;
@@ -100,6 +100,7 @@
     <button class="timer2" data-timer="2">5 min d</button>
     <button class="timer3" data-timer="3">3 min t</button>
     <button class="timer4" data-timer="3">5 min t</button>
+    <button class="button3" data-timer="5">Positions</button>
     <button class="button1" data-timer="4">Duo</button>
     <button class="button2" data-timer="5">Trio</button>
   </div>
@@ -112,6 +113,9 @@
 
   <!-- Information Text Container with Sample Text -->
   <div class="info-container">
+    <div class="button-info">
+      Positions;
+    </div>
     <div class="button-info">
       Duo timers; two sets, rest is half of working set.
     </div>
@@ -145,6 +149,8 @@
     const timer4 = document.querySelector('.timer4');
     const button1 = document.querySelector('.button1');
     const button2 = document.querySelector('.button2');
+    const button3 = document.querySelector('.button3');
+
     let countdownInterval; // Stores the interval for clearing
 
 
@@ -175,6 +181,7 @@
       const displayStyle = areTimersHidden ? 'none' : 'inline-block';
       timer3.style.display = displayStyle;
       timer4.style.display = displayStyle;
+      button3.style.display = displayStyle;
 
       displayElement.textContent = areTimersHidden
         ? "Display Area"
@@ -258,7 +265,7 @@
       function cycle() {
         if (cycleCount < 6) { // Repeat 6 times
           startCountdown(179, 'audio-rest', 'Work', () => {  // 180 seconds "Work" phase
-            startCountdown(29, 'audio-work', 'Rest', () => {  // 30 seconds "Rest" phase
+            startCountdown(59, 'audio-work', 'Rest', () => {  // 60 seconds "Rest" phase
               cycleCount++;
               cycle(); // Start the next cycle
             });
@@ -279,7 +286,7 @@
       function cycle() {
         if (cycleCount < 6) { // Repeat 6 times
           startCountdown(299, 'audio-rest', 'Work', () => {  // 300 seconds "Work" phase
-            startCountdown(29, 'audio-work', 'Rest', () => {  // 30 seconds "Rest" phase
+            startCountdown(59, 'audio-work', 'Rest', () => {  // 60 seconds "Rest" phase
               cycleCount++;
               cycle(); // Start the next cycle
             });

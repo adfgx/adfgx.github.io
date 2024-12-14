@@ -49,6 +49,18 @@
         .playlist li:hover {
             background-color: #e8e8e8;
         }
+        /* Style for buttons */
+        #index, #command-timer, #interval-timer, #map, #roll-timer {
+        font-size: 3vw;
+        padding: 10px;
+        margin: 5px;
+        cursor: pointer;
+        color: white;
+        background-color: #a31b81;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -65,6 +77,15 @@
             <!-- Video titles will be appended here by JavaScript -->
         </ul>
     </div>
+    <!-- Button container at the bottom -->
+  <div id="button-link-container">
+    <a id="index" href="../../index.html">back to the lobby</a>
+    <a id="map" href="../map.html">map</a>
+    <a id="command-timer" href="../interactive.html">command timers</a>
+    <a id="interval-timer" href="../interval timers.html">interval timers</a>
+    <a id="roll-timer" href="../roll timers.html">roll timers</a>
+
+  </div>
 
     <script>
         const apiKey = 'AIzaSyAcEodu3_2EVb9B4wx7IsTNbAb8MkmHQgg'; // Replace with your actual API key

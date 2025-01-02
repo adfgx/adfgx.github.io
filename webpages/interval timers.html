@@ -85,7 +85,7 @@
 
   <!--BUTTON CONTAINER-->
   <div id="button-container">
-    <button class="timer1" data-timer1="1">30sw, 10sr, 3s</button>
+    <button class="timer1" data-timer1="1">30s interval</button>
     <button class="timer2" data-timer="2">30sw, 10sr, 4s</button>
     <button class="timer3" data-timer="3">60sw, 20sr, 3s</button>
     <button class="timer4" data-timer="4">Endurance Board</button>
@@ -171,9 +171,9 @@
       let cycleCount = 0;
 
       function cycle() {
-        if (cycleCount < 3) { // Repeat 3 times
+        if (cycleCount < 2) { // Repeat 2 times
           startCountdown(29, 'audio-rest', 'Work', () => {  // 30 seconds "Work" phase
-            startCountdown(9, 'audio-work', 'Rest', () => {  // 10 seconds "Rest" phase
+            startCountdown(29, 'audio-work', 'Rest', () => {  // 30 seconds "Rest" phase
               cycleCount++;
               cycle(); // Start the next cycle
             });

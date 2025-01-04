@@ -21,7 +21,7 @@
       width: 100%;
       padding: 10px;
     }
-    .timer1, .timer2, .timer3, .timer4 {
+    .Rtimer1, .Rtimer2, .Rtimer3, .Rtimer4, .Itimer5, .Ctimer6 {
       font-size: 3vw;
       padding: 10px;
       margin: 5px;
@@ -108,10 +108,15 @@
 
   <!--BUTTON CONTAINER-->
   <div id="button-container">
-    <button class="timer1" data-timer="1">3 min duo</button>
-    <button class="timer2" data-timer="2">5 min duo</button>
-    <button class="timer3" data-timer="3">3 min trio</button>
-    <button class="timer4" data-timer="4">5 min trio</button>
+    <!--Roll timers buttons-->
+    <button class="Rtimer1" data-timer="1">3 min duo</button>
+    <button class="Rtimer2" data-timer="2">5 min duo</button>
+    <button class="Rtimer3" data-timer="3">3 min trio</button>
+    <button class="Rtimer4" data-timer="4">5 min trio</button>
+    <!--Interval timers buttons-->
+    <button class="Itimer5" data-timer="8">60s interval</button>
+    <!--Command timers buttons-->
+    <button class="Ctimer6" data-timer="9">test</button>
     <!--Dropdown buttons-->
     <button class="button1" data-timer="5">Interval</button>
     <button class="button2" data-timer="6">Command</button>
@@ -162,10 +167,16 @@
     //FUNCTION ASSOCIATIONS
     const displayElement = document.getElementById('display');
     const workCycleList = document.getElementById('work-cycle-list');
-    const timer1 = document.querySelector('.timer1');
-    const timer2 = document.querySelector('.timer2');
-    const timer3 = document.querySelector('.timer3');
-    const timer4 = document.querySelector('.timer4');
+    //Roll timers
+    const Rtimer1 = document.querySelector('.Rtimer1');
+    const Rtimer2 = document.querySelector('.Rtimer2');
+    const Rtimer3 = document.querySelector('.Rtimer3');
+    const Rtimer4 = document.querySelector('.Rtimer4');
+    //Interval timers
+    const Itimer5 = document.querySelector('.Itimer5');
+    //Command timers
+    const Ctimer6 = document.querySelector('.Ctimer6');
+    //Dropdown buttons
     const button1 = document.querySelector('.button1');
     const button2 = document.querySelector('.button2');
     const button3 = document.querySelector('.button3');
@@ -175,50 +186,80 @@
 
 
     // Initialize hidden state for both dropdowns
-    let areDuoTimersHidden = true;
-    let areTrioTimersHidden = true;
+    
     let areRollTimersHidden = true;
+    let areIntervalTimersHidden = true;
+    let areCommandTimersHidden = true;
 
 
-    // Hide/Show Duo buttons when "Roll" button is clicked
+    // Hide/Show Interval timers when "Interval" button is clicked
+    button1.addEventListener('click', () => {
+    clearInterval(countdownInterval); // Stop any existing countdown
+
+    // Hide Command & Roll timers if visible
+    Rtimer1.style.display = 'none';
+    Rtimer2.style.display = 'none';
+    Rtimer3.style.display = 'none';
+    Rtimer4.style.display = 'none';
+    Ctimer6.style.display = 'none';
+
+    areRollTimersHidden = true;
+    areCommandTimersHidden = true;
+
+
+    // Toggle Interval timers visibility
+    areIntervalTimersHidden = !areIntervalTimersHidden;
+    const displayStyle = areIntervalTimersHidden ? 'none' : 'inline-block';
+    Itimer5.style.display = displayStyle;
+    
+
+    displayElement.textContent = areIntervalTimersHidden ? "Display Area" : "Interval Timers";
+    });
+
+    // Hide/Show Roll timers when "Roll" button is clicked
     button3.addEventListener('click', () => {
     clearInterval(countdownInterval); // Stop any existing countdown
 
-    // Hide Trio buttons if visible
-    timer1.style.display = 'none';
-    timer2.style.display = 'none';
-    timer3.style.display = 'none';
-    timer4.style.display = 'none';
-    areRollTimersHidden = true;
+    // Hide Interval & Command timers if visible
+    Itimer5.style.display = 'none';
+    Ctimer6.style.display = 'none';
 
-    // Toggle Duo buttons visibility
+    areIntervalTimersHidden = true;
+    areCommandTimersHidden = true;
+
+    // Toggle Roll timers visibility
     areRollTimersHidden = !areRollTimersHidden;
     const displayStyle = areRollTimersHidden ? 'none' : 'inline-block';
-    timer1.style.display = displayStyle;
-    timer2.style.display = displayStyle;
-    timer3.style.display = displayStyle;
-    timer4.style.display = displayStyle;
+    Rtimer1.style.display = displayStyle;
+    Rtimer2.style.display = displayStyle;
+    Rtimer3.style.display = displayStyle;
+    Rtimer4.style.display = displayStyle;
 
 
     displayElement.textContent = areRollTimersHidden ? "Display Area" : "Roll Timers";
     });
 
-    // Hide/Show Trio buttons when "Roll" button is clicked
+    // Hide/Show Command timers when "Command" button is clicked
     button2.addEventListener('click', () => {
     clearInterval(countdownInterval); // Stop any existing countdown
 
-    // Hide Duo buttons if visible
-    timer1.style.display = 'none';
-    timer2.style.display = 'none';
-    areDuoTimersHidden = true;
+    // Hide Interval & Roll timers if visible
+    Rtimer1.style.display = 'none';
+    Rtimer2.style.display = 'none';
+    Rtimer3.style.display = 'none';
+    Rtimer4.style.display = 'none';
+    Itimer5.style.display = 'none';
 
-    // Toggle Trio buttons visibility
-    areTrioTimersHidden = !areTrioTimersHidden;
-    const displayStyle = areTrioTimersHidden ? 'none' : 'inline-block';
-    timer3.style.display = displayStyle;
-    timer4.style.display = displayStyle;
+    areRollTimersHidden = true;
+    areIntervalTimersHidden = true;
+    
 
-    displayElement.textContent = areTrioTimersHidden ? "Display Area" : "Trio Timers";
+    // Toggle Command timers visibility
+    areCommandTimersHidden = !areCommandTimersHidden;
+    const displayStyle = areCommandTimersHidden ? 'none' : 'inline-block';
+    Ctimer6.style.display = displayStyle;
+
+    displayElement.textContent = areCommandTimersHidden ? "Display Area" : "Command Timers";
   });
     
 
@@ -259,8 +300,28 @@
       }, 1000);
     }
 
-    // SEQUENCE FUNCTION timer1 TO CYCLE THROUGH WORK AND REST PERIODS
-    function startTimer1Sequence() {
+    // SEQUENCE FUNCTION Itimer5 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startItimer5Sequence() {
+      let cycleCount = 0;
+
+      function cycle() {
+        if (cycleCount < 2) { // Repeat 2 times
+          startCountdown(59, 'audio-rest', 'Work', () => {  // 30 seconds "Work" phase
+            startCountdown(59, 'audio-work', 'Rest', () => {  // 30 seconds "Rest" phase
+              cycleCount++;
+              cycle(); // Start the next cycle
+            });
+          });
+        } else {
+          displayElement.textContent = "Timer 5 Complete!";
+        }
+      }
+
+      cycle(); // Start the first cycle
+    }
+
+    // SEQUENCE FUNCTION Rtimer1 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startRtimer1Sequence() {
       let cycleCount = 0;
 
       function cycle() {
@@ -279,8 +340,8 @@
       cycle(); // Start the first cycle
     }
 
-    // SEQUENCE FUNCTION timer2 TO CYCLE THROUGH WORK AND REST PERIODS
-    function startTimer2Sequence() {
+    // SEQUENCE FUNCTION Rtimer2 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startRtimer2Sequence() {
       let cycleCount = 0;
 
       function cycle() {
@@ -299,8 +360,8 @@
       cycle(); // Start the first cycle
     }
 
-  // SEQUENCE FUNCTION timer3 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RENDOMIZED NAMES
-function startTimer3Sequence(workNamesTrio1) {
+  // SEQUENCE FUNCTION Rtimer3 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RENDOMIZED NAMES
+function startRtimer3Sequence(workNamesTrio1) {
   let cycleCount = 0;
 
   function cycle() {
@@ -322,8 +383,8 @@ function startTimer3Sequence(workNamesTrio1) {
 
   cycle(); // Start the first cycle
 }
-  // SEQUENCE FUNCTION timer4 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RANDOMIZED NAMES
-    function startTimer4Sequence(workNamesTrio2) {
+  // SEQUENCE FUNCTION Rtimer4 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RANDOMIZED NAMES
+    function startRtimer4Sequence(workNamesTrio2) {
   let cycleCount = 0;
 
   function cycle() {
@@ -349,19 +410,19 @@ function startTimer3Sequence(workNamesTrio1) {
     // EVENT LISTENER FOR BUTTONS
 
     // Event listener for timer 1 button
-    timer1.addEventListener('click', () => {
+    Rtimer1.addEventListener('click', () => {
         clearInterval(countdownInterval); // Stop any existing countdown
-        startCountdown(10, 'audio-work', 'Get Ready', startTimer1Sequence); // Initial 10-sec countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startRtimer1Sequence); // Initial 10-sec countdown
     });
 
     // Event listener for timer 2 button
-    timer2.addEventListener('click', () => {
+    Rtimer2.addEventListener('click', () => {
         clearInterval(countdownInterval); // Stop any existing countdown
-        startCountdown(10, 'audio-work', 'Get Ready', startTimer2Sequence); // Initial 10-sec countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startRtimer2Sequence); // Initial 10-sec countdown
     });
     
     // Event listener for timer 3 button
-    timer3.addEventListener('click', () => {
+    Rtimer3.addEventListener('click', () => {
         clearInterval(countdownInterval); // Stop any existing countdown
 
         // Generate and display the randomized work cycle session
@@ -370,11 +431,11 @@ function startTimer3Sequence(workNamesTrio1) {
         workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio1.join('<br>')}`;
 
         //Start the "Get Ready" countdown
-        startCountdown(15, 'audio-work', 'Get Ready', () => startTimer3Sequence(workNamesTrio1)); // Initial 10-sec countdown
+        startCountdown(15, 'audio-work', 'Get Ready', () => startRtimer3Sequence(workNamesTrio1)); // Initial 10-sec countdown
     });
    
     // Event listener for timer 4 button
-    timer4.addEventListener('click', () => {
+    Rtimer4.addEventListener('click', () => {
         clearInterval(countdownInterval); // Stop any existing countdown
 
         // Generate and display the randomized work cycle session
@@ -383,10 +444,15 @@ function startTimer3Sequence(workNamesTrio1) {
         workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio2.join('<br>')}`;
 
         //Start the "Get Ready" countdown
-        startCountdown(15, 'audio-work', 'Get Ready', () => startTimer4Sequence(workNamesTrio2)); // Initial 10-sec countdown
+        startCountdown(15, 'audio-work', 'Get Ready', () => startRtimer4Sequence(workNamesTrio2)); // Initial 10-sec countdown
+    });
+
+    // Event listener for timer 5 button
+    Itimer5.addEventListener('click', () => {
+        clearInterval(countdownInterval); // Stop any existing countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startItimer5Sequence); // Initial 10-sec countdown
     });
     
-
   </script>
 </body>
 </html>

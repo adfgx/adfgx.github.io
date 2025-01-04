@@ -171,39 +171,45 @@
     let countdownInterval; // Stores the interval for clearing
 
 
-    // Initialize hidden state
-    let areTimersHidden = true;
+    // Initialize hidden state for both dropdowns
+    let areDuoTimersHidden = true;
+    let areTrioTimersHidden = true;
 
-    // Hide/Show buttons when "button1" is clicked
+    // Hide/Show Duo buttons when "Duo" button is clicked
     button1.addEventListener('click', () => {
-        clearInterval(countdownInterval); // Stop any existing countdown
-        areTimersHidden = !areTimersHidden; // Toggle the state
+    clearInterval(countdownInterval); // Stop any existing countdown
 
-    // Update visibility based on the state
-      const displayStyle = areTimersHidden ? 'none' : 'inline-block';
-      timer1.style.display = displayStyle;
-      timer2.style.display = displayStyle;
+    // Hide Trio buttons if visible
+    timer3.style.display = 'none';
+    timer4.style.display = 'none';
+    areTrioTimersHidden = true;
 
-      displayElement.textContent = areTimersHidden
-        ? "Display Area"
-        : "Display Area";
+    // Toggle Duo buttons visibility
+    areDuoTimersHidden = !areDuoTimersHidden;
+    const displayStyle = areDuoTimersHidden ? 'none' : 'inline-block';
+    timer1.style.display = displayStyle;
+    timer2.style.display = displayStyle;
+
+    displayElement.textContent = areDuoTimersHidden ? "Display Area" : "Duo Timers";
     });
 
-    // Hide/Show buttons when "button2" is clicked
+    // Hide/Show Trio buttons when "Trio" button is clicked
     button2.addEventListener('click', () => {
-        clearInterval(countdownInterval); // Stop any existing countdown
-        areTimersHidden = !areTimersHidden; // Toggle the state
+    clearInterval(countdownInterval); // Stop any existing countdown
 
-    // Update visibility based on the state
-      const displayStyle = areTimersHidden ? 'none' : 'inline-block';
-      timer3.style.display = displayStyle;
-      timer4.style.display = displayStyle;
-      
+    // Hide Duo buttons if visible
+    timer1.style.display = 'none';
+    timer2.style.display = 'none';
+    areDuoTimersHidden = true;
 
-      displayElement.textContent = areTimersHidden
-        ? "Display Area"
-        : "Display Area";
-    });
+    // Toggle Trio buttons visibility
+    areTrioTimersHidden = !areTrioTimersHidden;
+    const displayStyle = areTrioTimersHidden ? 'none' : 'inline-block';
+    timer3.style.display = displayStyle;
+    timer4.style.display = displayStyle;
+
+    displayElement.textContent = areTrioTimersHidden ? "Display Area" : "Trio Timers";
+  });
     
 
     // FUNCTION TO PLAY AUDIO BY ID

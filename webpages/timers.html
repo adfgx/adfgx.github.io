@@ -1,30 +1,385 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Test page</title>
+  <title>Interval Timers</title>
   <style>
     body {
+      background-color: rgb(235, 116, 116);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
+      justify-content: flex-start;
+      min-height: 100vh;
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #dbc2c2;
+      overflow-y: auto; /* Enable vertical scrolling for the page */
     }
-    #rainbow {
+    #button-container {
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-wrap: wrap;
       justify-content: center;
+      width: 100%;
+      padding: 10px;
+    }
+    .timer1, .timer2, .timer3, .timer4 {
+      font-size: 3vw;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #00c3ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      display: none;
+    }
+    .button1, .button2, .button3 {
+      font-size: 3vw;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    #display-area {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      margin-top: 20px;
+    }
+    #display {
+      font-size: 6vw;
+      color: black;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+    #flexdance {
       height: 15vh;
-      width: 20vh;
-      margin: 0;
+      width: 25vh;
+      margin-top: 5px;
+    }
+    /* Container for information text */
+    .info-container {
+      width: 90%;
+      max-width: 800px;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+    /* Style for button information text */
+    .button-info {
+      font-size: 1.2vw;
+      color: white;
+      margin-top: 10px;
+    }
+    /* Container for buttons at the bottom */
+    #button-link-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      padding: 10px;
+    }
+    /* Style for buttons at the bottom */
+    #index, #command-timer, #map, #interval-timer {
+      font-size: 3vw;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+      color: white;
+      background-color: #a31b81;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    #work-cycle-list {
+      font-size: 3vw;
+      color: black;
+      text-align: center;
+      margin-left: 50px;
     }
   </style>
 </head>
 <body>
-  <img id="rainbow" src="../../videos/rainbow-dance-pepe-jam.gif">
+
+  <!--BUTTON CONTAINER-->
+  <div id="button-container">
+    <button class="timer1" data-timer="1">3 min duo</button>
+    <button class="timer2" data-timer="2">5 min duo</button>
+    <button class="timer3" data-timer="3">3 min trio</button>
+    <button class="timer4" data-timer="4">5 min trio</button>
+    <!--Dropdown buttons-->
+    <button class="button1" data-timer="5">Interval</button>
+    <button class="button2" data-timer="6">Command</button>
+    <button class="button3" data-timer="7">Roll</button>
+
+  </div>
+
+  <!--Animated image-->
+  <img id="flexdance" src="../videos/dance-lisa-simpson.gif">
+
+  <!-- Display and Work Cycle Area -->
+   <div id="display-area">
+    <div id="display">Display Area</div>
+    <div id="work-cycle-list"></div>
+  </div>
+
+
+  <!-- Information Text Container with Sample Text -->
+  <div class="info-container">
+    <div class="button-info">
+      
+    </div>
+    <div class="button-info">
+      Duo timers; two sets, rest is half of working set.
+    </div>
+    <div class="button-info">
+      Trio timers; every participant rolls every combination with a minute rest. Each participant is associated with a letter; "A", "C", "T" 
+    </div>
+  </div>
+  <!-- Button container at the bottom -->
+  <div id="button-link-container">
+    <a id="index" href="../index.html">back to the lobby</a>
+    <a id="map" href="../webpages/map.html">map</a>
+    <a id="command-timer" href="../webpages/interactive.html">command timers</a>
+    <a id="interval-timer" href="../webpages/interval timers.html">interval timers</a>
+
+  </div>
+
+  <!-- AUDIO ELEMENTS IDENTIFICATION -->
+  <audio id="audio-3" src="../sound files/3.wav"></audio>
+  <audio id="audio-2" src="../sound files/2.wav"></audio>
+  <audio id="audio-1" src="../sound files/1.wav"></audio>
+  <audio id="audio-rest" src="../sound files/rest.mp3"></audio>
+  <audio id="audio-work" src="../sound files/work.mp3"></audio>
+
+  <script>
+
+    //FUNCTION ASSOCIATIONS
+    const displayElement = document.getElementById('display');
+    const workCycleList = document.getElementById('work-cycle-list');
+    const timer1 = document.querySelector('.timer1');
+    const timer2 = document.querySelector('.timer2');
+    const timer3 = document.querySelector('.timer3');
+    const timer4 = document.querySelector('.timer4');
+    const button1 = document.querySelector('.button1');
+    const button2 = document.querySelector('.button2');
+    const button3 = document.querySelector('.button3');
+
+
+    let countdownInterval; // Stores the interval for clearing
+
+
+    // Initialize hidden state for both dropdowns
+    let areDuoTimersHidden = true;
+    let areTrioTimersHidden = true;
+
+    // Hide/Show Duo buttons when "Roll" button is clicked
+    button3.addEventListener('click', () => {
+    clearInterval(countdownInterval); // Stop any existing countdown
+
+    // Hide Trio buttons if visible
+    timer3.style.display = 'none';
+    timer4.style.display = 'none';
+    areTrioTimersHidden = true;
+
+    // Toggle Duo buttons visibility
+    areDuoTimersHidden = !areDuoTimersHidden;
+    const displayStyle = areDuoTimersHidden ? 'none' : 'inline-block';
+    timer1.style.display = displayStyle;
+    timer2.style.display = displayStyle;
+
+    displayElement.textContent = areDuoTimersHidden ? "Display Area" : "Duo Timers";
+    });
+
+    // Hide/Show Trio buttons when "Roll" button is clicked
+    button3.addEventListener('click', () => {
+    clearInterval(countdownInterval); // Stop any existing countdown
+
+    // Hide Duo buttons if visible
+    timer1.style.display = 'none';
+    timer2.style.display = 'none';
+    areDuoTimersHidden = true;
+
+    // Toggle Trio buttons visibility
+    areTrioTimersHidden = !areTrioTimersHidden;
+    const displayStyle = areTrioTimersHidden ? 'none' : 'inline-block';
+    timer3.style.display = displayStyle;
+    timer4.style.display = displayStyle;
+
+    displayElement.textContent = areTrioTimersHidden ? "Display Area" : "Trio Timers";
+  });
+    
+
+    // FUNCTION TO PLAY AUDIO BY ID
+    function playAudio(id) {
+      const audio = document.getElementById(id);
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play();
+      }
+    }
+    
+    // Function to shuffle an array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    // COUNTDOWN FUNCTION WITH VOICEOVER AND CUSTOM DISPLAY TEXT
+    function startCountdown(duration, endSound, displayText, callback) {
+      let timeLeft = duration;
+      displayElement.textContent = `${displayText}: ${timeLeft} seconds`;
+      
+      countdownInterval = setInterval(() => {
+        if (timeLeft <= 3) playAudio(`audio-${timeLeft}`); // Play voiceover for last 3 seconds
+        
+        timeLeft--;
+        
+        if (timeLeft < 0) {
+          clearInterval(countdownInterval);
+          playAudio(endSound); // Play "rest" or "work" sound
+          callback();
+        } else {
+          displayElement.textContent = `${displayText}: ${timeLeft} seconds`;
+        }
+      }, 1000);
+    }
+
+    // SEQUENCE FUNCTION timer1 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startTimer1Sequence() {
+      let cycleCount = 0;
+
+      function cycle() {
+        if (cycleCount < 2) { // Repeat 3 times
+          startCountdown(179, 'audio-rest', 'Work', () => {  // 180 seconds "Work" phase
+            startCountdown(89, 'audio-work', 'Rest', () => {  // 90 seconds "Rest" phase
+              cycleCount++;
+              cycle(); // Start the next cycle
+            });
+          });
+        } else {
+          displayElement.textContent = "Timer 1 Complete!";
+        }
+      }
+
+      cycle(); // Start the first cycle
+    }
+
+    // SEQUENCE FUNCTION timer2 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startTimer2Sequence() {
+      let cycleCount = 0;
+
+      function cycle() {
+        if (cycleCount < 2) { // Repeat 3 times
+          startCountdown(299, 'audio-rest', 'Work', () => {  // 300 seconds "Work" phase
+            startCountdown(149, 'audio-work', 'Rest', () => {  // 150 seconds "Rest" phase
+              cycleCount++;
+              cycle(); // Start the next cycle
+            });
+          });
+        } else {
+          displayElement.textContent = "Timer 2 Complete!";
+        }
+      }
+
+      cycle(); // Start the first cycle
+    }
+
+  // SEQUENCE FUNCTION timer3 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RENDOMIZED NAMES
+function startTimer3Sequence(workNamesTrio1) {
+  let cycleCount = 0;
+
+  function cycle() {
+    if (cycleCount < 6) {
+      const currentWorkName = workNamesTrio1[cycleCount];
+
+      // Start the work phase
+      startCountdown(179, 'audio-rest', currentWorkName, () => {
+        // Start the rest phase
+        startCountdown(59, 'audio-work', 'Rest', () => {
+          cycleCount++;
+          cycle(); // Start the next cycle
+        });
+      });
+    } else {
+      displayElement.textContent = "Timer 3";
+    }
+  }
+
+  cycle(); // Start the first cycle
+}
+  // SEQUENCE FUNCTION timer4 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RANDOMIZED NAMES
+    function startTimer4Sequence(workNamesTrio2) {
+  let cycleCount = 0;
+
+  function cycle() {
+    if (cycleCount < 6) {
+      const currentWorkName = workNamesTrio2[cycleCount];
+
+      // Start the work phase
+      startCountdown(299, 'audio-rest', currentWorkName, () => {
+        // Start the rest phase
+        startCountdown(59, 'audio-work', 'Rest', () => {
+          cycleCount++;
+          cycle(); // Start the next cycle
+        });
+      });
+    } else {
+      displayElement.textContent = "Timer 4";
+    }
+  }
+
+  cycle(); // Start the first cycle
+}
+
+    // EVENT LISTENER FOR BUTTONS
+
+    // Event listener for timer 1 button
+    timer1.addEventListener('click', () => {
+        clearInterval(countdownInterval); // Stop any existing countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startTimer1Sequence); // Initial 10-sec countdown
+    });
+
+    // Event listener for timer 2 button
+    timer2.addEventListener('click', () => {
+        clearInterval(countdownInterval); // Stop any existing countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startTimer2Sequence); // Initial 10-sec countdown
+    });
+    
+    // Event listener for timer 3 button
+    timer3.addEventListener('click', () => {
+        clearInterval(countdownInterval); // Stop any existing countdown
+
+        // Generate and display the randomized work cycle session
+        const workNamesTrio1 = ["A-T", "T-C", "C-A", "A-C", "T-A", "C-T"];
+        shuffleArray(workNamesTrio1);// Shuffle once and pass it along
+        workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio1.join('<br>')}`;
+
+        //Start the "Get Ready" countdown
+        startCountdown(15, 'audio-work', 'Get Ready', () => startTimer3Sequence(workNamesTrio1)); // Initial 10-sec countdown
+    });
+   
+    // Event listener for timer 4 button
+    timer4.addEventListener('click', () => {
+        clearInterval(countdownInterval); // Stop any existing countdown
+
+        // Generate and display the randomized work cycle session
+        const workNamesTrio2 = ["A-T", "T-C", "C-A", "A-C", "T-A", "C-T"];
+        shuffleArray(workNamesTrio2);// Shuffle once and pass it along
+        workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio2.join('<br>')}`;
+
+        //Start the "Get Ready" countdown
+        startCountdown(15, 'audio-work', 'Get Ready', () => startTimer4Sequence(workNamesTrio2)); // Initial 10-sec countdown
+    });
+    
+
+  </script>
 </body>
 </html>

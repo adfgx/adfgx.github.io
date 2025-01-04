@@ -177,23 +177,30 @@
     // Initialize hidden state for both dropdowns
     let areDuoTimersHidden = true;
     let areTrioTimersHidden = true;
+    let areRollTimersHidden = true;
+
 
     // Hide/Show Duo buttons when "Roll" button is clicked
     button3.addEventListener('click', () => {
     clearInterval(countdownInterval); // Stop any existing countdown
 
     // Hide Trio buttons if visible
+    timer1.style.display = 'none';
+    timer2.style.display = 'none';
     timer3.style.display = 'none';
     timer4.style.display = 'none';
-    areTrioTimersHidden = true;
+    areRollTimersHidden = true;
 
     // Toggle Duo buttons visibility
-    areDuoTimersHidden = !areDuoTimersHidden;
-    const displayStyle = areDuoTimersHidden ? 'none' : 'inline-block';
+    areRollTimersHidden = !areRollTimersHidden;
+    const displayStyle = areRollTimersHidden ? 'none' : 'inline-block';
     timer1.style.display = displayStyle;
     timer2.style.display = displayStyle;
+    timer3.style.display = displayStyle;
+    timer4.style.display = displayStyle;
 
-    displayElement.textContent = areDuoTimersHidden ? "Display Area" : "Duo Timers";
+
+    displayElement.textContent = areRollTimersHidden ? "Display Area" : "Roll Timers";
     });
 
     // Hide/Show Trio buttons when "Roll" button is clicked

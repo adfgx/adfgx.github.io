@@ -21,7 +21,7 @@
       width: 100%;
       padding: 10px;
     }
-    .Rtimer1, .Rtimer2, .Rtimer3, .Rtimer4, .Itimer5, .Ctimer6 {
+    .Rtimer1, .Rtimer2, .Rtimer3, .Rtimer4, .Itimer1, .Ctimer1 {
       font-size: 3vw;
       padding: 10px;
       margin: 5px;
@@ -114,9 +114,9 @@
     <button class="Rtimer3" data-timer="3">3 min trio</button>
     <button class="Rtimer4" data-timer="4">5 min trio</button>
     <!--Interval timers buttons-->
-    <button class="Itimer5" data-timer="8">60s interval</button>
+    <button class="Itimer1" data-timer="8">60s interval</button>
     <!--Command timers buttons-->
-    <button class="Ctimer6" data-timer="9">test</button>
+    <button class="Ctimer1" data-timer="9">test</button>
     <!--Dropdown buttons-->
     <button class="button1" data-timer="5">Interval</button>
     <button class="button2" data-timer="6">Command</button>
@@ -173,9 +173,9 @@
     const Rtimer3 = document.querySelector('.Rtimer3');
     const Rtimer4 = document.querySelector('.Rtimer4');
     //Interval timers
-    const Itimer5 = document.querySelector('.Itimer5');
+    const Itimer1 = document.querySelector('.Itimer1');
     //Command timers
-    const Ctimer6 = document.querySelector('.Ctimer6');
+    const Ctimer1 = document.querySelector('.Ctimer1');
     //Dropdown buttons
     const button1 = document.querySelector('.button1');
     const button2 = document.querySelector('.button2');
@@ -201,7 +201,7 @@
     Rtimer2.style.display = 'none';
     Rtimer3.style.display = 'none';
     Rtimer4.style.display = 'none';
-    Ctimer6.style.display = 'none';
+    Ctimer1.style.display = 'none';
 
     areRollTimersHidden = true;
     areCommandTimersHidden = true;
@@ -210,7 +210,7 @@
     // Toggle Interval timers visibility
     areIntervalTimersHidden = !areIntervalTimersHidden;
     const displayStyle = areIntervalTimersHidden ? 'none' : 'inline-block';
-    Itimer5.style.display = displayStyle;
+    Itimer1.style.display = displayStyle;
     
 
     displayElement.textContent = areIntervalTimersHidden ? "Display Area" : "Interval Timers";
@@ -221,8 +221,8 @@
     clearInterval(countdownInterval); // Stop any existing countdown
 
     // Hide Interval & Command timers if visible
-    Itimer5.style.display = 'none';
-    Ctimer6.style.display = 'none';
+    Itimer1.style.display = 'none';
+    Ctimer1.style.display = 'none';
 
     areIntervalTimersHidden = true;
     areCommandTimersHidden = true;
@@ -248,7 +248,7 @@
     Rtimer2.style.display = 'none';
     Rtimer3.style.display = 'none';
     Rtimer4.style.display = 'none';
-    Itimer5.style.display = 'none';
+    Itimer1.style.display = 'none';
 
     areRollTimersHidden = true;
     areIntervalTimersHidden = true;
@@ -257,7 +257,7 @@
     // Toggle Command timers visibility
     areCommandTimersHidden = !areCommandTimersHidden;
     const displayStyle = areCommandTimersHidden ? 'none' : 'inline-block';
-    Ctimer6.style.display = displayStyle;
+    Ctimer1.style.display = displayStyle;
 
     displayElement.textContent = areCommandTimersHidden ? "Display Area" : "Command Timers";
   });
@@ -300,8 +300,8 @@
       }, 1000);
     }
 
-    // SEQUENCE FUNCTION Itimer5 TO CYCLE THROUGH WORK AND REST PERIODS
-    function startItimer5Sequence() {
+    // SEQUENCE FUNCTION Itimer1 TO CYCLE THROUGH WORK AND REST PERIODS
+    function startItimer1Sequence() {
       let cycleCount = 0;
 
       function cycle() {
@@ -448,9 +448,9 @@ function startRtimer3Sequence(workNamesTrio1) {
     });
 
     // Event listener for timer 5 button
-    Itimer5.addEventListener('click', () => {
+    Itimer1.addEventListener('click', () => {
         clearInterval(countdownInterval); // Stop any existing countdown
-        startCountdown(10, 'audio-work', 'Get Ready', startItimer5Sequence); // Initial 10-sec countdown
+        startCountdown(10, 'audio-work', 'Get Ready', startItimer1Sequence); // Initial 10-sec countdown
     });
     
   </script>

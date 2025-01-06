@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>All Timers</title>
+  <title>All Timers - Part 1</title>
   <style>
     body {
       background-color: rgb(235, 116, 116);
@@ -91,7 +91,7 @@
       <button class="button2">Trio</button>
     </div>
 
-    <img id="flexdance" src="../../videos/dance-lisa-simpson.gif">
+    <img id="flexdance" src="../videos/dance-lisa-simpson.gif">
 
     <div id="display">Display Area</div>
     <div id="work-cycle-list"></div>
@@ -104,6 +104,78 @@
         Trio timers: every participant rolls every combination with a minute rest. Each participant is associated with a letter; "A", "C", "T".
       </div>
     </div>
+
+    <script>
+      // Initialize toggle states for Duo and Trio timers
+      let areDuoTimersHidden = true;
+      let areTrioTimersHidden = true;
+
+      // Select buttons and elements
+      const button1 = document.querySelector('.button1');
+      const button2 = document.querySelector('.button2');
+      const timer1 = document.querySelector('.timer1');
+      const timer2 = document.querySelector('.timer2');
+      const timer3 = document.querySelector('.timer3');
+      const timer4 = document.querySelector('.timer4');
+      const displayElement = document.getElementById('display');
+
+      // Toggle Duo timers visibility
+      button1.addEventListener('click', () => {
+        areDuoTimersHidden = !areDuoTimersHidden;
+        const displayStyle = areDuoTimersHidden ? 'none' : 'inline-block';
+        timer1.style.display = displayStyle;
+        timer2.style.display = displayStyle;
+
+        // Hide Trio timers when Duo is shown
+        timer3.style.display = 'none';
+        timer4.style.display = 'none';
+        areTrioTimersHidden = true;
+        displayElement.textContent = areDuoTimersHidden ? "Duo timers hidden" : "Duo timers shown";
+      });
+
+      // Toggle Trio timers visibility
+      button2.addEventListener('click', () => {
+        areTrioTimersHidden = !areTrioTimersHidden;
+        const displayStyle = areTrioTimersHidden ? 'none' : 'inline-block';
+        timer3.style.display = displayStyle;
+        timer4.style.display = displayStyle;
+
+        // Hide Duo timers when Trio is shown
+        timer1.style.display = 'none';
+        timer2.style.display = 'none';
+        areDuoTimersHidden = true;
+        displayElement.textContent = areTrioTimersHidden ? "Trio timers hidden" : "Trio timers shown";
+      });
+
+      // Example timer functionality for a Duo timer
+      timer1.addEventListener('click', () => {
+        displayElement.textContent = "Starting 3 min duo roll...";
+        setTimeout(() => {
+          displayElement.textContent = "3 min duo roll complete!";
+        }, 180000); // 3 minutes in milliseconds
+      });
+
+      timer2.addEventListener('click', () => {
+        displayElement.textContent = "Starting 5 min duo roll...";
+        setTimeout(() => {
+          displayElement.textContent = "5 min duo roll complete!";
+        }, 300000); // 5 minutes in milliseconds
+      });
+
+      timer3.addEventListener('click', () => {
+        displayElement.textContent = "Starting 3 min Trio roll...";
+        setTimeout(() => {
+          displayElement.textContent = "3 min Trio roll complete!";
+        }, 180000);
+      });
+
+      timer4.addEventListener('click', () => {
+        displayElement.textContent = "Starting 5 min Trio roll...";
+        setTimeout(() => {
+          displayElement.textContent = "5 min Trio roll complete!";
+        }, 300000);
+      });
+    </script>
   </div>
 
   <!-- Command Timers Content -->
@@ -150,29 +222,3 @@
       </div>
     </div>
   </div>
-
-  <script>
-    // Tab Switching Logic
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        // Remove active class from all buttons and contents
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabContents.forEach(content => content.classList.remove('active'));
-
-        // Add active class to clicked button and corresponding content
-        button.classList.add('active');
-        document.getElementById(button.dataset.tab).classList.add('active');
-      });
-    });
-
-    // Default to first tab
-    tabButtons[0].classList.add('active');
-    tabContents[0].classList.add('active');
-
-    // Add interval timer logic if needed from interval timers.html
-  </script>
-</body>
-</html>

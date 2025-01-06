@@ -21,7 +21,7 @@
       width: 100%;
       padding: 10px;
     }
-    .Rtimer1, .Rtimer2, .Rtimer3, .Rtimer4, .Itimer1, .Ctimer1 {
+    .Rtimer1, .Rtimer2, .Rtimer3, .Rtimer4, .Itimer1, .Itimer2, .Itimer3, .Itimer4, .Ctimer1 {
       font-size: 3vw;
       padding: 10px;
       margin: 5px;
@@ -115,6 +115,10 @@
     <button class="Rtimer4" data-timer="4">5 min trio</button>
     <!--Interval timers buttons-->
     <button class="Itimer1" data-timer="8">60s interval</button>
+    <button class="Itimer2" data-timer="10">30sw, 10sr, 4s</button>
+    <button class="Itimer3" data-timer="11">Endurance Board</button>
+    <button class="Itimer4" data-timer="12">/</button>
+
     <!--Command timers buttons-->
     <button class="Ctimer1" data-timer="9">test</button>
     <!--Dropdown buttons-->
@@ -174,6 +178,9 @@
     const Rtimer4 = document.querySelector('.Rtimer4');
     //Interval timers
     const Itimer1 = document.querySelector('.Itimer1');
+    const Itimer2 = document.querySelector('.Itimer2');
+    const Itimer3 = document.querySelector('.Itimer3');
+    const Itimer4 = document.querySelector('.Itimer4');
     //Command timers
     const Ctimer1 = document.querySelector('.Ctimer1');
     //Dropdown buttons
@@ -181,9 +188,7 @@
     const button2 = document.querySelector('.button2');
     const button3 = document.querySelector('.button3');
 
-
     let countdownInterval; // Stores the interval for clearing
-
 
     // Initialize hidden state for both dropdowns
     
@@ -211,6 +216,9 @@
     areIntervalTimersHidden = !areIntervalTimersHidden;
     const displayStyle = areIntervalTimersHidden ? 'none' : 'inline-block';
     Itimer1.style.display = displayStyle;
+    Itimer2.style.display = displayStyle;
+    Itimer3.style.display = displayStyle;
+    Itimer4.style.display = displayStyle;
     
 
     displayElement.textContent = areIntervalTimersHidden ? "Display Area" : "Interval Timers";
@@ -222,6 +230,9 @@
 
     // Hide Interval & Command timers if visible
     Itimer1.style.display = 'none';
+    Itimer2.style.display = 'none';
+    Itimer3.style.display = 'none';
+    Itimer4.style.display = 'none';
     Ctimer1.style.display = 'none';
 
     areIntervalTimersHidden = true;
@@ -249,6 +260,9 @@
     Rtimer3.style.display = 'none';
     Rtimer4.style.display = 'none';
     Itimer1.style.display = 'none';
+    Itimer2.style.display = 'none';
+    Itimer3.style.display = 'none';
+    Itimer4.style.display = 'none';
 
     areRollTimersHidden = true;
     areIntervalTimersHidden = true;
@@ -301,7 +315,7 @@
     }
 
     // INTERVAL TIMERS
-    // SEQUENCE FUNCTION Itimer1 TO CYCLE THROUGH WORK AND REST PERIODS
+    // Itimer1 
     function startItimer1Sequence() {
       let cycleCount = 0;
 
@@ -314,15 +328,47 @@
             });
           });
         } else {
-          displayElement.textContent = "Timer 5 Complete!";
+          displayElement.textContent = "ITimer1"; //Timer end text content
+        }
+      }
+
+      cycle(); // Start the first cycle
+    }
+    
+    // Event listener Itimer1 button
+    Itimer1.addEventListener('click', () => {
+      clearInterval(countdownInterval); // Stop any existing countdown
+      startCountdown(10, 'audio-work', 'Get Ready', startItimer1Sequence); // Initial 10-sec countdown
+    });
+
+    // Itimer2 
+    function startItimer2Sequence() {
+      let cycleCount = 0;
+
+      function cycle() {
+        if (cycleCount < 4) { // Repeat 4 times
+          startCountdown(29, 'audio-rest', 'Work', () => {  // 30 seconds "Work" phase
+            startCountdown(9, 'audio-work', 'Rest', () => {  // 10 seconds "Rest" phase
+              cycleCount++;
+              cycle(); // Start the next cycle
+            });
+          });
+        } else {
+          displayElement.textContent = "Itimer2"; //Timer end text content
         }
       }
 
       cycle(); // Start the first cycle
     }
 
+    // Event listener Itimer2 button
+    Itimer2.addEventListener('click', () => {
+      clearInterval(countdownInterval); // Stop any existing countdown
+      startCountdown(10, 'audio-work', 'Get Ready', startItimer2Sequence); // Initial 10-sec countdown
+    });
+
     // ROLL TIMERS
-    // SEQUENCE FUNCTION Rtimer1 TO CYCLE THROUGH WORK AND REST PERIODS
+    // Rtimer1
     function startRtimer1Sequence() {
       let cycleCount = 0;
 
@@ -335,14 +381,20 @@
             });
           });
         } else {
-          displayElement.textContent = "Timer 1 Complete!";
+          displayElement.textContent = "Rtimer1"; //Timer end text content
         }
       }
 
       cycle(); // Start the first cycle
     }
 
-    // SEQUENCE FUNCTION Rtimer2 TO CYCLE THROUGH WORK AND REST PERIODS
+    // Event listener Rtimer1 button
+    Rtimer1.addEventListener('click', () => {
+      clearInterval(countdownInterval); // Stop any existing countdown
+      startCountdown(10, 'audio-work', 'Get Ready', startRtimer1Sequence); // Initial 10-sec countdown
+    });
+
+    // Rtimer2
     function startRtimer2Sequence() {
       let cycleCount = 0;
 
@@ -355,19 +407,24 @@
             });
           });
         } else {
-          displayElement.textContent = "Timer 2 Complete!";
+          displayElement.textContent = "Rtimer2"; //Timer end text content
         }
       }
 
       cycle(); // Start the first cycle
     }
 
-  // SEQUENCE FUNCTION Rtimer3 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RENDOMIZED NAMES
-function startRtimer3Sequence(workNamesTrio1) {
-  let cycleCount = 0;
+    // Event listener Rtimer2 button
+    Rtimer2.addEventListener('click', () => {
+      clearInterval(countdownInterval); // Stop any existing countdown
+      startCountdown(10, 'audio-work', 'Get Ready', startRtimer2Sequence); // Initial 10-sec countdown
+    });
 
-  function cycle() {
-    if (cycleCount < 6) {
+    // Rtimer3
+    function startRtimer3Sequence(workNamesTrio1) {
+      let cycleCount = 0;
+      function cycle() {
+      if (cycleCount < 6) {
       const currentWorkName = workNamesTrio1[cycleCount];
 
       // Start the work phase
@@ -379,13 +436,28 @@ function startRtimer3Sequence(workNamesTrio1) {
         });
       });
     } else {
-      displayElement.textContent = "Timer 3";
+      displayElement.textContent = "Rtimer3"; //Timer end text content
     }
   }
 
   cycle(); // Start the first cycle
 }
-  // SEQUENCE FUNCTION Rtimer4 TO CYCLE THROUGH WORK AND REST PERIODS WITH UNIQUE RANDOMIZED NAMES
+
+// Event listener Rtimer3 button
+Rtimer3.addEventListener('click', () => {
+
+  clearInterval(countdownInterval); // Stop any existing countdown
+
+  // Generate and display the randomized work cycle session
+  const workNamesTrio1 = ["A-T", "T-C", "C-A", "A-C", "T-A", "C-T"];
+  shuffleArray(workNamesTrio1);// Shuffle once and pass it along
+  workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio1.join('<br>')}`;
+
+  //Start the "Get Ready" countdown
+  startCountdown(15, 'audio-work', 'Get Ready', () => startRtimer3Sequence(workNamesTrio1)); // Initial 10-sec countdown
+  });
+
+  // Rtimer4
     function startRtimer4Sequence(workNamesTrio2) {
   let cycleCount = 0;
 
@@ -402,58 +474,25 @@ function startRtimer3Sequence(workNamesTrio1) {
         });
       });
     } else {
-      displayElement.textContent = "Timer 4";
+      displayElement.textContent = "Rtimer4"; //Timer end text content
     }
   }
 
   cycle(); // Start the first cycle
 }
 
-    // EVENT LISTENER FOR ALL TIMERS
+// Event listener Rtimer4
+Rtimer4.addEventListener('click', () => {
+  clearInterval(countdownInterval); // Stop any existing countdown
 
-    // Event listener for timer 1 button
-    Rtimer1.addEventListener('click', () => {
-        clearInterval(countdownInterval); // Stop any existing countdown
-        startCountdown(10, 'audio-work', 'Get Ready', startRtimer1Sequence); // Initial 10-sec countdown
-    });
+  // Generate and display the randomized work cycle session
+  const workNamesTrio2 = ["A-T", "T-C", "C-A", "A-C", "T-A", "C-T"];
+  shuffleArray(workNamesTrio2);// Shuffle once and pass it along
+  workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio2.join('<br>')}`;
 
-    // Event listener for timer 2 button
-    Rtimer2.addEventListener('click', () => {
-        clearInterval(countdownInterval); // Stop any existing countdown
-        startCountdown(10, 'audio-work', 'Get Ready', startRtimer2Sequence); // Initial 10-sec countdown
-    });
-    
-    // Event listener for timer 3 button
-    Rtimer3.addEventListener('click', () => {
-        clearInterval(countdownInterval); // Stop any existing countdown
-
-        // Generate and display the randomized work cycle session
-        const workNamesTrio1 = ["A-T", "T-C", "C-A", "A-C", "T-A", "C-T"];
-        shuffleArray(workNamesTrio1);// Shuffle once and pass it along
-        workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio1.join('<br>')}`;
-
-        //Start the "Get Ready" countdown
-        startCountdown(15, 'audio-work', 'Get Ready', () => startRtimer3Sequence(workNamesTrio1)); // Initial 10-sec countdown
-    });
-   
-    // Event listener for timer 4 button
-    Rtimer4.addEventListener('click', () => {
-        clearInterval(countdownInterval); // Stop any existing countdown
-
-        // Generate and display the randomized work cycle session
-        const workNamesTrio2 = ["A-T", "T-C", "C-A", "A-C", "T-A", "C-T"];
-        shuffleArray(workNamesTrio2);// Shuffle once and pass it along
-        workCycleList.innerHTML = `<strong>G-A:</strong><br>${workNamesTrio2.join('<br>')}`;
-
-        //Start the "Get Ready" countdown
-        startCountdown(15, 'audio-work', 'Get Ready', () => startRtimer4Sequence(workNamesTrio2)); // Initial 10-sec countdown
-    });
-
-    // Event listener for timer 5 button
-    Itimer1.addEventListener('click', () => {
-        clearInterval(countdownInterval); // Stop any existing countdown
-        startCountdown(10, 'audio-work', 'Get Ready', startItimer1Sequence); // Initial 10-sec countdown
-    });
+  //Start the "Get Ready" countdown
+  startCountdown(15, 'audio-work', 'Get Ready', () => startRtimer4Sequence(workNamesTrio2)); // Initial 10-sec countdown
+  });
     
   </script>
 </body>

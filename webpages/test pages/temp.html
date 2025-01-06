@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Timers</title>
+  <style>
+    body {
+      background-color: rgb(235, 116, 116);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow-y: auto;
+    }
+    #tabs {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .tab-button {
+      font-size: 1.5vw;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .tab-button.active {
+      background-color: #0056b3;
+    }
+    .tab-content {
+      display: none;
+      width: 90%;
+      max-width: 1000px;
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    #display, #timer {
+      font-size: 4vw;
+      text-align: center;
+      margin: 20px 0;
+    }
+    #flexdance {
+      height: 15vh;
+      width: 25vh;
+      margin-top: 5px;
+    }
+    .info-container {
+      width: 90%;
+      max-width: 800px;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+    .button-info {
+      font-size: 1.2vw;
+      color: white;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tab Buttons -->
+  <div id="tabs">
+    <button class="tab-button" data-tab="roll-timers">Roll Timers</button>
+    <button class="tab-button" data-tab="command-timers">Command Timers</button>
+    <button class="tab-button" data-tab="interval-timers">Interval Timers</button>
+  </div>
+
+  <!-- Roll Timers Content -->
+  <div id="roll-timers" class="tab-content">
+    <h2>Roll Timers</h2>
+    <div id="button-container">
+      <button class="timer1">3 min duo roll</button>
+      <button class="timer2">5 min duo roll</button>
+      <button class="timer3">3 min t</button>
+      <button class="timer4">5 min t</button>
+      <button class="button1">Duo</button>
+      <button class="button2">Trio</button>
+    </div>
+
+    <img id="flexdance" src="../../videos/dance-lisa-simpson.gif">
+
+    <div id="display">Display Area</div>
+    <div id="work-cycle-list"></div>
+
+    <div class="info-container">
+      <div class="button-info">
+        Duo timers: two sets, rest is half of working set.
+      </div>
+      <div class="button-info">
+        Trio timers: every participant rolls every combination with a minute rest. Each participant is associated with a letter; "A", "C", "T".
+      </div>
+    </div>
+  </div>
+
+  <!-- Command Timers Content -->
+  <div id="command-timers" class="tab-content">
+    <h2>Command Timers</h2>
+    <div id="button-container">
+      <button id="start-btn">B Strikes (1750-1000ms)</button>
+      <button id="second-btn">B Strikes & B Takedowns (2500-1500ms)</button>
+      <button id="third-btn">F B Strikes & B Takedowns (2000-1000ms)</button>
+      <button id="four-btn">Tick (1000ms)</button>
+      <button id="five-btn">Tick (1500ms)</button>
+      <button id="six-btn">Tick (2000ms)</button>
+    </div>
+    <div id="display">Display Area</div>
+    <div id="timer">Timer Area</div>
+  </div>
+
+  <!-- Interval Timers Content -->
+  <div id="interval-timers" class="tab-content">
+    <h2>Interval Timers</h2>
+    <div id="button-container">
+      <button class="timer1">60s interval</button>
+      <button class="timer2">30sw, 10sr, 4s</button>
+      <button class="timer3">60sw, 20sr, 3s</button>
+      <button class="timer4">Endurance Board</button>
+    </div>
+
+    <img id="flexdance" src="../videos/flex-dance.gif">
+
+    <div id="display">Display Area</div>
+
+    <div class="info-container">
+      <div class="button-info">
+        30sw, 10sr, 3s → 30 seconds of work followed by 10 seconds of rest for 3 sets. Sound played at each interval change.
+      </div>
+      <div class="button-info">
+        30sw, 10sr, 4s → 30 seconds of work followed by 10 seconds of rest for 4 sets. Sound played at each interval change.
+      </div>
+      <div class="button-info">
+        60sw, 20sr, 3s → 60 seconds of work followed by 20 seconds of rest for 3 sets. Sound played at each interval change.
+      </div>
+      <div class="button-info">
+        Endurance board → 10 seconds of work followed by 5 seconds of rest for 8 sets. Sound played at each interval change.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab Switching Logic
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons and contents
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        // Add active class to clicked button and corresponding content
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Default to first tab
+    tabButtons[0].classList.add('active');
+    tabContents[0].classList.add('active');
+
+    // Add interval timer logic if needed from interval timers.html
+  </script>
+</body>
+</html>

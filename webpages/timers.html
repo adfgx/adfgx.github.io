@@ -300,14 +300,15 @@
       }, 1000);
     }
 
+    // INTERVAL TIMERS
     // SEQUENCE FUNCTION Itimer1 TO CYCLE THROUGH WORK AND REST PERIODS
     function startItimer1Sequence() {
       let cycleCount = 0;
 
       function cycle() {
         if (cycleCount < 2) { // Repeat 2 times
-          startCountdown(59, 'audio-rest', 'Work', () => {  // 30 seconds "Work" phase
-            startCountdown(59, 'audio-work', 'Rest', () => {  // 30 seconds "Rest" phase
+          startCountdown(59, 'audio-rest', 'Work', () => {  // 60 seconds "Work" phase
+            startCountdown(59, 'audio-work', 'Rest', () => {  // 60 seconds "Rest" phase
               cycleCount++;
               cycle(); // Start the next cycle
             });
@@ -320,6 +321,7 @@
       cycle(); // Start the first cycle
     }
 
+    // ROLL TIMERS
     // SEQUENCE FUNCTION Rtimer1 TO CYCLE THROUGH WORK AND REST PERIODS
     function startRtimer1Sequence() {
       let cycleCount = 0;
@@ -407,7 +409,7 @@ function startRtimer3Sequence(workNamesTrio1) {
   cycle(); // Start the first cycle
 }
 
-    // EVENT LISTENER FOR BUTTONS
+    // EVENT LISTENER FOR ALL TIMERS
 
     // Event listener for timer 1 button
     Rtimer1.addEventListener('click', () => {

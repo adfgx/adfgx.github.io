@@ -367,6 +367,32 @@
       startCountdown(10, 'audio-work', 'Get Ready', startItimer2Sequence); // Initial 10-sec countdown
     });
 
+    // Itimer3
+    function startItimer3Sequence() {
+      let cycleCount = 0;
+
+      function cycle() {
+        if (cycleCount < 8) { // Repeat 8 times
+          startCountdown(9, 'audio-rest', 'Work', () => {  // 10 seconds "Work" phase
+            startCountdown(4, 'audio-work', 'Rest', () => {  // 5 seconds "Rest" phase
+              cycleCount++;
+              cycle(); // Start the next cycle
+            });
+          });
+        } else {
+          displayElement.textContent = "Itimer3"; //Timer end text content
+        }
+      }
+
+      cycle(); // Start the first cycle
+    }
+    
+    // Event listener Itimer2 button
+    Itimer3.addEventListener('click', () => {
+      clearInterval(countdownInterval); // Stop any existing countdown
+      startCountdown(10, 'audio-work', 'Get Ready', startItimer3Sequence); // Initial 10-sec countdown
+    });
+
     // ROLL TIMERS
     // Rtimer1
     function startRtimer1Sequence() {

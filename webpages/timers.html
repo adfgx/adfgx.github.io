@@ -197,7 +197,7 @@
     //FUNCTION ASSOCIATIONS
     const displayElement = document.getElementById('display');
     const workCycleList = document.getElementById('work-cycle-list');
-    const timerElement = document.querySelector('timer');
+    const timerElement = document.getElementById('timer');
     //Roll timers
     const Rtimer1 = document.querySelector('.Rtimer1');
     const Rtimer2 = document.querySelector('.Rtimer2');
@@ -232,6 +232,7 @@
     let endTimeoutId; // End timeout ID to stop the loop after 90 seconds
     let startCountdownIntervalId; // Interval ID for the 5 seconds pre-loop countdown
     let remainingTime; // Remaining time in seconds
+    let countdownIntervalId; // Interval ID for the countdown timer
 
     // Initialize hidden state for both dropdowns
     
@@ -239,10 +240,15 @@
     let areIntervalTimersHidden = true;
     let areCommandTimersHidden = true;
     let areRestTimersHidden = true;
+    let areCommandTimerHidden = true;
 
     // Hide/Show Rest timers when "Rest" button is clicked
     button4.addEventListener('click', () => {
     clearInterval(countdownInterval); // Stop any existing countdown
+    clearTimeout(loopTimeoutId); // Clear existing loop
+    clearTimeout(endTimeoutId); // Clear end timer
+    clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+    stopTimer(); // Ensure no other timers are running
 
     // Hide Roll, Command, Interval timers if visible
     Rtimer1.style.display = 'none';
@@ -264,6 +270,7 @@
 
     areRollTimersHidden = true;
     areCommandTimersHidden = true;
+    areCommandTimerHidden = true;
     areIntervalTimersHidden = true;
 
     // Toggle Rest timers visibility
@@ -274,11 +281,16 @@
     Retimer3.style.display = displayStyle;
     
     displayElement.textContent = areRestTimersHidden ? "Display Area" : "Rest Timers";
+    timerElement.textContent = areRestTimersHidden ? "" : "";
     });
 
     // Hide/Show Interval timers when "Interval" button is clicked
     button1.addEventListener('click', () => {
     clearInterval(countdownInterval); // Stop any existing countdown
+    clearTimeout(loopTimeoutId); // Clear existing loop
+    clearTimeout(endTimeoutId); // Clear end timer
+    clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+    stopTimer(); // Ensure no other timers are running
 
     // Hide Roll, Command, Rest timers if visible
     Rtimer1.style.display = 'none';
@@ -299,6 +311,7 @@
 
     areRollTimersHidden = true;
     areCommandTimersHidden = true;
+    areCommandTimerHidden = true
     areRestTimersHidden = true;
 
     // Toggle Interval timers visibility
@@ -310,11 +323,16 @@
     Itimer4.style.display = displayStyle;
     
     displayElement.textContent = areIntervalTimersHidden ? "Display Area" : "Interval Timers";
+    timerElement.textContent = areRestTimersHidden ? "" : "";
     });
 
     // Hide/Show Roll timers when "Roll" button is clicked
     button3.addEventListener('click', () => {
     clearInterval(countdownInterval); // Stop any existing countdown
+    clearTimeout(loopTimeoutId); // Clear existing loop
+    clearTimeout(endTimeoutId); // Clear end timer
+    clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+    stopTimer(); // Ensure no other timers are running
 
     // Hide Interval, Command, Rest timers if visible
     Itimer1.style.display = 'none';
@@ -334,6 +352,7 @@
 
     areIntervalTimersHidden = true;
     areCommandTimersHidden = true;
+    areCommandTimerHidden = true
     areRestTimersHidden = true;
 
     // Toggle Roll timers visibility
@@ -346,11 +365,16 @@
     Rtimer5.style.display = displayStyle;
 
     displayElement.textContent = areRollTimersHidden ? "Display Area" : "Roll Timers";
+    timerElement.textContent = areRestTimersHidden ? "" : "";
     });
 
     // Hide/Show Command timers when "Command" button is clicked
     button2.addEventListener('click', () => {
     clearInterval(countdownInterval); // Stop any existing countdown
+    clearTimeout(loopTimeoutId); // Clear existing loop
+    clearTimeout(endTimeoutId); // Clear end timer
+    clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+    stopTimer(); // Ensure no other timers are running
 
     // Hide Roll, Interval, Rest timers if visible
     Rtimer1.style.display = 'none';
@@ -382,6 +406,7 @@
     Ctimer7.style.display = displayStyle;
 
     displayElement.textContent = areCommandTimersHidden ? "Display Area" : "Command Timers";
+    timerElement.textContent = areRestTimersHidden ? "Timer" : "Timer";
   });
     
 
@@ -462,57 +487,65 @@
       timerElement.textContent = `Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
 
-    // Function to stop the countdown timer
-    function stopTimer() {
-      clearInterval(countdownIntervalId);
-      timerElement.textContent = '';
-    }
+    // Function to stop active timers and intervals
+function stopTimer() {
+  if (countdownIntervalId !== undefined) {
+    clearInterval(countdownIntervalId);
+    console.log("Timer stopped."); // Debugging log
+  }
+}
 
     // COMMAND TIMERS
-    // Ctimer1
+    // Ctimer1 
     function startCtimer1Sequence() {
-      const Ctimer1Words = ['kick', 'jab', 'jab', 'cross', 'hook'];
-      let copy = [...Ctimer1Words];
+  const Ctimer1Words = ['kick', 'jab', 'jab', 'cross', 'hook'];
+  let copy = [...Ctimer1Words]; // Clone the array to shuffle independently
 
-      function loop() {
-        const rnd = Math.floor(Math.random() * copy.length);
-        const word = copy.splice(rnd, 1)[0];
-        displayElement.textContent = word;
+  function loop() {
+    if (!copy.length) copy = [...Ctimer1Words]; // Reset array when empty
 
-        const audio = document.getElementById(`${word}-sound`);
-        if (audio) {
-          audio.currentTime = 0;
-          audio.play();
-        }
+    const rnd = Math.floor(Math.random() * copy.length);
+    const word = copy.splice(rnd, 1)[0]; // Pick and remove a random word
+    //console.log(`Displaying word: ${word}`); // Debugging log
+    displayElement.textContent = word;
 
-        // Set custom delays for specific words
-        const delay = (word === 'kick') ? 1750 : 1000;
-
-        if (!copy.length) copy = [...Ctimer1Words];
-        loopTimeoutId = setTimeout(loop, delay);
-      }
-
-      loop();
-
-      // Set a timeout to stop the loop after 90 seconds
-      endTimeoutId = setTimeout(() => {
-        clearTimeout(loopTimeoutId);
-        displayElement.textContent = ''; // Clear the word display
-        stopTimer(); // Stop the countdown
-      }, 90000); // 90,000 ms = 90 seconds
-
-      // Start the countdown timer
-      startTimer(90);
+    const audio = document.getElementById(`${word}-sound`);
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play();
     }
 
-    // Event listener Ctimer1 timer
-    Ctimer1.addEventListener('click', () => {
-      clearTimeout(loopTimeoutId); // Stop the current function
-      clearTimeout(endTimeoutId); // Clear any previous end timeout
-      stopTimer(); // Clear any existing timer
-      clearInterval(startCountdownIntervalId); // Stop any existing pre-loop countdown
-      startPreLoopCountdown(startCtimer1Sequence); // Start the 5-second countdown, then call logBasic
-    });
+    const delay = word === 'kick' ? 1750 : 1000; // Custom delays for words
+    loopTimeoutId = setTimeout(loop, delay); // Recursive loop
+  }
+
+  loop(); // Start the loop
+
+  // Set a timeout to stop the loop after 90 seconds
+  endTimeoutId = setTimeout(() => {
+    //console.log("B Strikes sequence complete!"); // Debugging log
+    clearTimeout(loopTimeoutId); // Clear loop
+    displayElement.textContent = "Ctimer1";
+    stopTimer(); // Ensure timer is cleared
+  }, 90000); // End sequence after 90 seconds
+
+  startTimer(90); // Start countdown timer
+}
+
+// Event listener for Ctimer1
+Ctimer1.addEventListener('click', () => {
+  //console.log("B Strikes timer clicked"); // Debugging log
+  clearTimeout(loopTimeoutId); // Clear existing loop
+  clearTimeout(endTimeoutId); // Clear end timer
+  clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+  stopTimer(); // Ensure no other timers are running
+
+  // Start pre-loop countdown, then sequence
+  startPreLoopCountdown(() => {
+    //console.log("Starting B Strikes sequence..."); // Debugging log
+    startCtimer1Sequence();
+  });
+});
 
     // INTERVAL TIMERS
     // Itimer1 

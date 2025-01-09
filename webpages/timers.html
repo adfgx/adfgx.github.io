@@ -126,8 +126,8 @@
 
     <!--Command timers-->
     <button class="Ctimer1" data-timer="5">B Strikes</button>
-    <button class="Ctimer2" data-timer="6">B Strikes & B Takedowns</button>
-    <button class="Ctimer3" data-timer="7">B Strikes & B Takedowns</button>
+    <button class="Ctimer2" data-timer="6">fB Strikes & B Takedowns</button>
+    <button class="Ctimer3" data-timer="7">sB Strikes & B Takedowns</button>
     <button class="Ctimer4" data-timer="8">1000ms</button>
     <button class="Ctimer5" data-timer="9">1500ms</button>
     <button class="Ctimer6" data-timer="10">2000ms</button>
@@ -191,6 +191,7 @@
   <audio id="blt-sound" src="../sound files/blt.mp3"></audio>
   <audio id="ht-sound" src="../sound files/ht.mp3"></audio>
   <audio id="sprawl-sound" src="../sound files/sprawl.mp3"></audio>
+  <audio id="whip-sound" src="../sound files/whip.mp3"></audio>
 
   <script>
 
@@ -447,7 +448,7 @@
       }, 1000);
     }
 
-    // Function to display the countdown before starting the loop
+    // Function to display the countdown before starting the loop for command timers
     function startPreLoopCountdown(callback) {
     let countdownTime = 5;
     timerElement.textContent = `Starting in: ${countdownTime}`;
@@ -464,7 +465,7 @@
     }, 1000);
   }
 
-    // Function to start the countdown timer
+    // Function to start the countdown timer for command timers
     function startTimer(duration) {
       remainingTime = duration;
       updateTimerDisplay(remainingTime);
@@ -480,22 +481,277 @@
       }, 1000);
     }
 
-    // Function to update the timer display
+    // Function to update the timer display for command timers
     function updateTimerDisplay(time) {
       const minutes = Math.floor(time / 60);
       const seconds = time % 60;
       timerElement.textContent = `Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
 
-    // Function to stop active timers and intervals
+    // Function to stop active timers and intervals for command timers
 function stopTimer() {
   if (countdownIntervalId !== undefined) {
     clearInterval(countdownIntervalId);
-    console.log("Timer stopped."); // Debugging log
+    //console.log("Timer stopped."); // Debugging log
   }
 }
 
     // COMMAND TIMERS
+    // Ctimer6 
+    function startCtimer6Sequence() {
+  const Ctimer6Words = ['whip'];
+  let copy = [...Ctimer6Words]; // Clone the array to shuffle independently
+
+  function loop() {
+    if (!copy.length) copy = [...Ctimer6Words]; // Reset array when empty
+
+    const rnd = Math.floor(Math.random() * copy.length);
+    const word = copy.splice(rnd, 1)[0]; // Pick and remove a random word
+    //console.log(`Displaying word: ${word}`); // Debugging log
+    displayElement.textContent = word;
+
+    const audio = document.getElementById(`${word}-sound`);
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    const delay = (word === 'whip') ? 2000 : 2000;
+    loopTimeoutId = setTimeout(loop, delay); // Recursive loop
+  }
+
+  loop(); // Start the loop
+
+  // Set a timeout to stop the loop after 90 seconds
+  endTimeoutId = setTimeout(() => {
+    //console.log("Ctimer6 complete"); // Debugging log
+    clearTimeout(loopTimeoutId); // Clear loop
+    displayElement.textContent = "Ctimer6";
+    stopTimer(); // Ensure timer is cleared
+  }, 90000); // End sequence after 90 seconds
+
+  startTimer(90); // Start countdown timer
+}
+
+// Event listener for Ctimer6
+Ctimer6.addEventListener('click', () => {
+  //console.log("Ctimer6 clicked"); // Debugging log
+  clearTimeout(loopTimeoutId); // Clear existing loop
+  clearTimeout(endTimeoutId); // Clear end timer
+  clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+  stopTimer(); // Ensure no other timers are running
+
+  // Start pre-loop countdown, then sequence
+  startPreLoopCountdown(() => {
+    //console.log("Starting Ctimer6 sequence..."); // Debugging log
+    startCtimer6Sequence();
+  });
+});
+
+    // Ctimer5 
+    function startCtimer5Sequence() {
+  const Ctimer5Words = ['whip'];
+  let copy = [...Ctimer5Words]; // Clone the array to shuffle independently
+
+  function loop() {
+    if (!copy.length) copy = [...Ctimer5Words]; // Reset array when empty
+
+    const rnd = Math.floor(Math.random() * copy.length);
+    const word = copy.splice(rnd, 1)[0]; // Pick and remove a random word
+    //console.log(`Displaying word: ${word}`); // Debugging log
+    displayElement.textContent = word;
+
+    const audio = document.getElementById(`${word}-sound`);
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    const delay = (word === 'whip') ? 1500 : 1500;
+    loopTimeoutId = setTimeout(loop, delay); // Recursive loop
+  }
+
+  loop(); // Start the loop
+
+  // Set a timeout to stop the loop after 90 seconds
+  endTimeoutId = setTimeout(() => {
+    //console.log("Ctimer5 complete"); // Debugging log
+    clearTimeout(loopTimeoutId); // Clear loop
+    displayElement.textContent = "Ctimer5";
+    stopTimer(); // Ensure timer is cleared
+  }, 90000); // End sequence after 90 seconds
+
+  startTimer(90); // Start countdown timer
+}
+
+// Event listener for Ctimer5
+Ctimer5.addEventListener('click', () => {
+  //console.log("Ctimer5 clicked"); // Debugging log
+  clearTimeout(loopTimeoutId); // Clear existing loop
+  clearTimeout(endTimeoutId); // Clear end timer
+  clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+  stopTimer(); // Ensure no other timers are running
+
+  // Start pre-loop countdown, then sequence
+  startPreLoopCountdown(() => {
+    //console.log("Starting Ctimer5 sequence..."); // Debugging log
+    startCtimer5Sequence();
+  });
+});
+
+    // Ctimer4 
+    function startCtimer4Sequence() {
+  const Ctimer4Words = ['whip'];
+  let copy = [...Ctimer4Words]; // Clone the array to shuffle independently
+
+  function loop() {
+    if (!copy.length) copy = [...Ctimer4Words]; // Reset array when empty
+
+    const rnd = Math.floor(Math.random() * copy.length);
+    const word = copy.splice(rnd, 1)[0]; // Pick and remove a random word
+    //console.log(`Displaying word: ${word}`); // Debugging log
+    displayElement.textContent = word;
+
+    const audio = document.getElementById(`${word}-sound`);
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    const delay = (word === 'whip') ? 1000 : 1000;
+    loopTimeoutId = setTimeout(loop, delay); // Recursive loop
+  }
+
+  loop(); // Start the loop
+
+  // Set a timeout to stop the loop after 90 seconds
+  endTimeoutId = setTimeout(() => {
+    //console.log("Ctimer4 complete"); // Debugging log
+    clearTimeout(loopTimeoutId); // Clear loop
+    displayElement.textContent = "Ctimer4";
+    stopTimer(); // Ensure timer is cleared
+  }, 90000); // End sequence after 90 seconds
+
+  startTimer(90); // Start countdown timer
+}
+
+// Event listener for Ctimer4
+Ctimer4.addEventListener('click', () => {
+  //console.log("Ctimer4 clicked"); // Debugging log
+  clearTimeout(loopTimeoutId); // Clear existing loop
+  clearTimeout(endTimeoutId); // Clear end timer
+  clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+  stopTimer(); // Ensure no other timers are running
+
+  // Start pre-loop countdown, then sequence
+  startPreLoopCountdown(() => {
+    //console.log("Starting Ctimer4 sequence..."); // Debugging log
+    startCtimer4Sequence();
+  });
+});
+
+    // Ctimer3 
+    function startCtimer3Sequence() {
+  const Ctimer3Words = ['hook', 'hook', 'hook', 'kick', 'kick', 'kick', 'jab', 'jab', 'jab', 'jab', 'cross', 'cross', 'cross', 'blt', 'ht', 'sprawl'];
+  let copy = [...Ctimer3Words]; // Clone the array to shuffle independently
+
+  function loop() {
+    if (!copy.length) copy = [...Ctimer3Words]; // Reset array when empty
+
+    const rnd = Math.floor(Math.random() * copy.length);
+    const word = copy.splice(rnd, 1)[0]; // Pick and remove a random word
+    //console.log(`Displaying word: ${word}`); // Debugging log
+    displayElement.textContent = word;
+
+    const audio = document.getElementById(`${word}-sound`);
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 2500 : 1500;
+    loopTimeoutId = setTimeout(loop, delay); // Recursive loop
+  }
+
+  loop(); // Start the loop
+
+  // Set a timeout to stop the loop after 90 seconds
+  endTimeoutId = setTimeout(() => {
+    //console.log("Ctimer3 complete"); // Debugging log
+    clearTimeout(loopTimeoutId); // Clear loop
+    displayElement.textContent = "Ctimer3";
+    stopTimer(); // Ensure timer is cleared
+  }, 90000); // End sequence after 90 seconds
+
+  startTimer(90); // Start countdown timer
+}
+
+// Event listener for Ctimer3
+Ctimer3.addEventListener('click', () => {
+  //console.log("Ctimer3 clicked"); // Debugging log
+  clearTimeout(loopTimeoutId); // Clear existing loop
+  clearTimeout(endTimeoutId); // Clear end timer
+  clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+  stopTimer(); // Ensure no other timers are running
+
+  // Start pre-loop countdown, then sequence
+  startPreLoopCountdown(() => {
+    //console.log("Starting Ctimer3 sequence..."); // Debugging log
+    startCtimer3Sequence();
+  });
+});
+
+    // Ctimer2 
+    function startCtimer2Sequence() {
+  const Ctimer2Words = ['hook', 'hook', 'hook', 'kick', 'kick', 'kick', 'jab', 'jab', 'jab', 'jab', 'cross', 'cross', 'cross', 'blt', 'ht', 'sprawl'];
+  let copy = [...Ctimer2Words]; // Clone the array to shuffle independently
+
+  function loop() {
+    if (!copy.length) copy = [...Ctimer2Words]; // Reset array when empty
+
+    const rnd = Math.floor(Math.random() * copy.length);
+    const word = copy.splice(rnd, 1)[0]; // Pick and remove a random word
+    //console.log(`Displaying word: ${word}`); // Debugging log
+    displayElement.textContent = word;
+
+    const audio = document.getElementById(`${word}-sound`);
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    const delay = (word === 'kick' || word === 'sprawl' || word === 'blt' || word === 'ht') ? 2000 : 1000;
+    loopTimeoutId = setTimeout(loop, delay); // Recursive loop
+  }
+
+  loop(); // Start the loop
+
+  // Set a timeout to stop the loop after 90 seconds
+  endTimeoutId = setTimeout(() => {
+    //console.log("Ctimer2 complete"); // Debugging log
+    clearTimeout(loopTimeoutId); // Clear loop
+    displayElement.textContent = "Ctimer2";
+    stopTimer(); // Ensure timer is cleared
+  }, 90000); // End sequence after 90 seconds
+
+  startTimer(90); // Start countdown timer
+}
+
+// Event listener for Ctimer2
+Ctimer2.addEventListener('click', () => {
+  //console.log("Ctimer2 clicked"); // Debugging log
+  clearTimeout(loopTimeoutId); // Clear existing loop
+  clearTimeout(endTimeoutId); // Clear end timer
+  clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
+  stopTimer(); // Ensure no other timers are running
+
+  // Start pre-loop countdown, then sequence
+  startPreLoopCountdown(() => {
+    //console.log("Starting Ctimer2 sequence..."); // Debugging log
+    startCtimer2Sequence();
+  });
+});
+
     // Ctimer1 
     function startCtimer1Sequence() {
   const Ctimer1Words = ['kick', 'jab', 'jab', 'cross', 'hook'];
@@ -523,7 +779,7 @@ function stopTimer() {
 
   // Set a timeout to stop the loop after 90 seconds
   endTimeoutId = setTimeout(() => {
-    //console.log("B Strikes sequence complete!"); // Debugging log
+    //console.log("Ctimer1 complete"); // Debugging log
     clearTimeout(loopTimeoutId); // Clear loop
     displayElement.textContent = "Ctimer1";
     stopTimer(); // Ensure timer is cleared
@@ -534,7 +790,7 @@ function stopTimer() {
 
 // Event listener for Ctimer1
 Ctimer1.addEventListener('click', () => {
-  //console.log("B Strikes timer clicked"); // Debugging log
+  //console.log("Ctimer1 clicked"); // Debugging log
   clearTimeout(loopTimeoutId); // Clear existing loop
   clearTimeout(endTimeoutId); // Clear end timer
   clearInterval(startCountdownIntervalId); // Clear pre-loop countdown
@@ -542,7 +798,7 @@ Ctimer1.addEventListener('click', () => {
 
   // Start pre-loop countdown, then sequence
   startPreLoopCountdown(() => {
-    //console.log("Starting B Strikes sequence..."); // Debugging log
+    //console.log("Starting Ctimer1 sequence..."); // Debugging log
     startCtimer1Sequence();
   });
 });

@@ -73,7 +73,7 @@
       border-radius: 5px;
     }
     /* Style for buttons information text */
-    .Rtimerd1, .Rtimerd2, .Itimerd1, .Itimerd2, .Itimerd3, .Ctimerd1 {
+    .Rtimerd1, .Rtimerd2, .Itimerd1, .Itimerd2, .Itimerd3, .Ctimerd1, .Ctimerd2, .Ctimerd3 {
       font-size: 1.2vw;
       color: white;
       margin-top: 10px;
@@ -185,7 +185,15 @@
       Enducance board; ten seconds work, five seconds rest for eight sets.
     </div>
     <div class="Ctimerd1">
-      B Strikes; jab, hook, cross & kick sound commands played on a random loop for ninety seconds. Hand strikes commands lasts a second and leg strikes commands lasts 1750 ms. 
+      B Strikes; jab, hook, cross & kick sound commands played on a random loop for ninety seconds. 
+      Hand strikes commands lasts a second and leg strikes commands lasts 1750 ms. 
+    </div>
+    <div class="Ctimerd2">
+      B Strikes & B Takedowns; jab, hook, cross, kick, blt, ht & sprawl sound commands played on a random loop for ninety seconds. 
+      Hand strikes commands last a second and leg strikes with takedowns last two seconds. The slower version adds half a second to commands.
+    </div>
+    <div class="Ctimerd3">
+      (ͷ)ms; sound played at indicated interval for ninety seconds.
     </div>
   </div>
   <!-- Button container at the bottom -->
@@ -240,6 +248,8 @@
     const Ctimer6 = document.querySelector('.Ctimer6');
     const Ctimer7 = document.querySelector('.Ctimer7');
     const Ctimerd1 = document.querySelector('.Ctimerd1');
+    const Ctimerd2 = document.querySelector('.Ctimerd2');
+    const Ctimerd3 = document.querySelector('.Ctimerd3');
     //Rest timers
     const Retimer1 = document.querySelector('.Retimer1');
     const Retimer2 = document.querySelector('.Retimer2');
@@ -288,6 +298,8 @@
     Ctimer6.style.display = 'none';
     Ctimer7.style.display = 'none';
     Ctimerd1.style.display = 'none';
+    Ctimerd2.style.display = 'none';
+    Ctimerd3.style.display = 'none';
     Itimer1.style.display = 'none';
     Itimer2.style.display = 'none';
     Itimer3.style.display = 'none';
@@ -335,6 +347,8 @@
     Ctimer6.style.display = 'none';
     Ctimer7.style.display = 'none';
     Ctimerd1.style.display = 'none';
+    Ctimerd2.style.display = 'none';
+    Ctimerd3.style.display = 'none';
     Retimer1.style.display = 'none';
     Retimer2.style.display = 'none';
     Retimer3.style.display = 'none';
@@ -382,6 +396,8 @@
     Ctimer6.style.display = 'none';
     Ctimer7.style.display = 'none';
     Ctimerd1.style.display = 'none';
+    Ctimerd2.style.display = 'none';
+    Ctimerd3.style.display = 'none';
     Retimer1.style.display = 'none';
     Retimer2.style.display = 'none';
     Retimer3.style.display = 'none';
@@ -447,6 +463,9 @@
     Ctimer6.style.display = displayStyle;
     Ctimer7.style.display = displayStyle;
     Ctimerd1.style.display = displayStyle;
+    Ctimerd2.style.display = displayStyle;
+    Ctimerd3.style.display = displayStyle;
+    
 
     displayElement.textContent = areCommandTimersHidden ? "Display Area" : "Command Timers";
     timerElement.textContent = areRestTimersHidden ? "Timer" : "Timer";

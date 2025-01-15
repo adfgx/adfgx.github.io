@@ -73,10 +73,11 @@
       border-radius: 5px;
     }
     /* Style for button information text */
-    .button-info {
+    .Rtimerd1, .Rtimerd2, .Itimerd1, .Itimerd2, .Itimerd3 {
       font-size: 1.2vw;
       color: white;
       margin-top: 10px;
+      display: none;
     }
     /* Container for buttons at the bottom */
     #button-link-container {
@@ -159,14 +160,20 @@
 
   <!-- Information Text Container with Sample Text -->
   <div class="info-container">
-    <div class="button-info">
-      
-    </div>
-    <div class="button-info">
+    <div class="Rtimerd1">
       Duo timers; two sets, rest is half of working set.
     </div>
-    <div class="button-info">
-      Trio timers; every participant rolls every combination with a minute rest. Each participant is associated with a letter; "A", "C", "T" 
+    <div class="Rtimerd2">
+      Trio timers; every participant rolls every combination with a minute rest. Each participant is associated with a letter; "A", "C", "T". 
+    </div>
+    <div class="Itimerd1">
+      60s interval; sixty seconds interval for four minutes with sound each minute.
+    </div>
+    <div class="Itimerd2">
+      30sw, 10sr, 4s; thirty seconds work, ten seconds rest for four sets.
+    </div>
+    <div class="Itimerd3">
+      Enducance board; ten seconds work, five seconds rest for eight sets.
     </div>
   </div>
   <!-- Button container at the bottom -->
@@ -202,11 +209,16 @@
     const Rtimer3 = document.querySelector('.Rtimer3');
     const Rtimer4 = document.querySelector('.Rtimer4');
     const Rtimer5 = document.querySelector('.Rtimer5');
+    const Rtimerd1 = document.querySelector('.Rtimerd1');
+    const Rtimerd2 = document.querySelector('.Rtimerd2');
     //Interval timers
     const Itimer1 = document.querySelector('.Itimer1');
     const Itimer2 = document.querySelector('.Itimer2');
     const Itimer3 = document.querySelector('.Itimer3');
     const Itimer4 = document.querySelector('.Itimer4');
+    const Itimerd1 = document.querySelector('.Itimerd1');
+    const Itimerd2 = document.querySelector('.Itimerd2');
+    const Itimerd3 = document.querySelector('.Itimerd3');
     //Command timers
     const Ctimer1 = document.querySelector('.Ctimer1');
     const Ctimer2 = document.querySelector('.Ctimer2');
@@ -238,7 +250,6 @@
     let areIntervalTimersHidden = true;
     let areCommandTimersHidden = true;
     let areRestTimersHidden = true;
-    let areCommandTimerHidden = true;
 
     // Hide/Show Rest timers when "Rest" button is clicked
     button4.addEventListener('click', () => {
@@ -254,6 +265,8 @@
     Rtimer3.style.display = 'none';
     Rtimer4.style.display = 'none';
     Rtimer5.style.display = 'none';
+    Rtimerd1.style.display = 'none';
+    Rtimerd2.style.display = 'none';
     Ctimer1.style.display = 'none';
     Ctimer2.style.display = 'none';
     Ctimer3.style.display = 'none';
@@ -265,10 +278,12 @@
     Itimer2.style.display = 'none';
     Itimer3.style.display = 'none';
     Itimer4.style.display = 'none';
+    Itimerd1.style.display = 'none';
+    Itimerd2.style.display = 'none';
+    Itimerd3.style.display = 'none';
 
     areRollTimersHidden = true;
     areCommandTimersHidden = true;
-    areCommandTimerHidden = true;
     areIntervalTimersHidden = true;
 
     // Toggle Rest timers visibility
@@ -296,6 +311,8 @@
     Rtimer3.style.display = 'none';
     Rtimer4.style.display = 'none';
     Rtimer5.style.display = 'none';
+    Rtimerd1.style.display = 'none';
+    Rtimerd2.style.display = 'none';
     Ctimer1.style.display = 'none';
     Ctimer2.style.display = 'none';
     Ctimer3.style.display = 'none';
@@ -309,7 +326,6 @@
 
     areRollTimersHidden = true;
     areCommandTimersHidden = true;
-    areCommandTimerHidden = true
     areRestTimersHidden = true;
 
     // Toggle Interval timers visibility
@@ -319,6 +335,9 @@
     Itimer2.style.display = displayStyle;
     Itimer3.style.display = displayStyle;
     Itimer4.style.display = displayStyle;
+    Itimerd1.style.display = displayStyle;
+    Itimerd2.style.display = displayStyle;
+    Itimerd3.style.display = displayStyle;
     
     displayElement.textContent = areIntervalTimersHidden ? "Display Area" : "Interval Timers";
     timerElement.textContent = areRestTimersHidden ? "" : "";
@@ -337,6 +356,9 @@
     Itimer2.style.display = 'none';
     Itimer3.style.display = 'none';
     Itimer4.style.display = 'none';
+    Itimerd1.style.display = 'none';
+    Itimerd2.style.display = 'none';
+    Itimerd3.style.display = 'none';
     Ctimer1.style.display = 'none';
     Ctimer2.style.display = 'none';
     Ctimer3.style.display = 'none';
@@ -350,7 +372,6 @@
 
     areIntervalTimersHidden = true;
     areCommandTimersHidden = true;
-    areCommandTimerHidden = true
     areRestTimersHidden = true;
 
     // Toggle Roll timers visibility
@@ -361,7 +382,9 @@
     Rtimer3.style.display = displayStyle;
     Rtimer4.style.display = displayStyle;
     Rtimer5.style.display = displayStyle;
-
+    Rtimerd1.style.display = displayStyle;
+    Rtimerd2.style.display = displayStyle;
+ 
     displayElement.textContent = areRollTimersHidden ? "Display Area" : "Roll Timers";
     timerElement.textContent = areRestTimersHidden ? "" : "";
     });
@@ -380,10 +403,15 @@
     Rtimer3.style.display = 'none';
     Rtimer4.style.display = 'none';
     Rtimer5.style.display = 'none';
+    Rtimerd1.style.display = 'none';
+    Rtimerd2.style.display = 'none';
     Itimer1.style.display = 'none';
     Itimer2.style.display = 'none';
     Itimer3.style.display = 'none';
     Itimer4.style.display = 'none';
+    Itimerd1.style.display = 'none';
+    Itimerd2.style.display = 'none';
+    Itimerd3.style.display = 'none';
     Retimer1.style.display = 'none';
     Retimer2.style.display = 'none';
     Retimer3.style.display = 'none';

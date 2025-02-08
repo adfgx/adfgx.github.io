@@ -6,7 +6,7 @@ Kd 1.000000 1.000000 1.000000
 Ks 0.000000 0.000000 0.000000
 Ns 0.000000
 d 1.000000
-map_Kd Concrete.Cast-In-Place.Exposed Aggregate.Coarse.jpg
+map_Kd Concrete.Cast-In-Place.Exposed_Aggregate.Coarse.jpg
 
 newmtl 255,255,255_1
 Ka 1.000000 1.000000 1.000000

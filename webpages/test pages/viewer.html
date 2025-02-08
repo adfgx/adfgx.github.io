@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>3D Model Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+<script>
+    let scene, camera, renderer, model;
+
+    function init() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Lighting
+        const light = new THREE.AmbientLight(0xffffff, 1);
+        scene.add(light);
+
+        // Load 3D model (Replace 'model.gltf' with your converted file)
+        const loader = new THREE.GLTFLoader();
+        loader.load('documents/EEC.16_CBM_Travail de session 01v2.obj', function (gltf) {
+            model = gltf.scene;
+            scene.add(model);
+            model.position.set(0, -1, 0);
+        });
+
+        camera.position.z = 5;
+        animate();
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        if (model) {
+            model.rotation.y += 0.01; // Rotate model
+        }
+        renderer.render(scene, camera);
+    }
+
+    init();
+</script>
+
+</body>
+</html>

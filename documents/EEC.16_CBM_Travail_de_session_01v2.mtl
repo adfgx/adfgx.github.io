@@ -6,7 +6,7 @@ Kd 1.000000 1.000000 1.000000
 Ks 0.000000 0.000000 0.000000
 Ns 0.000000
 d 1.000000
-map_Kd EEC.16_CBM_Travail_de_session_01v2/Concrete.Cast-In-Place.Exposed Aggregate.Coarse.jpg
+map_Kd EEC.16_CBM_Travail_de_session_01v2/Aggregate.Coarse.jpg
 
 newmtl 255,255,255_1
 Ka 1.000000 1.000000 1.000000

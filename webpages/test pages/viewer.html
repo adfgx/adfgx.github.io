@@ -3,16 +3,17 @@
 <head>
     <title>3D Model Viewer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
     <style>
-        body { margin: 0; }
+        body { margin: 0; overflow: hidden; }
         canvas { display: block; }
     </style>
 </head>
 <body>
 
 <script>
-    let scene, camera, renderer, model;
+    let scene, camera, renderer, model, controls;
 
     function init() {
         scene = new THREE.Scene();
@@ -21,14 +22,18 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
+        // Add OrbitControls for zoom, rotate, and drag
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
         // Lighting
         const light = new THREE.AmbientLight(0xffffff, 1);
         scene.add(light);
 
-        // Load 3D model (Replace 'model.gltf' with your converted file)
-        const loader = new THREE.GLTFLoader();
-        loader.load('documents/EEC.16_CBM_Travail de session 01v2.obj', function (gltf) {
-            model = gltf.scene;
+        // Load 3D model (OBJ file)
+        const loader = new THREE.OBJLoader();
+        loader.load('documents/EEC.16_CBM_Travail de session 01v2.obj', function (object) {
+            model = object;
             scene.add(model);
             model.position.set(0, -1, 0);
         });
@@ -39,6 +44,7 @@
 
     function animate() {
         requestAnimationFrame(animate);
+        controls.update(); // Allow camera movement
         if (model) {
             model.rotation.y += 0.01; // Rotate model
         }

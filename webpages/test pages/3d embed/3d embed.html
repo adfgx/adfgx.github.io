@@ -31,19 +31,23 @@
 
     // Load the .mtl file
     const mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('webpages/test pages/3d embed/EEC.16_CBM_Travail_de_session_01v2.mtl', (materials) => {
+    mtlLoader.load('/webpages/test pages/3d embed/EEC.16_CBM_Travail_de_session_01v2.mtl', (materials) => {
       materials.preload();
 
       // Load the .obj file with the materials
       const objLoader = new THREE.OBJLoader();
       objLoader.setMaterials(materials);
-      objLoader.load('webpages/test pages/3d embed/EEC.16_CBM_Travail_de_session_01v2.obj', (object) => {
+      objLoader.load('/webpages/test pages/3d embed/EEC.16_CBM_Travail_de_session_01v2.obj', (object) => {
         scene.add(object);
+      }, undefined, (error) => {
+        console.error('Error loading .obj file:', error);
       });
+    }, undefined, (error) => {
+      console.error('Error loading .mtl file:', error);
     });
 
     // Position the camera
-    camera.position.z = 5;
+    camera.position.z = 10; // Adjust as needed
 
     // Render the scene
     function animate() {

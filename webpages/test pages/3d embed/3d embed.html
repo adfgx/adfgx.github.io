@@ -33,13 +33,13 @@
 
     // Load the .mtl file
     const mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load('/adfgx.github.io/webpages/test%20pages/3d%20embed/EEC.16_CBM_Travail_de_session_01v2.mtl', (materials) => {
+    mtlLoader.load('https://github.com/adfgx/adfgx.github.io/blob/48a8f676fba011a890c2e643ec7635829a315450/webpages/test%20pages/3d%20embed/EEC.16_CBM_Travail_de_session_01v2.mtl', (materials) => {
       materials.preload();
 
       // Load the .obj file with the materials
       const objLoader = new THREE.OBJLoader();
       objLoader.setMaterials(materials);
-      objLoader.load('/adfgx.github.io/webpages/test%20pages/3d%20embed/EEC.16_CBM_Travail_de_session_01v2.obj', (object) => {
+      objLoader.load('https://github.com/adfgx/adfgx.github.io/blob/48a8f676fba011a890c2e643ec7635829a315450/webpages/test%20pages/3d%20embed/EEC.16_CBM_Travail_de_session_01v2.obj', (object) => {
         scene.add(object);
       }, undefined, (error) => {
         console.error('Error loading .obj file:', error);

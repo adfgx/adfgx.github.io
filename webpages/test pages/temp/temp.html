@@ -37,13 +37,13 @@
 
         // Load materials (.mtl file)
         const mtlLoader = new THREE.MTLLoader();
-        mtlLoader.load('EEC.16_CBM_Travail_de_session_01v2.mtl', function (materials) {
+        mtlLoader.load('webpages/test pages/temp/EEC.16_CBM_Travail_de_session_01v2.mtl', function (materials) {
             materials.preload();
 
             // Load the .obj file and apply the materials
             const objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
-            objLoader.load('EEC.16_CBM_Travail_de_session_01v2.obj', function (object) {
+            objLoader.load('webpages/test pages/temp/EEC.16_CBM_Travail_de_session_01v2.obj', function (object) {
                 model = object;
                 scene.add(model);
 

@@ -27,9 +27,13 @@
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
 
-        // Lighting
-        const light = new THREE.AmbientLight(0xffffff, 1);
+        // Lights (Fixes black screen)
+        const light = new THREE.AmbientLight(0xffffff, 0.5); // Soft light
         scene.add(light);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Stronger light
+        directionalLight.position.set(5, 5, 5).normalize();
+        scene.add(directionalLight);
 
         // Load materials (.mtl file)
         const mtlLoader = new THREE.MTLLoader();
@@ -42,11 +46,16 @@
             objLoader.load('documents/EEC.16_CBM_Travail de session 01v2.obj', function (object) {
                 model = object;
                 scene.add(model);
-                model.position.set(0, -1, 0);
+
+                // Adjust position & scale to ensure visibility
+                model.position.set(0, 0, 0);
+                model.scale.set(0.1, 0.1, 0.1);
+
+                camera.lookAt(model.position);
             });
         });
 
-        camera.position.z = 5;
+        camera.position.set(0, 1, 5);
         animate();
     }
 

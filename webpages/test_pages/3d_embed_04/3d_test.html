@@ -24,8 +24,19 @@
             width: 90%; /* Adjust width to leave margins on the sides */
             height: 90%; /* Adjust height to leave margins at the top and bottom */
             background-color: #F0F8FF;
-            border: 1px solid #000000; /* Optional: Add a border for better visibility */
-            flex-grow: 1; /* Allow the viewer to grow and fill available space */
+            border: 5px solid #ff0000; /* Red border for visibility */
+            box-sizing: border-box; /* Ensure the border is included in the width/height */
+            position: relative; /* Required for proper positioning of the viewer canvas */
+            overflow: hidden; /* Prevent the viewer canvas from overflowing */
+        }
+
+        /* Ensure the viewer canvas respects the container's borders */
+        #forgeViewer canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
 
         #viewables_dropdown {

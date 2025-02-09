@@ -43,12 +43,6 @@
                     client_secret: CLIENT_SECRET,
                     grant_type: 'client_credentials',
                     scope: 'viewables:read',
-                    scope:'code:all',
-                    scope:'data:write',
-                    scope:'data:read',
-                    scope:'bucket:create',
-                    scope:'bucket:delete',
-                    scope:'bucket:read',
                 }),
             });
             const data = await response.json();

@@ -62,7 +62,7 @@
                     client_id: CLIENT_ID,
                     client_secret: CLIENT_SECRET,
                     grant_type: 'client_credentials',
-                    scope: 'code:all data:write data:read bucket:create bucket:delete bucket:read viewables:read',
+                    scope: 'code:all data:write data:read bucket:create bucket:delete bucket:read viewables:read'
                 }),
             });
             const data = await response.json();
@@ -116,7 +116,7 @@
 
                     // Load the default viewable (first state)
                     if (viewableNodes.length > 0) {
-                        viewer.loadDocumentNode(doc, viewableNodes[0]);
+                        loadAggregatedView(viewer, doc, viewableNodes);
                     } else {
                         console.error('No viewable nodes found.');
                     }
@@ -127,13 +127,28 @@
             );
         }
 
+        // Load the aggregated view
+        function loadAggregatedView(viewer, doc, viewables) {
+            const aggregatedView = new Autodesk.Viewing.AggregatedView();
+            viewer.impl.createOverlayScene('aggregated-view'); // Create a new overlay scene
+
+            viewables.forEach((viewable, index) => {
+                aggregatedView.addViewable(viewable, doc);
+            });
+
+            // Load the aggregated view into the viewer
+            viewer.loadAggregateView(aggregatedView);
+        }
+
         // Load the selected viewable
         function loadSelectedViewable() {
             const viewableSelect = document.getElementById('viewableSelect');
             const selectedIndex = viewableSelect.value;
 
             if (selectedIndex !== '' && viewableNodes[selectedIndex]) {
-                viewer.loadDocumentNode(currentDocument, viewableNodes[selectedIndex]);
+                const aggregatedView = new Autodesk.Viewing.AggregatedView();
+                aggregatedView.addViewable(viewableNodes[selectedIndex], currentDocument);
+                viewer.loadAggregateView(aggregatedView);
             }
         }
 

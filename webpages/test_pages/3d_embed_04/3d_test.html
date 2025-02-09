@@ -10,24 +10,26 @@
     <!--Styling to make the page look presentable-->
     <style>
         body {
-            margin: 12px;
+            margin: 0;
+            padding: 20px; /* Add padding to create margins around the viewer */
             background-color: #dbc2c2;
             height: 100vh; /* Ensure the body takes up the full viewport height */
             display: flex;
             flex-direction: column;
             align-items: center;
+            box-sizing: border-box; /* Include padding in the height calculation */
         }
 
         #forgeViewer {
-            width: 100%;
-            height: calc(100vh - 120px); /* Adjust height to fit within the viewport */
-            margin: 0;
+            width: 90%; /* Adjust width to leave margins on the sides */
+            height: 90%; /* Adjust height to leave margins at the top and bottom */
             background-color: #F0F8FF;
-            border: 5px solid #000000; /* Optional: Add a border for better visibility */
+            border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+            flex-grow: 1; /* Allow the viewer to grow and fill available space */
         }
 
         #viewables_dropdown {
-            margin-bottom: 5px; /* Add some spacing below the dropdown */
+            margin-bottom: 10px; /* Add some spacing below the dropdown */
         }
     </style>
 </head>
@@ -44,6 +46,7 @@
     </div>
     <!-- This is where the Viewer will be displayed-->
     <div id="forgeViewer"></div>
+
     <script>
         // Replace these variables with your actual values
         const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID

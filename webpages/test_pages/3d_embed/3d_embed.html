@@ -3,90 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLB Viewer</title>
+    <title>3D Model Viewer</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer"></script>
     <style>
-        body { margin: 0; overflow: hidden; }
-        canvas { display: block; }
+        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; }
+        model-viewer { width: 100%; max-width: 800px; height: 600px; }
     </style>
-    <!-- Load Three.js and necessary components -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
-    <script>
-        // Scene setup
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true; // Enable shadows
-        document.body.appendChild(renderer.domElement);
 
-        // Controls
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.screenSpacePanning = false;
-        controls.minDistance = 1;
-        controls.maxDistance = 50;
-        controls.target.set(0, 0, 0);
+    <model-viewer src="your-3d-model.glb"
+                  alt="3D Model"
+                  auto-rotate
+                  camera-controls
+                  ar
+                  interaction-prompt="auto">
+    </model-viewer>
 
-        // Lighting Setup
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft light everywhere
-        scene.add(ambientLight);
-
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(5, 10, 5); // Position above model
-        directionalLight.castShadow = true; // Enable shadows
-        scene.add(directionalLight);
-
-        const hemiLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 0.5); // Sky & ground light
-        scene.add(hemiLight);
-
-        // Load GLB Model
-        const loader = new THREE.GLTFLoader();
-        loader.load('https://adfgx.github.io/webpages/test_pages/3d_embed/untitled.glb', function (gltf) {
-            const model = gltf.scene;
-            scene.add(model);
-
-            // Auto-center model
-            const box = new THREE.Box3().setFromObject(model);
-            const center = box.getCenter(new THREE.Vector3());
-            model.position.sub(center); // Move model to (0,0,0)
-
-            // Adjust camera based on model size
-            const size = box.getSize(new THREE.Vector3()).length();
-            camera.position.set(0, size * 1.5, size * 2);
-            controls.maxDistance = size * 3;
-            controls.target.copy(center);
-
-            // Enable shadows on the model
-            model.traverse((child) => {
-                if (child.isMesh) {
-                    child.castShadow = true;
-                    child.receiveShadow = true;
-                }
-            });
-
-        }, undefined, function (error) {
-            console.error('Error loading model:', error);
-        });
-
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // Resize handling
-        window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-        });
-    </script>
 </body>
 </html>

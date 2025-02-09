@@ -1,25 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
     <meta charset="utf-8">
-
+    <!-- Autodesk Viewer files -->
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
-
+    <!--Styling to make the page look presentable-->
     <style>
         body {
             margin: 0;
+            padding: 20px; /* Add padding to create margins around the viewer */
+            background-color: #dbc2c2;
+            height: 100vh; /* Ensure the body takes up the full viewport height */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box; /* Include padding in the height calculation */
         }
+
         #forgeViewer {
-            width: 100%;
-            height: 100vh; /* Full viewport height */
-            margin: 0;
+            width: 90%; /* Adjust width to leave margins on the sides */
+            height: 75%; /* Adjust height to leave margins at the top and bottom */
             background-color: #F0F8FF;
+            border: 3px solid #000000; /* Red border for visibility */
+            box-sizing: border-box; /* Ensure the border is included in the width/height */
+            position: relative; /* Required for proper positioning of the viewer canvas */
+            overflow: hidden; /* Prevent the viewer canvas from overflowing */
+        }
+
+        /* Ensure the viewer canvas respects the container's borders */
+        #forgeViewer canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #viewables_dropdown {
+            margin-bottom: 10px; /* Add some spacing below the dropdown */
         }
     </style>
 </head>
+
 <body>
+    <div id="viewables_dropdown" style="display:none">
+        <!-- This drop-down is not visible until there is more than one viewable to display-->
+        <br>
+        <br>
+        <label for="viewables">Choose a viewable:</label>
+        <select id="viewables" onchange="selectViewable()"></select>
+        <br>
+        <br>
+    </div>
+    <!-- This is where the Viewer will be displayed-->
     <div id="forgeViewer"></div>
 
     <script>
@@ -29,6 +65,8 @@
         const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3YvMTRfRUVDLjE2'; // Replace with your model's URN (Base64 encoded)
 
         let viewer;
+        let md_ViewerDocument;
+        let md_viewables;
         let tokenRefreshInterval;
 
         // Function to fetch a new access token
@@ -53,40 +91,78 @@
         async function initializeViewer() {
             const ACCESS_TOKEN = await getAccessToken();
             const options = {
-                env: 'AutodeskProduction',
-                api: 'derivativeV2', // For SVF2 models
-                accessToken: ACCESS_TOKEN,
+                env: 'AutodeskProduction2',
+                api: 'streamingV2', // for models uploaded to EMEA, change this to 'streamingV2_EU'
+                getAccessToken: function (onTokenReady) {
+                    onTokenReady(ACCESS_TOKEN, 3600); // Token expires in 1 hour (3600 seconds)
+                }
             };
 
-            // Create the viewer instance
-            viewer = new Autodesk.Viewing.GuiViewer3D(document.getElementById('forgeViewer'), {});
+            // Initialize the viewer
+            Autodesk.Viewing.Initializer(options, function () {
+                var htmlDiv = document.getElementById('forgeViewer');
+                viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv);
+                var startedCode = viewer.start();
 
-            // Start the viewer
-            Autodesk.Viewing.Initializer(options, () => {
-                viewer.start();
-                loadModel(viewer, MODEL_URN);
+                if (startedCode > 0) {
+                    console.error('Failed to create a Viewer: WebGL not supported.');
+                    return;
+                }
+
+                console.log('Initialization complete, loading a model next...');
+
+                // Load the model automatically
+                const documentId = 'urn:' + MODEL_URN; // Add the string 'urn:' to the actual URN value
+                Autodesk.Viewing.Document.load(documentId, onDocumentLoadSuccess, onDocumentLoadFailure);
             });
 
             // Set up token refresh every 45 minutes (2700000 milliseconds)
             tokenRefreshInterval = setInterval(async () => {
                 const newToken = await getAccessToken();
-                viewer.setAccessToken(newToken);
+                viewer.setAccessToken(newToken, 3600); // Refresh the token
                 console.log('Token refreshed successfully.');
             }, 45 * 60 * 1000); // 45 minutes
         }
 
-        // Load the model into the viewer
-        function loadModel(viewer, urn) {
-            Autodesk.Viewing.Document.load(
-                `urn:${urn}`,
-                (doc) => {
-                    const viewables = doc.getRoot().getDefaultGeometry();
-                    viewer.loadDocumentNode(doc, viewables);
-                },
-                (errorCode, errorMsg) => {
-                    console.error('Error loading model:', errorMsg);
-                }
-            );
+        // This is called when an option is selected from the Choose viewables drop-down
+        function selectViewable() {
+            var indexViewable = document.getElementById("viewables").selectedIndex;
+            // Load another viewable from selectedIndex of drop-down
+            viewer.loadDocumentNode(md_ViewerDocument, md_viewables[indexViewable]);
+        }
+
+        function onDocumentLoadSuccess(viewerDocument) {
+            var viewerapp = viewerDocument.getRoot();
+
+            md_ViewerDocument = viewerDocument; // Hold the viewerDocument in a global variable
+            md_viewables = viewerapp.search({ 'type': 'geometry' });
+
+            if (md_viewables.length === 0) {
+                console.error('Document contains no viewables.');
+                return;
+            }
+
+            // Populate the Choose viewables drop-down with the viewable name
+            var sel = document.getElementById('viewables');
+            for (var i = 0; i < md_viewables.length; i++) {
+                var opt = document.createElement('option');
+                opt.innerHTML = md_viewables[i].data.name;
+                opt.value = md_viewables[i].data.name;
+                sel.appendChild(opt);
+            }
+
+            // Load the first viewable by default
+            viewer.loadDocumentNode(viewerDocument, md_viewables[0]);
+
+            // Make the Choose viewable drop-down visible if there are more than one viewables
+            if (md_viewables.length > 1) {
+                var viewablesDIV = document.getElementById("viewables_dropdown");
+                viewablesDIV.style.display = "block";
+            }
+        }
+
+        function onDocumentLoadFailure() {
+            console.error('Failed fetching manifest');
         }
 
         // Initialize the viewer when the page loads
@@ -97,5 +173,7 @@
             clearInterval(tokenRefreshInterval);
         };
     </script>
+
 </body>
-</html>
+
+</html>dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3YvMTRfRUVDLjE2

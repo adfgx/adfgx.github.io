@@ -42,7 +42,7 @@
                     client_id: CLIENT_ID,
                     client_secret: CLIENT_SECRET,
                     grant_type: 'client_credentials',
-                    scope: 'viewables:read',
+                    scope: 'code:all data:write data:read bucket:create bucket:delete bucket:read viewables:read', // Updated scopes
                 }),
             });
             const data = await response.json();

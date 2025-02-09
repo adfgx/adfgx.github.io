@@ -10,34 +10,16 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
         }
         #forgeViewer {
             width: 100%;
-            height: 90vh; /* Full viewport height */
+            height: 100vh; /* Full viewport height */
             margin: 0;
             background-color: #F0F8FF;
-        }
-        #controls {
-            padding: 10px;
-            background-color: #f8f8f8;
-            text-align: center;
-        }
-        select, button {
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 16px;
-            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div id="controls">
-        <label for="viewableSelect">Choose a Viewable:</label>
-        <select id="viewableSelect" onchange="loadSelectedViewable()">
-            <option value="">-- Select a Viewable --</option>
-        </select>
-    </div>
     <div id="forgeViewer"></div>
 
     <script>
@@ -48,8 +30,6 @@
 
         let viewer;
         let tokenRefreshInterval;
-        let viewableNodes = []; // Array to store viewable nodes (states)
-        let currentDocument; // Store the loaded document
 
         // Function to fetch a new access token
         async function getAccessToken() {
@@ -100,41 +80,13 @@
             Autodesk.Viewing.Document.load(
                 `urn:${urn}`,
                 (doc) => {
-                    currentDocument = doc; // Store the document for later use
-
-                    // Get all viewable nodes (states) from the document
-                    viewableNodes = doc.getRoot().search({ type: 'geometry', role: '3d' });
-
-                    // Populate the dropdown with viewable options
-                    const viewableSelect = document.getElementById('viewableSelect');
-                    viewableNodes.forEach((node, index) => {
-                        const option = document.createElement('option');
-                        option.value = index;
-                        option.textContent = `Viewable ${index + 1}`; // Customize this text if needed
-                        viewableSelect.appendChild(option);
-                    });
-
-                    // Load the default viewable (first state)
-                    if (viewableNodes.length > 0) {
-                        viewer.loadDocumentNode(doc, viewableNodes[0]);
-                    } else {
-                        console.error('No viewable nodes found.');
-                    }
+                    const viewables = doc.getRoot().getDefaultGeometry();
+                    viewer.loadDocumentNode(doc, viewables);
                 },
                 (errorCode, errorMsg) => {
                     console.error('Error loading model:', errorMsg);
                 }
             );
-        }
-
-        // Load the selected viewable
-        function loadSelectedViewable() {
-            const viewableSelect = document.getElementById('viewableSelect');
-            const selectedIndex = viewableSelect.value;
-
-            if (selectedIndex !== '' && viewableNodes[selectedIndex]) {
-                viewer.loadDocumentNode(currentDocument, viewableNodes[selectedIndex]);
-            }
         }
 
         // Initialize the viewer when the page loads
@@ -147,3 +99,4 @@
     </script>
 </body>
 </html>
+dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci80NDdfQmx2ZC5TYW1zb25fTGF2YWxfUUNfSDdYXzFKNS5ydnQ

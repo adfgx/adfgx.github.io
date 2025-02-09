@@ -8,8 +8,9 @@
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
     </style>
-    <!-- Use a non-module version of Three.js -->
+    <!-- Load Three.js and necessary components -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
@@ -21,6 +22,14 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
+        // Add OrbitControls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; // Smooth rotation
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = false;
+        controls.minDistance = 1; // Prevent zooming too close
+        controls.maxDistance = 20; // Prevent zooming too far
+
         // Lighting
         const light = new THREE.AmbientLight(0xffffff, 1);
         scene.add(light);
@@ -29,18 +38,19 @@
         const loader = new THREE.GLTFLoader();
         loader.load('https://adfgx.github.io/webpages/test_pages/3d_embed/untitled.glb', function (gltf) {
             scene.add(gltf.scene);
-            gltf.scene.position.set(0, 0, 0); // Adjust position if needed
-            gltf.scene.scale.set(1, 1, 1); // Adjust scale if needed
+            gltf.scene.position.set(0, 0, 0);
+            gltf.scene.scale.set(1, 1, 1);
         }, undefined, function (error) {
             console.error('Error loading model:', error);
         });
 
         // Camera position
-        camera.position.z = 5;
+        camera.position.set(0, 2, 5); // Set initial position
 
         // Animation loop
         function animate() {
             requestAnimationFrame(animate);
+            controls.update(); // Update controls
             renderer.render(scene, camera);
         }
         animate();

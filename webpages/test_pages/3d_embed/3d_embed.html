@@ -20,20 +20,29 @@
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true; // Enable shadows
         document.body.appendChild(renderer.domElement);
 
-        // Add OrbitControls
+        // Controls
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.screenSpacePanning = false;
-        controls.minDistance = 1; // Prevent zooming too close
-        controls.maxDistance = 50; // Increase max zoom-out
-        controls.target.set(0, 0, 0); // Look at model center
+        controls.minDistance = 1;
+        controls.maxDistance = 50;
+        controls.target.set(0, 0, 0);
 
-        // Lighting
-        const light = new THREE.AmbientLight(0xffffff, 1);
-        scene.add(light);
+        // Lighting Setup
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft light everywhere
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 10, 5); // Position above model
+        directionalLight.castShadow = true; // Enable shadows
+        scene.add(directionalLight);
+
+        const hemiLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 0.5); // Sky & ground light
+        scene.add(hemiLight);
 
         // Load GLB Model
         const loader = new THREE.GLTFLoader();
@@ -49,8 +58,17 @@
             // Adjust camera based on model size
             const size = box.getSize(new THREE.Vector3()).length();
             camera.position.set(0, size * 1.5, size * 2);
-            controls.maxDistance = size * 3; // Allow more zoom-out
+            controls.maxDistance = size * 3;
             controls.target.copy(center);
+
+            // Enable shadows on the model
+            model.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+
         }, undefined, function (error) {
             console.error('Error loading model:', error);
         });

@@ -10,6 +10,7 @@
     <style>
         body {
             margin: 0;
+            font-family: Arial, sans-serif;
         }
         #forgeViewer {
             width: 100%;
@@ -42,7 +43,7 @@
                     client_id: CLIENT_ID,
                     client_secret: CLIENT_SECRET,
                     grant_type: 'client_credentials',
-                    scope: 'code:all data:write data:read bucket:create bucket:delete bucket:read viewables:read',
+                    scope: 'viewables:read',
                 }),
             });
             const data = await response.json();
@@ -98,4 +99,4 @@
         };
     </script>
 </body>
-</html>dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci80NDdfQmx2ZC5TYW1zb25fTGF2YWxfUUNfSDdYXzFKNS5ydnQ
+</html>

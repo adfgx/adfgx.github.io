@@ -14,30 +14,13 @@
         }
         #forgeViewer {
             width: 100%;
-            height: 90vh; /* Full viewport height */
+            height: 100vh; /* Full viewport height */
             margin: 0;
             background-color: #F0F8FF;
-        }
-        #controls {
-            padding: 10px;
-            background-color: #f8f8f8;
-            text-align: center;
-        }
-        select, button {
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 16px;
-            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div id="controls">
-        <label for="viewableSelect">Choose a Viewable:</label>
-        <select id="viewableSelect" onchange="loadSelectedViewable()">
-            <option value="">-- Select a Viewable --</option>
-        </select>
-    </div>
     <div id="forgeViewer"></div>
 
     <script>
@@ -48,8 +31,6 @@
 
         let viewer;
         let tokenRefreshInterval;
-        let viewableNodes = []; // Array to store viewable nodes (states)
-        let currentDocument; // Store the loaded document
 
         // Function to fetch a new access token
         async function getAccessToken() {
@@ -62,7 +43,7 @@
                     client_id: CLIENT_ID,
                     client_secret: CLIENT_SECRET,
                     grant_type: 'client_credentials',
-                    scope: 'viewables:read'
+                    scope: 'viewables:read',
                 }),
             });
             const data = await response.json();
@@ -100,21 +81,10 @@
             Autodesk.Viewing.Document.load(
                 `urn:${urn}`,
                 (doc) => {
-                    currentDocument = doc; // Store the document for later use
-
                     // Get all viewable nodes (states) from the document
-                    viewableNodes = doc.getRoot().search({ type: 'geometry', role: '3d' });
+                    const viewableNodes = doc.getRoot().search({ type: 'geometry', role: '3d' });
 
-                    // Populate the dropdown with viewable options
-                    const viewableSelect = document.getElementById('viewableSelect');
-                    viewableNodes.forEach((node, index) => {
-                        const option = document.createElement('option');
-                        option.value = index;
-                        option.textContent = `Viewable ${index + 1}`; // Customize this text if needed
-                        viewableSelect.appendChild(option);
-                    });
-
-                    // Load the default viewable (first state)
+                    // Load all viewables into the aggregated view
                     if (viewableNodes.length > 0) {
                         loadAggregatedView(viewer, doc, viewableNodes);
                     } else {
@@ -132,24 +102,13 @@
             const aggregatedView = new Autodesk.Viewing.AggregatedView();
             viewer.impl.createOverlayScene('aggregated-view'); // Create a new overlay scene
 
-            viewables.forEach((viewable, index) => {
+            // Add all viewables to the aggregated view
+            viewables.forEach((viewable) => {
                 aggregatedView.addViewable(viewable, doc);
             });
 
             // Load the aggregated view into the viewer
             viewer.loadAggregateView(aggregatedView);
-        }
-
-        // Load the selected viewable
-        function loadSelectedViewable() {
-            const viewableSelect = document.getElementById('viewableSelect');
-            const selectedIndex = viewableSelect.value;
-
-            if (selectedIndex !== '' && viewableNodes[selectedIndex]) {
-                const aggregatedView = new Autodesk.Viewing.AggregatedView();
-                aggregatedView.addViewable(viewableNodes[selectedIndex], currentDocument);
-                viewer.loadAggregateView(aggregatedView);
-            }
         }
 
         // Initialize the viewer when the page loads

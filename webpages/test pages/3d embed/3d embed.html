@@ -27,7 +27,7 @@
 
         // Load GLB Model
         const loader = new THREE.GLTFLoader();
-        loader.load('model.glb', function (gltf) {
+        loader.load('https://github.com/adfgx/adfgx.github.io/blob/2ca5deb1c565acc944e95b63d445c221485a1d86/webpages/test%20pages/3d%20embed/untitled.glb', function (gltf) {
             scene.add(gltf.scene);
             gltf.scene.position.set(0, 0, 0); // Adjust position if needed
             gltf.scene.scale.set(1, 1, 1); // Adjust scale if needed

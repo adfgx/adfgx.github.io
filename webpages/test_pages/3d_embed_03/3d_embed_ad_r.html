@@ -49,6 +49,7 @@
         let viewer;
         let tokenRefreshInterval;
         let viewableNodes = []; // Array to store viewable nodes (states)
+        let currentDocument; // Store the loaded document
 
         // Function to fetch a new access token
         async function getAccessToken() {
@@ -99,6 +100,7 @@
             Autodesk.Viewing.Document.load(
                 `urn:${urn}`,
                 (doc) => {
+                    currentDocument = doc; // Store the document for later use
                     // Get all viewable nodes (states) from the document
                     viewableNodes = doc.getRoot().search({ type: 'geometry', role: '3d' });
 
@@ -130,7 +132,7 @@
             const selectedIndex = viewableSelect.value;
 
             if (selectedIndex !== '' && viewableNodes[selectedIndex]) {
-                viewer.loadDocumentNode(viewer.model.getDocument(), viewableNodes[selectedIndex]);
+                viewer.loadDocumentNode(currentDocument, viewableNodes[selectedIndex]);
             }
         }
 

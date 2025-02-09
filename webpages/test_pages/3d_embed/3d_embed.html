@@ -24,11 +24,12 @@
 
         // Add OrbitControls
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; // Smooth rotation
+        controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.screenSpacePanning = false;
         controls.minDistance = 1; // Prevent zooming too close
-        controls.maxDistance = 20; // Prevent zooming too far
+        controls.maxDistance = 50; // Increase max zoom-out
+        controls.target.set(0, 0, 0); // Look at model center
 
         // Lighting
         const light = new THREE.AmbientLight(0xffffff, 1);
@@ -37,20 +38,27 @@
         // Load GLB Model
         const loader = new THREE.GLTFLoader();
         loader.load('https://adfgx.github.io/webpages/test_pages/3d_embed/untitled.glb', function (gltf) {
-            scene.add(gltf.scene);
-            gltf.scene.position.set(0, 0, 0);
-            gltf.scene.scale.set(1, 1, 1);
+            const model = gltf.scene;
+            scene.add(model);
+
+            // Auto-center model
+            const box = new THREE.Box3().setFromObject(model);
+            const center = box.getCenter(new THREE.Vector3());
+            model.position.sub(center); // Move model to (0,0,0)
+
+            // Adjust camera based on model size
+            const size = box.getSize(new THREE.Vector3()).length();
+            camera.position.set(0, size * 1.5, size * 2);
+            controls.maxDistance = size * 3; // Allow more zoom-out
+            controls.target.copy(center);
         }, undefined, function (error) {
             console.error('Error loading model:', error);
         });
 
-        // Camera position
-        camera.position.set(0, 2, 5); // Set initial position
-
         // Animation loop
         function animate() {
             requestAnimationFrame(animate);
-            controls.update(); // Update controls
+            controls.update();
             renderer.render(scene, camera);
         }
         animate();

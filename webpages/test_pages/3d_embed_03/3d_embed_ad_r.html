@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
+    <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+        }
+        #forgeViewer {
+            width: 100%;
+            height: 100vh; /* Full viewport height */
+            margin: 0;
+            background-color: #F0F8FF;
+        }
+    </style>
+</head>
+<body>
+    <div id="forgeViewer"></div>
+
+    <script>
+        // Replace these variables with your actual values
+        const ACCESS_TOKEN = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IlhrUFpfSmhoXzlTYzNZS01oRERBZFBWeFowOF9SUzI1NiIsInBpLmF0bSI6ImFzc2MifQ.eyJzY29wZSI6WyJjb2RlOmFsbCIsImRhdGE6d3JpdGUiLCJkYXRhOnJlYWQiLCJidWNrZXQ6Y3JlYXRlIiwiYnVja2V0OmRlbGV0ZSIsImJ1Y2tldDpyZWFkIl0sImNsaWVudF9pZCI6Ilh0VkFvUzNycG10MWs4QXg3Qmo3YmNaSVlWV3RHTDE2QWl2RlhMaXB1MWJHelR5diIsImlzcyI6Imh0dHBzOi8vZGV2ZWxvcGVyLmFwaS5hdXRvZGVzay5jb20iLCJhdWQiOiJodHRwczovL2F1dG9kZXNrLmNvbSIsImp0aSI6Ik5hSzE5RXBHaVZ0SElkNVZiQUpWYk54anNkSnM4Q2FHQ0pyVVVuNFFXTVJGZWZCa29QcmhZQVpueGNCRDNzUFkiLCJleHAiOjE3MzkxMjcyNDF9.e1teQjdlFg6D01xJCTU58OFLmatZyJHWJHzCKDyZacrMebxzD6cQlAqG8Gx5OniF-Z3saDS4KSe-6sX-OkAuNSzfs8tHhX623exUxlFjfCWaa2jlCeP0yyVR2woVdcV_ckQ1eazLjs2H9FY8zSiOMeU8Czys6sPQ85Ic3EwNjJhXKZAmoMh7rSAy2cusQf7NizBg8w_aLcy6Q7czu_477AKsbAoCgnSCYVeEW0wCgGg29bdCnaDAy9FKKyr0jE5cG-PEeJW2M-3PwGVaxyorBdR4BEYM8SOxtoVOECJHPL2K6HR0YvaAGJfofX-1Jhy3qcCmF1QuoIfYV7uMvsH07Q'; // Replace with your APS access token
+        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3YvMTRfRUVDLjE2'; // Replace with your model's URN (Base64 encoded)
+
+        // Initialize the Autodesk Viewer
+        function initializeViewer() {
+            const options = {
+                env: 'AutodeskProduction',
+                api: 'derivativeV2', // For SVF2 models
+                accessToken: ACCESS_TOKEN,
+            };
+
+            // Create the viewer instance
+            const viewer = new Autodesk.Viewing.GuiViewer3D(document.getElementById('forgeViewer'), {});
+
+            // Start the viewer
+            Autodesk.Viewing.Initializer(options, () => {
+                viewer.start();
+                loadModel(viewer, MODEL_URN);
+            });
+        }
+
+        // Load the model into the viewer
+        function loadModel(viewer, urn) {
+            Autodesk.Viewing.Document.load(
+                `urn:${urn}`,
+                (doc) => {
+                    const viewables = doc.getRoot().getDefaultGeometry();
+                    viewer.loadDocumentNode(doc, viewables);
+                },
+                (errorCode, errorMsg) => {
+                    console.error('Error loading model:', errorMsg);
+                }
+            );
+        }
+
+        // Initialize the viewer when the page loads
+        window.onload = initializeViewer;
+    </script>
+</body>
+</html>

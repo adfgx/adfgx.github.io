@@ -23,7 +23,7 @@
 
         #forgeViewer {
             width: 90%; /* Adjust width to leave margins on the sides */
-            height: 85vh; /* Set height to 75% of the viewport height */
+            height: 75vh; /* Set height to 75% of the viewport height */
             background-color: #F0F8FF;
             border: 3px solid #000000; /* Red border for visibility */
             box-sizing: border-box;
@@ -51,15 +51,15 @@
             background-color: #ffffff;
             border: 3px solid #000000;
             box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow: auto; /* Allow scrolling for the PDF */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        #pdfCanvas {
+        .pdfPage {
             width: 100%; /* Scale width to fit container */
-            height: auto; /* Height will be adjusted dynamically */
+            margin-bottom: 10px; /* Add spacing between pages */
         }
     </style>
 </head>
@@ -79,7 +79,7 @@
 
     <!-- PDF Viewer -->
     <div id="pdfViewerContainer">
-        <canvas id="pdfCanvas"></canvas>
+        <!-- PDF pages will be rendered here -->
     </div>
 
     <script>
@@ -189,33 +189,39 @@
             console.error('Failed fetching manifest');
         }
 
-        // Function to render the PDF using PDF.js
+        // Function to render all pages of the PDF using PDF.js
         async function renderPDF() {
             const pdfUrl = 'https://adfgx.github.io/documents/EEC.16_CBM_Travail_de_session_01v2.pdf';
             const container = document.getElementById('pdfViewerContainer');
-            const canvas = document.getElementById('pdfCanvas');
 
             // Load the PDF
             const loadingTask = pdfjsLib.getDocument(pdfUrl);
             const pdf = await loadingTask.promise;
 
-            // Get the first page
-            const page = await pdf.getPage(1);
+            // Render each page
+            for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                const page = await pdf.getPage(pageNumber);
 
-            // Set the scale based on the container width
-            const scale = container.offsetWidth / page.getViewport({ scale: 1 }).width;
-            const viewport = page.getViewport({ scale });
+                // Create a canvas for the page
+                const canvas = document.createElement('canvas');
+                canvas.className = 'pdfPage';
+                container.appendChild(canvas);
 
-            // Set the canvas dimensions
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+                // Set the scale based on the container width
+                const scale = container.offsetWidth / page.getViewport({ scale: 1 }).width;
+                const viewport = page.getViewport({ scale });
 
-            // Render the PDF page into the canvas
-            const renderContext = {
-                canvasContext: canvas.getContext('2d'),
-                viewport: viewport,
-            };
-            await page.render(renderContext).promise;
+                // Set the canvas dimensions
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                // Render the PDF page into the canvas
+                const renderContext = {
+                    canvasContext: canvas.getContext('2d'),
+                    viewport: viewport,
+                };
+                await page.render(renderContext).promise;
+            }
         }
 
         // Initialize the viewer and render the PDF when the page loads

@@ -7,6 +7,8 @@
     <!-- Autodesk Viewer files -->
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js" integrity="sha512-..."></script>
     <!--Styling to make the page look presentable-->
     <style>
         body {
@@ -55,10 +57,9 @@
             overflow: hidden; /* Prevent overflow */
         }
 
-        #pdfViewer {
-            width: 100%;
-            height: 100%;
-            border: none; /* Remove iframe border */
+        #pdfCanvas {
+            width: 100%; /* Scale width to fit container */
+            height: auto; /* Height will be adjusted dynamically */
         }
     </style>
 </head>
@@ -78,7 +79,7 @@
 
     <!-- PDF Viewer -->
     <div id="pdfViewerContainer">
-      <iframe id="pdfViewer" src="https://adfgx.github.io/documents/EEC.16_CBM_Travail_de_session_01v2.pdf#view=fitH" frameborder="0"></iframe>
+        <canvas id="pdfCanvas"></canvas>
     </div>
 
     <script>
@@ -188,40 +189,42 @@
             console.error('Failed fetching manifest');
         }
 
-        // Function to adjust the height of the PDF viewer based on the aspect ratio of the PDF page
-        function adjustPDFViewerHeight() {
-            const pdfViewer = document.getElementById('pdfViewer');
-            const pdfViewerContainer = document.getElementById('pdfViewerContainer');
+        // Function to render the PDF using PDF.js
+        async function renderPDF() {
+            const pdfUrl = 'https://adfgx.github.io/documents/EEC.16_CBM_Travail_de_session_01v2.pdf';
+            const container = document.getElementById('pdfViewerContainer');
+            const canvas = document.getElementById('pdfCanvas');
 
-            // Listen for the PDF to load inside the iframe
-            pdfViewer.onload = function () {
-                try {
-                    // Access the inner document of the iframe
-                    const iframeDoc = pdfViewer.contentDocument || pdfViewer.contentWindow.document;
+            // Load the PDF
+            const loadingTask = pdfjsLib.getDocument(pdfUrl);
+            const pdf = await loadingTask.promise;
 
-                    // Get the width and height of the PDF content
-                    const pdfContentWidth = iframeDoc.body.scrollWidth;
-                    const pdfContentHeight = iframeDoc.body.scrollHeight;
+            // Get the first page
+            const page = await pdf.getPage(1);
 
-                    // Calculate the aspect ratio of the PDF page
-                    const aspectRatio = pdfContentHeight / pdfContentWidth;
+            // Set the scale based on the container width
+            const scale = container.offsetWidth / page.getViewport({ scale: 1 }).width;
+            const viewport = page.getViewport({ scale });
 
-                    // Set the height of the iframe and container based on the aspect ratio
-                    const containerWidth = pdfViewerContainer.offsetWidth;
-                    const calculatedHeight = containerWidth * aspectRatio;
+            // Set the canvas dimensions
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-                    pdfViewer.style.height = calculatedHeight + 'px';
-                    pdfViewerContainer.style.height = calculatedHeight + 'px';
-                } catch (error) {
-                    console.error('Error adjusting PDF viewer height:', error);
-                }
+            // Adjust the container height to match the PDF page height
+            container.style.height = `${viewport.height}px`;
+
+            // Render the PDF page into the canvas
+            const renderContext = {
+                canvasContext: canvas.getContext('2d'),
+                viewport: viewport,
             };
+            await page.render(renderContext).promise;
         }
 
-        // Initialize the viewer when the page loads
+        // Initialize the viewer and render the PDF when the page loads
         window.onload = function () {
             initializeViewer();
-            adjustPDFViewerHeight(); // Adjust PDF viewer height after initialization
+            renderPDF(); // Render the PDF using PDF.js
         };
 
         // Clear the interval when the page is unloaded
@@ -230,7 +233,7 @@
         };
 
         // Adjust the PDF viewer height when the window is resized
-        window.addEventListener('resize', adjustPDFViewerHeight);
+        window.addEventListener('resize', renderPDF);
     </script>
 
 </body>

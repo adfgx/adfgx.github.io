@@ -22,7 +22,7 @@
         }
 
         #forgeViewer {
-            width: 75%; /* Adjust width to leave margins on the sides */
+            width: 90%; /* Adjust width to leave margins on the sides */
             height: 75vh; /* Set height to 75% of the viewport height */
             background-color: #F0F8FF;
             border: 3px solid #000000; /* Red border for visibility */
@@ -46,7 +46,7 @@
         }
 
         #pdfViewerContainer {
-            width: 75%; /* Match Forge Viewer */
+            width: 90%; /* Match Forge Viewer */
             margin-top: 20px; /* Space between Forge Viewer and PDF */
             background-color: #ffffff;
             border: 3px solid #000000;
@@ -64,13 +64,8 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow to make pages distinct */
         }
 
-        .controls {
-            margin-top: 20px; /* Add spacing above the controls */
-            display: flex;
-            gap: 10px; /* Add spacing between buttons */
-        }
-
-        .controls button {
+        #downloadButton {
+            margin-top: 20px; /* Add spacing above the button */
             padding: 10px 20px;
             background-color: #007bff;
             color: white;
@@ -80,7 +75,7 @@
             font-size: 16px;
         }
 
-        .controls button:hover {
+        #downloadButton:hover {
             background-color: #0056b3; /* Darker blue on hover */
         }
     </style>
@@ -104,12 +99,8 @@
         <!-- PDF pages will be rendered here -->
     </div>
 
-    <!-- Controls for Zoom and Download -->
-    <div class="controls">
-        <button id="zoomInButton">Zoom In</button>
-        <button id="zoomOutButton">Zoom Out</button>
-        <button id="downloadButton">Download PDF</button>
-    </div>
+    <!-- Download PDF Button -->
+    <button id="downloadButton">Download PDF</button>
 
     <script>
         // Replace these variables with your actual values
@@ -121,7 +112,6 @@
         let md_ViewerDocument;
         let md_viewables;
         let tokenRefreshInterval;
-        let currentScale = 1; // Initial scale for zoom
 
         // Function to fetch a new access token
         async function getAccessToken() {
@@ -220,10 +210,9 @@
         }
 
         // Function to render all pages of the PDF using PDF.js
-        async function renderPDF(scale = 1) {
+        async function renderPDF() {
             const pdfUrl = 'https://adfgx.github.io/documents/EEC.16_CBM_Travail_de_session_01v2.pdf';
             const container = document.getElementById('pdfViewerContainer');
-            container.innerHTML = ''; // Clear previous content
 
             // Load the PDF
             const loadingTask = pdfjsLib.getDocument(pdfUrl);
@@ -238,8 +227,9 @@
                 canvas.className = 'pdfPage';
                 container.appendChild(canvas);
 
-                // Set the scale based on the container width and current zoom level
-                const viewport = page.getViewport({ scale: scale });
+                // Set the scale based on the container width
+                const scale = container.offsetWidth / page.getViewport({ scale: 1 }).width;
+                const viewport = page.getViewport({ scale });
 
                 // Set the canvas dimensions
                 canvas.height = viewport.height;
@@ -265,28 +255,12 @@
             document.body.removeChild(link);
         }
 
-        // Function to handle zoom in
-        function zoomIn() {
-            currentScale += 0.25; // Increase scale by 25%
-            renderPDF(currentScale);
-        }
-
-        // Function to handle zoom out
-        function zoomOut() {
-            if (currentScale > 0.25) { // Prevent zooming out too much
-                currentScale -= 0.25; // Decrease scale by 25%
-                renderPDF(currentScale);
-            }
-        }
-
         // Initialize the viewer and render the PDF when the page loads
         window.onload = function () {
             initializeViewer();
-            renderPDF(currentScale); // Render the PDF using PDF.js
+            renderPDF(); // Render the PDF using PDF.js
 
-            // Add event listeners for the buttons
-            document.getElementById('zoomInButton').addEventListener('click', zoomIn);
-            document.getElementById('zoomOutButton').addEventListener('click', zoomOut);
+            // Add event listener for the download button
             document.getElementById('downloadButton').addEventListener('click', downloadPDF);
         };
 

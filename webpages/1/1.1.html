@@ -188,7 +188,7 @@
             console.error('Failed fetching manifest');
         }
 
-        // Function to adjust the height of the PDF viewer based on the content
+        // Function to adjust the height of the PDF viewer based on the aspect ratio of the PDF page
         function adjustPDFViewerHeight() {
             const pdfViewer = document.getElementById('pdfViewer');
             const pdfViewerContainer = document.getElementById('pdfViewerContainer');
@@ -199,12 +199,19 @@
                     // Access the inner document of the iframe
                     const iframeDoc = pdfViewer.contentDocument || pdfViewer.contentWindow.document;
 
-                    // Get the height of the PDF content
+                    // Get the width and height of the PDF content
+                    const pdfContentWidth = iframeDoc.body.scrollWidth;
                     const pdfContentHeight = iframeDoc.body.scrollHeight;
 
-                    // Set the height of the iframe to match the PDF content height
-                    pdfViewer.style.height = pdfContentHeight + 'px';
-                    pdfViewerContainer.style.height = pdfContentHeight + 'px';
+                    // Calculate the aspect ratio of the PDF page
+                    const aspectRatio = pdfContentHeight / pdfContentWidth;
+
+                    // Set the height of the iframe and container based on the aspect ratio
+                    const containerWidth = pdfViewerContainer.offsetWidth;
+                    const calculatedHeight = containerWidth * aspectRatio;
+
+                    pdfViewer.style.height = calculatedHeight + 'px';
+                    pdfViewerContainer.style.height = calculatedHeight + 'px';
                 } catch (error) {
                     console.error('Error adjusting PDF viewer height:', error);
                 }
@@ -221,6 +228,9 @@
         window.onbeforeunload = () => {
             clearInterval(tokenRefreshInterval);
         };
+
+        // Adjust the PDF viewer height when the window is resized
+        window.addEventListener('resize', adjustPDFViewerHeight);
     </script>
 
 </body>

@@ -13,23 +13,23 @@
     <style>
         body {
             margin: 0;
-            padding: 20px; /* Add padding to create margins around the viewer */
+            padding: 0;
             background-color: #dbc2c2;
-            height: 100vh; /* Ensure the body takes up the full viewport height */
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-sizing: border-box; /* Include padding in the height calculation */
+            box-sizing: border-box;
         }
 
         #forgeViewer {
             width: 90%; /* Adjust width to leave margins on the sides */
-            height: 75%; /* Adjust height to leave margins at the top and bottom */
+            height: 75vh; /* Set height to 75% of the viewport height */
             background-color: #F0F8FF;
             border: 3px solid #000000; /* Red border for visibility */
-            box-sizing: border-box; /* Ensure the border is included in the width/height */
+            box-sizing: border-box;
             position: relative; /* Required for proper positioning of the viewer canvas */
             overflow: hidden; /* Prevent the viewer canvas from overflowing */
+            margin-top: 20px; /* Add some spacing at the top */
         }
 
         /* Ensure the viewer canvas respects the container's borders */
@@ -47,14 +47,14 @@
 
         #pdfViewerContainer {
             width: 90%; /* Match Forge Viewer */
-            margin-top: 10px; /* Space between Forge Viewer and PDF */
+            margin-top: 20px; /* Space between Forge Viewer and PDF */
             background-color: #ffffff;
             border: 3px solid #000000;
             box-sizing: border-box;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Prevent overflow */
+            overflow: auto; /* Allow scrolling for the PDF */
         }
 
         #pdfCanvas {
@@ -210,9 +210,6 @@
             canvas.height = viewport.height;
             canvas.width = viewport.width;
 
-            // Adjust the container height to match the PDF page height
-            container.style.height = `${viewport.height}px`;
-
             // Render the PDF page into the canvas
             const renderContext = {
                 canvasContext: canvas.getContext('2d'),
@@ -231,9 +228,6 @@
         window.onbeforeunload = () => {
             clearInterval(tokenRefreshInterval);
         };
-
-        // Adjust the PDF viewer height when the window is resized
-        window.addEventListener('resize', renderPDF);
     </script>
 
 </body>

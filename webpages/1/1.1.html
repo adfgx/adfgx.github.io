@@ -45,7 +45,6 @@
 
         #pdfViewerContainer {
             width: 90%; /* Match Forge Viewer */
-            height: 20%; /* Adjust height to fit below */
             margin-top: 10px; /* Space between Forge Viewer and PDF */
             background-color: #ffffff;
             border: 3px solid #000000;
@@ -189,8 +188,34 @@
             console.error('Failed fetching manifest');
         }
 
+        // Function to adjust the height of the PDF viewer based on the content
+        function adjustPDFViewerHeight() {
+            const pdfViewer = document.getElementById('pdfViewer');
+            const pdfViewerContainer = document.getElementById('pdfViewerContainer');
+
+            // Listen for the PDF to load inside the iframe
+            pdfViewer.onload = function () {
+                try {
+                    // Access the inner document of the iframe
+                    const iframeDoc = pdfViewer.contentDocument || pdfViewer.contentWindow.document;
+
+                    // Get the height of the PDF content
+                    const pdfContentHeight = iframeDoc.body.scrollHeight;
+
+                    // Set the height of the iframe to match the PDF content height
+                    pdfViewer.style.height = pdfContentHeight + 'px';
+                    pdfViewerContainer.style.height = pdfContentHeight + 'px';
+                } catch (error) {
+                    console.error('Error adjusting PDF viewer height:', error);
+                }
+            };
+        }
+
         // Initialize the viewer when the page loads
-        window.onload = initializeViewer;
+        window.onload = function () {
+            initializeViewer();
+            adjustPDFViewerHeight(); // Adjust PDF viewer height after initialization
+        };
 
         // Clear the interval when the page is unloaded
         window.onbeforeunload = () => {

@@ -42,6 +42,22 @@
         #viewables_dropdown {
             margin-bottom: 10px; /* Add some spacing below the dropdown */
         }
+        #pdfViewerContainer {
+        width: 90%; /* Match Forge Viewer */
+        height: 20%; /* Adjust height to fit below */
+        margin-top: 10px; /* Space between Forge Viewer and PDF */
+        background-color: #ffffff;
+        border: 3px solid #000000;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+
+        #pdfViewer {
+        width: 100%;
+        height: 100%;
+        }
     </style>
 </head>
 
@@ -57,6 +73,11 @@
     </div>
     <!-- This is where the Viewer will be displayed-->
     <div id="forgeViewer"></div>
+
+    <!-- PDF Viewer -->
+    <div id="pdfViewerContainer">
+      <iframe id="pdfViewer" src="documents/EEC.16_CBM_Travail de session 01v2.pdf" frameborder="0"></iframe>
+    </div>
 
     <script>
         // Replace these variables with your actual values

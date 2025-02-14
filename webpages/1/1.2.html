@@ -120,10 +120,37 @@
             }
 
             viewer.loadDocumentNode(viewerDocument, viewables[0]);
+
+            // Hide elements in the "Generic Models" category
+            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
+                hideGenericModels();
+            });
         }
 
         function onDocumentLoadFailure() {
             console.error('Failed fetching manifest');
+        }
+
+        // Function to hide elements in the "Generic Models" category
+        function hideGenericModels() {
+            viewer.model.getObjectTree(function (tree) {
+                const genericModelIds = [];
+                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
+                    viewer.model.getProperties(dbId, function (props) {
+                        if (props.category === 'Generic Models') {
+                            genericModelIds.push(dbId);
+                        }
+                    });
+                });
+
+                // Hide the elements
+                if (genericModelIds.length > 0) {
+                    viewer.hide(genericModelIds);
+                    console.log('Hidden Generic Models:', genericModelIds);
+                } else {
+                    console.log('No Generic Models found.');
+                }
+            });
         }
 
         // Initialize the viewer when the page loads

@@ -38,19 +38,10 @@
             width: 100%;
             height: 100%;
         }
-
-        #viewables_dropdown {
-            margin-bottom: 10px; /* Add some spacing below the dropdown */
-        }
     </style>
 </head>
 
 <body>
-    <div id="viewables_dropdown" style="display:none">
-        <!-- This drop-down is not visible until there is more than one viewable to display -->
-        <label for="viewables">Choose a viewable:</label>
-        <select id="viewables" onchange="selectViewable()"></select>
-    </div> 
     <!-- This is where the Viewer will be displayed-->
     <div id="forgeViewer"></div>
 
@@ -61,8 +52,6 @@
         const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci9KNzJRK01SNSwlMjBTaGF3aW5pZ2FuLCUyMFFDX0NlbnRyYWwucnZ0'; // Replace with your model's URN (Base64 encoded)
 
         let viewer;
-        let md_ViewerDocument;
-        let md_viewables;
         let tokenRefreshInterval;
 
         // Function to fetch a new access token
@@ -120,41 +109,17 @@
             }, 45 * 60 * 1000); // 45 minutes
         }
 
-        // This is called when an option is selected from the Choose viewables drop-down
-        function selectViewable() {
-            var indexViewable = document.getElementById("viewables").selectedIndex;
-            // Load another viewable from selectedIndex of drop-down
-            viewer.loadDocumentNode(md_ViewerDocument, md_viewables[indexViewable]);
-        }
-
         function onDocumentLoadSuccess(viewerDocument) {
             var viewerapp = viewerDocument.getRoot();
 
-            md_ViewerDocument = viewerDocument; // Hold the viewerDocument in a global variable
-            md_viewables = viewerapp.search({ 'type': 'geometry' });
-
-            if (md_viewables.length === 0) {
+            // Load the first viewable by default
+            const viewables = viewerapp.search({ 'type': 'geometry' });
+            if (viewables.length === 0) {
                 console.error('Document contains no viewables.');
                 return;
             }
 
-            // Populate the Choose viewables drop-down with the viewable name
-            var sel = document.getElementById('viewables');
-            for (var i = 0; i < md_viewables.length; i++) {
-                var opt = document.createElement('option');
-                opt.innerHTML = md_viewables[i].data.name;
-                opt.value = md_viewables[i].data.name;
-                sel.appendChild(opt);
-            }
-
-            // Load the first viewable by default
-            viewer.loadDocumentNode(viewerDocument, md_viewables[0]);
-
-            // Make the Choose viewable drop-down visible if there are more than one viewables
-            if (md_viewables.length > 1) {
-                var viewablesDIV = document.getElementById("viewables_dropdown");
-                viewablesDIV.style.display = "block";
-            }
+            viewer.loadDocumentNode(viewerDocument, viewables[0]);
         }
 
         function onDocumentLoadFailure() {

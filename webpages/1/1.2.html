@@ -110,46 +110,21 @@
         }
 
         function onDocumentLoadSuccess(viewerDocument) {
-    var viewerapp = viewerDocument.getRoot();
+            var viewerapp = viewerDocument.getRoot();
 
-    // Load the first viewable by default
-    const viewables = viewerapp.search({ 'type': 'geometry' });
-    if (viewables.length === 0) {
-        console.error('Document contains no viewables.');
-        return;
-    }
-
-    viewer.loadDocumentNode(viewerDocument, viewables[0]);
-
-    // Hide elements in the "Generic Models" category
-    viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
-        hideGenericModels();
-    });
-}
-
-function hideGenericModels() {
-    setTimeout(() => {
-        viewer.model.getObjectTree(function (tree) {
-            const genericModelIds = [];
-            tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-                viewer.model.getProperties(dbId, function (props) {
-                    console.log('Element ID:', dbId, 'Category:', props.category); // Debugging
-                    if (props.category === 'GenericModel') { // Update this to the correct category name
-                        genericModelIds.push(dbId);
-                    }
-                });
-            });
-
-            // Hide the elements
-            if (genericModelIds.length > 0) {
-                viewer.hide(genericModelIds);
-                console.log('Hidden Generic Models:', genericModelIds);
-            } else {
-                console.log('No Generic Models found.');
+            // Load the first viewable by default
+            const viewables = viewerapp.search({ 'type': 'geometry' });
+            if (viewables.length === 0) {
+                console.error('Document contains no viewables.');
+                return;
             }
-        });
-    }, 2000); // Delay of 2 seconds to ensure the model is fully loaded
-}
+
+            viewer.loadDocumentNode(viewerDocument, viewables[0]);
+        }
+
+        function onDocumentLoadFailure() {
+            console.error('Failed fetching manifest');
+        }
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

@@ -103,7 +103,7 @@
                 setTimeout(() => {
                     console.log("Hiding elements:", dbIdsToHide);
                     viewer.hide(dbIdsToHide);
-                }, 3000);
+                }, 10000);
             });
         }
 
@@ -119,7 +119,7 @@
             viewer.loadDocumentNode(viewerDocument, viewables[0], {
                 success: function() {
                     console.log("Model loaded successfully.");
-                    setTimeout(() => hideCategories(["Generic Models", "Entourage", "Site", "Planting"]), 5000);
+                    setTimeout(() => hideCategories(["Generic Models", "Entourage", "Site", "Planting"]), 10000);
                 }
             });
         }

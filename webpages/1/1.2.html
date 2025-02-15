@@ -1,45 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=no" />
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autodesk Forge Viewer - Selective Loading</title>
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            background-color: #ffffff00;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-sizing: border-box;
-        }
-
-        #forgeViewer {
-            width: 100%;
-            height: 100%;
-            background-color: #F0F8FF;
-            border: 3px solid #000000;
-            box-sizing: border-box;
-            position: relative;
-            overflow: hidden;
-        }
+        body, html { margin: 0; height: 100%; overflow: hidden; }
+        #forgeViewer { width: 100%; height: 100%; }
     </style>
 </head>
-
 <body>
     <div id="forgeViewer"></div>
-
     <script>
         const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID
         const CLIENT_SECRET = 'Dgi6V62fKcKg2AfHrFdEnRStdWuBlLl3f63STSZhek7ZN8ys9s2vm9iU8SS14Vbk'; // Replace with your APS client secret
         const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci9KNzJRK01SNSwlMjBTaGF3aW5pZ2FuLCUyMFFDX2FycS1hLnJ2dA'; // Replace with your model's URN (Base64 encoded)
 
         let viewer;
-        let tokenRefreshInterval;
 
         async function getAccessToken() {
             const response = await fetch('https://developer.api.autodesk.com/authentication/v2/token', {
@@ -49,87 +28,66 @@
                     client_id: CLIENT_ID,
                     client_secret: CLIENT_SECRET,
                     grant_type: 'client_credentials',
-                    scope: 'viewables:read',
-                }),
+                    scope: 'viewables:read'
+                })
             });
             const data = await response.json();
             return data.access_token;
         }
 
         async function initializeViewer() {
-            const ACCESS_TOKEN = await getAccessToken();
+            const accessToken = await getAccessToken();
             const options = {
                 env: 'AutodeskProduction2',
                 api: 'streamingV2',
-                getAccessToken: (onTokenReady) => onTokenReady(ACCESS_TOKEN, 3600)
+                getAccessToken: (onTokenReady) => onTokenReady(accessToken, 3600)
             };
 
-            Autodesk.Viewing.Initializer(options, function () {
-                var htmlDiv = document.getElementById('forgeViewer');
-                viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv);
-                var startedCode = viewer.start();
+            Autodesk.Viewing.Initializer(options, () => {
+                const viewerDiv = document.getElementById('forgeViewer');
+                viewer = new Autodesk.Viewing.GuiViewer3D(viewerDiv);
+                viewer.start();
 
-                if (startedCode > 0) {
-                    console.error('Failed to create a Viewer: WebGL not supported.');
-                    return;
-                }
-
-                console.log('Initialization complete, loading a model next...');
                 const documentId = 'urn:' + MODEL_URN;
                 Autodesk.Viewing.Document.load(documentId, onDocumentLoadSuccess, onDocumentLoadFailure);
             });
-
-            tokenRefreshInterval = setInterval(async () => {
-                const newToken = await getAccessToken();
-                viewer.setAccessToken(newToken, 3600);
-                console.log('Token refreshed successfully.');
-            }, 45 * 60 * 1000);
         }
 
-        function hideCategories(categoriesToHide) {
-            viewer.model.getPropertyDb().executeUserFunction(async (pdb) => {
-                let dbIdsToHide = [];
-                pdb.enumObjects((dbId) => {
-                    pdb.getProperties(dbId, (props) => {
-                        if (props && props.properties) {
-                            let category = props.properties.find(p => p.displayName === "Category");
-                            if (category && categoriesToHide.includes(category.displayValue)) {
-                                dbIdsToHide.push(dbId);
-                            }
-                        }
-                    });
-                });
-
-                setTimeout(() => {
-                    console.log("Hiding elements:", dbIdsToHide);
-                    viewer.hide(dbIdsToHide);
-                }, 10000);
-            });
-        }
-
-        function onDocumentLoadSuccess(viewerDocument) {
-            var viewerapp = viewerDocument.getRoot();
-            const viewables = viewerapp.search({ 'type': 'geometry' });
-
+        function onDocumentLoadSuccess(doc) {
+            const viewables = doc.getRoot().search({ type: 'geometry' });
             if (viewables.length === 0) {
-                console.error('Document contains no viewables.');
+                console.error('No viewables found.');
                 return;
             }
 
-            viewer.loadDocumentNode(viewerDocument, viewables[0], {
-                success: function() {
-                    console.log("Model loaded successfully.");
-                    setTimeout(() => hideCategories(["Generic Models", "Entourage", "Site", "Planting"]), 10000);
-                }
+            // Retrieve property hashes
+            viewer.model.getPropertyDb().executeUserFunction((pdb) => {
+                const props = pdb.getAllProperties();
+                const categoryHash = props.find(prop => prop.name === 'Category').id;
+
+                // Define metadata filters to exclude specific categories
+                const metadataFilters = {
+                    property_query: [
+                        {
+                            '$and': [
+                                { [`s.props.${categoryHash}`]: { '$ne': 'Generic Models' } },
+                                { [`s.props.${categoryHash}`]: { '$ne': 'Site' } },
+                                { [`s.props.${categoryHash}`]: { '$ne': 'Planting' } }
+                            ]
+                        }
+                    ]
+                };
+
+                // Load the model with the defined filters
+                viewer.loadDocumentNode(doc, viewables[0], { filter: metadataFilters });
             });
         }
 
-        function onDocumentLoadFailure() {
-            console.error('Failed fetching manifest');
+        function onDocumentLoadFailure(error) {
+            console.error('Failed to load document:', error);
         }
 
-        window.onload = initializeViewer;
-        window.onbeforeunload = () => clearInterval(tokenRefreshInterval);
+        document.addEventListener('DOMContentLoaded', initializeViewer);
     </script>
 </body>
 </html>

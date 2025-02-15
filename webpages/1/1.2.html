@@ -119,37 +119,36 @@
                 return;
             }
 
-            // Define the names to hide
-            const namesToHide = ['Site', 'Planting', 'Entourage', 'Lines', 'Grids', 'Generic Models', 'Walls'];
+            // Define the names to exclude
+            const namesToExclude = ['Site', 'Planting', 'Entourage', 'Generic Models'];
 
-            // Load the first viewable by default
-            viewer.loadDocumentNode(viewerDocument, viewables[0]);
+            // Filter the viewable before loading
+            const filteredViewable = filterViewable(viewerDocument, viewables[0], namesToExclude);
 
-            // Hide elements by name after the model is loaded
-            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
-                console.log('GEOMETRY_LOADED_EVENT triggered');
-                hideElementsByCategory(viewer, namesToHide);
-            });
+            // Load the filtered viewable
+            viewer.loadDocumentNode(viewerDocument, filteredViewable);
         }
 
         function onDocumentLoadFailure() {
             console.error('Failed fetching manifest');
         }
 
-        // Function to hide elements by name
-        function hideElementsByCategory(viewer, namesToHide) {
-            viewer.getObjectTree(function (tree) {
-                console.log('Traversing model hierarchy...');
-                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-                    viewer.getProperties(dbId, function (props) {
-                        console.log('Checking element:', dbId, props.name);
-                        if (props.name && namesToHide.some(name => props.name.includes(name))) {
-                            console.log('Hiding element:', dbId, props.name);
-                            viewer.hide(dbId); // Hide the element if its name matches one of the specified names
-                        }
-                    });
-                }, true); // Recursively traverse the tree
+        // Function to filter a viewable
+        function filterViewable(viewerDocument, viewable, namesToExclude) {
+            const root = viewerDocument.getRoot();
+            const dbIds = viewable.getChildDbIds();
+
+            // Filter out elements that match the criteria
+            const filteredDbIds = dbIds.filter(dbId => {
+                const props = viewerDocument.getProperties(dbId);
+                return !props.name || !namesToExclude.some(name => props.name.includes(name));
             });
+
+            // Create a new viewable with the filtered elements
+            const filteredViewable = new Autodesk.Viewing.Viewable(viewable);
+            filteredViewable.setChildDbIds(filteredDbIds);
+
+            return filteredViewable;
         }
 
         // Initialize the viewer when the page loads

@@ -128,7 +128,7 @@
             // After the geometry is loaded, we can filter and selectively load elements
             viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
                 console.log('GEOMETRY_LOADED_EVENT triggered');
-                removeUnwantedElementsUsingModelBuilder(viewer);
+                selectivelyLoadElements(viewer);
             });
         }
 
@@ -136,19 +136,18 @@
             console.error('Failed fetching manifest');
         }
 
-        // Function to remove unwanted elements using ModelBuilder
-        function removeUnwantedElementsUsingModelBuilder(viewer) {
+        // Function to selectively load elements (based on their names)
+        function selectivelyLoadElements(viewer) {
             viewer.getObjectTree(function (tree) {
                 console.log('Traversing model hierarchy...');
                 tree.enumNodeChildren(tree.getRootId(), function (dbId) {
                     viewer.getProperties(dbId, function (props) {
                         console.log('Checking element:', dbId, props.name);
 
-                        // If the name is in the exclusion list, remove the element
+                        // If the name is in the exclusion list, hide the element
                         if (props.name && excludeNames.some(name => props.name.includes(name))) {
-                            console.log('Removing element:', dbId, props.name);
-                            viewer.impl.removeModel(viewer.model);
-                            viewer.model.getData().instanceTree.removeNode(dbId);
+                            console.log('Hiding element:', dbId, props.name);
+                            viewer.hide(dbId); // Hide the element if its name matches one of the specified names
                         }
                     });
                 }, true); // Recursively traverse the tree

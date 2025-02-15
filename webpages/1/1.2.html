@@ -11,26 +11,25 @@
     <style>
         body {
             margin: 0;
-            padding: 20px; /* Add padding to create margins around the viewer */
+            padding: 20px;
             background-color: #ffffff00;
-            height: 100vh; /* Ensure the body takes up the full viewport height */
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-sizing: border-box; /* Include padding in the height calculation */
+            box-sizing: border-box;
         }
 
         #forgeViewer {
-            width: 100%; /* Adjust width to leave margins on the sides */
-            height: 100%; /* Adjust height to leave margins at the top and bottom */
+            width: 100%;
+            height: 100%;
             background-color: #F0F8FF;
-            border: 3px solid #000000; /* Red border for visibility */
-            box-sizing: border-box; /* Ensure the border is included in the width/height */
-            position: relative; /* Required for proper positioning of the viewer canvas */
-            overflow: hidden; /* Prevent the viewer canvas from overflowing */
+            border: 3px solid #000000;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Ensure the viewer canvas respects the container's borders */
         #forgeViewer canvas {
             position: absolute;
             top: 0;
@@ -70,6 +69,33 @@
             });
             const data = await response.json();
             return data.access_token;
+        }
+
+        // Function to load and apply visibility settings
+        async function applyVisibilitySettings(viewer, settingsUrl) {
+            try {
+                const response = await fetch(settingsUrl);
+                const settings = await response.json();
+
+                // Hide elements
+                if (settings.HiddenElements && settings.HiddenElements.length > 0) {
+                    viewer.hide(settings.HiddenElements);
+                }
+
+                // Apply overrides
+                if (settings.Overrides) {
+                    Object.keys(settings.Overrides).forEach(elementId => {
+                        const override = settings.Overrides[elementId];
+                        if (override.Halftone) {
+                            viewer.setThemingColor(parseInt(elementId), new THREE.Vector4(0.5, 0.5, 0.5, 0.5)); // Apply halftone effect
+                        }
+                    });
+                }
+
+                console.log('Visibility settings applied successfully.');
+            } catch (error) {
+                console.error('Failed to apply visibility settings:', error);
+            }
         }
 
         // Initialize the Autodesk Viewer
@@ -119,7 +145,11 @@
                 return;
             }
 
-            viewer.loadDocumentNode(viewerDocument, viewables[0]);
+            viewer.loadDocumentNode(viewerDocument, viewables[0]).then(() => {
+                // Apply visibility settings after the model is loaded
+                const settingsUrl = 'VisibilitySettings.json'; // Path to your JSON file
+                applyVisibilitySettings(viewer, settingsUrl);
+            });
         }
 
         function onDocumentLoadFailure() {

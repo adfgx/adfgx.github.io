@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
     <meta charset="utf-8">
@@ -128,7 +127,7 @@
             // After the geometry is loaded, we can filter and selectively load elements
             viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
                 console.log('GEOMETRY_LOADED_EVENT triggered');
-                selectivelyLoadElements(viewer);
+                selectivelyUnloadElements(viewer); // Use the new function to unload elements
             });
         }
 
@@ -136,25 +135,23 @@
             console.error('Failed fetching manifest');
         }
 
-        // Function to selectively load elements (based on their names)
+        // Function to selectively unload elements (based on their names)
         function selectivelyUnloadElements(viewer) {
-    viewer.getObjectTree(function (tree) {
-        console.log('Traversing model hierarchy...');
-        tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-            viewer.getProperties(dbId, function (props) {
-                console.log('Checking element:', dbId, props.name);
+            viewer.getObjectTree(function (tree) {
+                console.log('Traversing model hierarchy...');
+                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
+                    viewer.getProperties(dbId, function (props) {
+                        console.log('Checking element:', dbId, props.name);
 
-                // If the name is in the exclusion list, remove the element from the scene
-                if (props.name && excludeNames.some(name => props.name.includes(name))) {
-                    console.log('Removing element:', dbId, props.name);
-                    viewer.model.deleteElement(dbId);  // This completely removes the element from the scene
-                }
+                        // If the name is in the exclusion list, remove the element from the scene
+                        if (props.name && excludeNames.some(name => props.name.includes(name))) {
+                            console.log('Removing element:', dbId, props.name);
+                            viewer.model.deleteElement(dbId);  // Completely remove the element from the scene
+                        }
+                    });
+                }, true); // Recursively traverse the tree
             });
-        }, true); // Recursively traverse the tree
-    });
-}
-
-
+        }
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;
@@ -166,5 +163,4 @@
     </script>
 
 </body>
-
 </html>

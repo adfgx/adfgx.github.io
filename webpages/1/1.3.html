@@ -90,11 +90,11 @@
                 var startedCode = viewer.start();
 
                 if (startedCode > 0) {
-                    console.error('Failed to create a Viewer: WebGL not supported.');
+                    //console.error('Failed to create a Viewer: WebGL not supported.');
                     return;
                 }
 
-                console.log('Initialization complete, loading a model next...');
+                //console.log('Initialization complete, loading a model next...');
 
                 // Load the model automatically
                 const documentId = 'urn:' + MODEL_URN; // Add the string 'urn:' to the actual URN value
@@ -105,53 +105,26 @@
             tokenRefreshInterval = setInterval(async () => {
                 const newToken = await getAccessToken();
                 viewer.setAccessToken(newToken, 3600); // Refresh the token
-                console.log('Token refreshed successfully.');
+                //console.log('Token refreshed successfully.');
             }, 45 * 60 * 1000); // 45 minutes
         }
 
         function onDocumentLoadSuccess(viewerDocument) {
             var viewerapp = viewerDocument.getRoot();
 
-            // Get all viewables (geometry) in the document
+            // Load the first viewable by default
             const viewables = viewerapp.search({ 'type': 'geometry' });
             if (viewables.length === 0) {
-                console.error('Document contains no viewables.');
+                //console.error('Document contains no viewables.');
                 return;
             }
 
-            // Define the names to hide
-            const namesToHide = ['Site', 'Planting', 'Entourage', 'Lines', 'Grids', 'Generic Models', 'Walls'];
-
-            // Load the first viewable by default
             viewer.loadDocumentNode(viewerDocument, viewables[0]);
-
-            // Hide elements by name after the model is loaded
-            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
-                console.log('GEOMETRY_LOADED_EVENT triggered');
-                hideElementsByCategory(viewer, namesToHide);
-            });
         }
 
         function onDocumentLoadFailure() {
-            console.error('Failed fetching manifest');
+            //console.error('Failed fetching manifest');
         }
-
-        // Function to hide elements by name
-function hideElementsByCategory(viewer, namesToHide) {
-    viewer.getObjectTree(function (tree) {
-        console.log('Traversing model hierarchy...');
-        tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-            viewer.getProperties(dbId, function (props) {
-                console.log('Checking element:', dbId, props.name);
-                if (props.name && namesToHide.some(name => props.name.includes(name))) {
-                    console.log('Hiding element:', dbId, props.name);
-                    viewer.impl.visibilityManager.setNodeOff(dbId, true); // Hide the element completely
-                }
-            });
-        }, true); // Recursively traverse the tree
-    });
-}
-
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

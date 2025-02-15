@@ -137,22 +137,23 @@
         }
 
         // Function to selectively load elements (based on their names)
-        function selectivelyLoadElements(viewer) {
+        function selectivelyUnloadElements(viewer) {
     viewer.getObjectTree(function (tree) {
         console.log('Traversing model hierarchy...');
         tree.enumNodeChildren(tree.getRootId(), function (dbId) {
             viewer.getProperties(dbId, function (props) {
                 console.log('Checking element:', dbId, props.name);
 
-                // If the name is in the exclusion list, remove the element
+                // If the name is in the exclusion list, remove the element from the scene
                 if (props.name && excludeNames.some(name => props.name.includes(name))) {
                     console.log('Removing element:', dbId, props.name);
-                    viewer.impl.removeNode(dbId); // Completely remove the element from the scene
+                    viewer.model.deleteElement(dbId);  // This completely removes the element from the scene
                 }
             });
         }, true); // Recursively traverse the tree
     });
 }
+
 
 
         // Initialize the viewer when the page loads

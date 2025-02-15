@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=no" />
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
@@ -27,14 +27,6 @@
             position: relative;
             overflow: hidden;
         }
-
-        #forgeViewer canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
     </style>
 </head>
 
@@ -42,9 +34,9 @@
     <div id="forgeViewer"></div>
 
     <script>
-        const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv';
-        const CLIENT_SECRET = 'Dgi6V62fKcKg2AfHrFdEnRStdWuBlLl3f63STSZhek7ZN8ys9s2vm9iU8SS14Vbk';
-        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci9KNzJRK01SNSwlMjBTaGF3aW5pZ2FuLCUyMFFDX2FycS1hLnJ2dA';
+        const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID
+        const CLIENT_SECRET = 'Dgi6V62fKcKg2AfHrFdEnRStdWuBlLl3f63STSZhek7ZN8ys9s2vm9iU8SS14Vbk'; // Replace with your APS client secret
+        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci9KNzJRK01SNSwlMjBTaGF3aW5pZ2FuLCUyMFFDX2FycS1hLnJ2dA'; // Replace with your model's URN (Base64 encoded)
 
         let viewer;
         let tokenRefreshInterval;
@@ -95,7 +87,7 @@
         }
 
         function hideCategories(categoriesToHide) {
-            viewer.model.getPropertyDb().executeUserFunction((pdb) => {
+            viewer.model.getPropertyDb().executeUserFunction(async (pdb) => {
                 let dbIdsToHide = [];
                 pdb.enumObjects((dbId) => {
                     pdb.getProperties(dbId, (props) => {
@@ -107,7 +99,11 @@
                         }
                     });
                 });
-                viewer.hide(dbIdsToHide);
+
+                setTimeout(() => {
+                    console.log("Hiding elements:", dbIdsToHide);
+                    viewer.hide(dbIdsToHide);
+                }, 3000);
             });
         }
 
@@ -122,7 +118,8 @@
 
             viewer.loadDocumentNode(viewerDocument, viewables[0], {
                 success: function() {
-                    hideCategories(["Generic Models", "Entourage", "Site", "Planting"]);
+                    console.log("Model loaded successfully.");
+                    setTimeout(() => hideCategories(["Generic Models", "Entourage", "Site", "Planting"]), 5000);
                 }
             });
         }

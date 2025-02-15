@@ -72,6 +72,19 @@
             return data.access_token;
         }
 
+        // Function to hide elements by category
+        function hideElementsByCategory(viewer, categoriesToHide) {
+            viewer.getObjectTree(function(tree) {
+                tree.enumNodeChildren(tree.getRootId(), function(dbId) {
+                    viewer.getProperties(dbId, function(props) {
+                        if (props.categories && props.categories.some(category => categoriesToHide.includes(category))) {
+                            viewer.hide(dbId); // Hide the element if it belongs to one of the specified categories
+                        }
+                    });
+                }, true); // Recursively traverse the tree
+            });
+        }
+
         // Initialize the Autodesk Viewer
         async function initializeViewer() {
             const ACCESS_TOKEN = await getAccessToken();
@@ -120,6 +133,12 @@
             }
 
             viewer.loadDocumentNode(viewerDocument, viewables[0]);
+
+            // Hide elements by category after the model is loaded
+            const categoriesToHide = ['Site', 'Planting', 'Entourage', 'Generic Models'];
+            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function() {
+                hideElementsByCategory(viewer, categoriesToHide);
+            });
         }
 
         function onDocumentLoadFailure() {

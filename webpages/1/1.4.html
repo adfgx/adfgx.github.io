@@ -7,7 +7,7 @@
     <!-- Autodesk Viewer files -->
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
-    <!--Styling to make the page look presentable-->
+    <!-- Styling to make the page look presentable -->
     <style>
         body {
             margin: 0;
@@ -42,7 +42,7 @@
 </head>
 
 <body>
-    <!-- This is where the Viewer will be displayed-->
+    <!-- This is where the Viewer will be displayed -->
     <div id="forgeViewer"></div>
 
     <script>
@@ -59,7 +59,7 @@
 
         // Function to fetch the metadata
         async function fetchMetadata() {
-            const response = await fetch('https://adfgx.github.io/json/response.json');
+            const response = await fetch('https://raw.githubusercontent.com/adfgx/adfgx.github.io/main/json/response.json');
             const data = await response.json();
             return data;
         }
@@ -67,16 +67,16 @@
         // Function to filter out unwanted elements based on names
         async function getFilteredElements() {
             const metadata = await fetchMetadata();
-            const dbIdsToExclude = [];
+            const dbIdsToInclude = [];
 
-            // Iterate over metadata and add the dbIds of the elements to exclude
+            // Iterate over metadata and add the dbIds of elements to include
             metadata.objects.forEach(item => {
-                if (excludeNames.includes(item.name)) {
-                    dbIdsToExclude.push(item.dbId); // Assume 'dbId' is present in your metadata
+                if (!excludeNames.includes(item.name)) {
+                    dbIdsToInclude.push(item.dbId); // Include only dbIds not in the exclude list
                 }
             });
 
-            return dbIdsToExclude;
+            return dbIdsToInclude;
         }
 
         // Function to fetch a new access token
@@ -134,9 +134,9 @@
             }, 45 * 60 * 1000); // 45 minutes
         }
 
-        // Function to load the model and exclude certain elements
-        async function loadModelWithFilter() {
-            const dbIdsToExclude = await getFilteredElements();
+        // Function to load the model and selectively load elements
+        async function loadModelWithSelectiveLoad() {
+            const dbIdsToInclude = await getFilteredElements();
 
             // Initialize the viewer with options
             Autodesk.Viewing.Initializer(options, function () {
@@ -152,20 +152,20 @@
                 console.log('Initialization complete, loading a model next...');
 
                 const documentId = 'urn:' + MODEL_URN; // Your model URN
-                Autodesk.Viewing.Document.load(documentId, function(viewerDocument) {
+                Autodesk.Viewing.Document.load(documentId, function (viewerDocument) {
                     const viewables = viewerDocument.getRoot().search({ 'type': 'geometry' });
                     if (viewables.length === 0) {
                         console.error('Document contains no viewables.');
                         return;
                     }
 
-                    // Load the first viewable by default
+                    // Load only the filtered dbIds
                     viewer.loadDocumentNode(viewerDocument, viewables[0]);
 
-                    // After loading the model, hide unwanted elements
+                    // Hide elements that are not to be loaded based on their dbIds
                     viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
                         console.log('GEOMETRY_LOADED_EVENT triggered');
-                        hideElementsByCategory(viewer, excludeNames); // Use the hiding logic
+                        selectivelyLoadElements(viewer, dbIdsToInclude); // Selectively load elements
                     });
                 }, onDocumentLoadFailure);
             });
@@ -175,24 +175,20 @@
             console.error('Failed fetching manifest');
         }
 
-        // Function to hide elements by name
-        function hideElementsByCategory(viewer, namesToHide) {
+        // Function to selectively load elements (based on dbIds)
+        function selectivelyLoadElements(viewer, dbIdsToInclude) {
             viewer.getObjectTree(function (tree) {
                 console.log('Traversing model hierarchy...');
                 tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-                    viewer.getProperties(dbId, function (props) {
-                        console.log('Checking element:', dbId, props.name);
-                        if (props.name && namesToHide.some(name => props.name.includes(name))) {
-                            console.log('Hiding element:', dbId, props.name);
-                            viewer.impl.visibilityManager.setNodeOff(dbId, true); // Hide the element completely
-                        }
-                    });
+                    if (!dbIdsToInclude.includes(dbId)) {
+                        viewer.hide(dbId); // Hide elements that are not in the include list
+                    }
                 }, true); // Recursively traverse the tree
             });
         }
 
         // Initialize the viewer when the page loads
-        window.onload = initializeViewer;
+        window.onload = loadModelWithSelectiveLoad;
 
         // Clear the interval when the page is unloaded
         window.onbeforeunload = () => {

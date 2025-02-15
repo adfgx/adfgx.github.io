@@ -49,7 +49,7 @@
         // Replace these variables with your actual values
         const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID
         const CLIENT_SECRET = 'Dgi6V62fKcKg2AfHrFdEnRStdWuBlLl3f63STSZhek7ZN8ys9s2vm9iU8SS14Vbk'; // Replace with your APS client secret
-        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci8zMy4wMS5ydnQ'; // Replace with your model's URN (Base64 encoded)
+        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci8zMy4wMC5ydnQ'; // Replace with your model's URN (Base64 encoded)
 
         let viewer;
         let tokenRefreshInterval;
@@ -112,19 +112,46 @@
         function onDocumentLoadSuccess(viewerDocument) {
             var viewerapp = viewerDocument.getRoot();
 
-            // Load the first viewable by default
+            // Get all viewables (geometry) in the document
             const viewables = viewerapp.search({ 'type': 'geometry' });
             if (viewables.length === 0) {
                 console.error('Document contains no viewables.');
                 return;
             }
 
+            // Define the names to hide
+            const namesToHide = ['Site', 'Planting', 'Entourage', 'Lines', 'Grids', 'Generic Models', 'Walls'];
+
+            // Load the first viewable by default
             viewer.loadDocumentNode(viewerDocument, viewables[0]);
+
+            // Hide elements by name after the model is loaded
+            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
+                //console.log('GEOMETRY_LOADED_EVENT triggered');
+                hideElementsByCategory(viewer, namesToHide);
+            });
         }
 
         function onDocumentLoadFailure() {
             console.error('Failed fetching manifest');
         }
+
+        // Function to hide elements by name
+function hideElementsByCategory(viewer, namesToHide) {
+    viewer.getObjectTree(function (tree) {
+        console.log('Traversing model hierarchy...');
+        tree.enumNodeChildren(tree.getRootId(), function (dbId) {
+            viewer.getProperties(dbId, function (props) {
+                console.log('Checking element:', dbId, props.name);
+                if (props.name && namesToHide.some(name => props.name.includes(name))) {
+                    console.log('Hiding element:', dbId, props.name);
+                    viewer.impl.visibilityManager.setNodeOff(dbId, true); // Hide the element completely
+                }
+            });
+        }, true); // Recursively traverse the tree
+    });
+}
+
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

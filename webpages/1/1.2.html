@@ -137,7 +137,7 @@
         }
 
         // Custom SelectiveLoader class
-        class SelectiveLoader extends Autodesk.Viewing.Private.Viewer3DLoader {
+        class SelectiveLoader extends Autodesk.Viewing.Private.GuiViewer3DLoader {
             constructor(viewerDocument, categoriesToExclude) {
                 super(viewerDocument);
                 this.categoriesToExclude = categoriesToExclude;

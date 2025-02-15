@@ -54,6 +54,31 @@
         let viewer;
         let tokenRefreshInterval;
 
+        // List of elements to exclude
+        const excludeNames = ['Site', 'Planting', 'Entourage', 'Lines', 'Grids', 'Generic Models', 'Walls'];
+
+        // Function to fetch the metadata
+        async function fetchMetadata() {
+            const response = await fetch('https://raw.githubusercontent.com/adfgx/adfgx.github.io/main/json/response.json');
+            const data = await response.json();
+            return data;
+        }
+
+        // Function to filter out unwanted elements based on names
+        async function getFilteredElements() {
+            const metadata = await fetchMetadata();
+            const dbIdsToExclude = [];
+
+            // Iterate over metadata and add the dbIds of the elements to exclude
+            metadata.objects.forEach(item => {
+                if (excludeNames.includes(item.name)) {
+                    dbIdsToExclude.push(item.dbId); // Assume 'dbId' is present in your metadata
+                }
+            });
+
+            return dbIdsToExclude;
+        }
+
         // Function to fetch a new access token
         async function getAccessToken() {
             const response = await fetch('https://developer.api.autodesk.com/authentication/v2/token', {
@@ -109,26 +134,40 @@
             }, 45 * 60 * 1000); // 45 minutes
         }
 
-        function onDocumentLoadSuccess(viewerDocument) {
-            var viewerapp = viewerDocument.getRoot();
+        // Function to load the model and exclude certain elements
+        async function loadModelWithFilter() {
+            const dbIdsToExclude = await getFilteredElements();
 
-            // Get all viewables (geometry) in the document
-            const viewables = viewerapp.search({ 'type': 'geometry' });
-            if (viewables.length === 0) {
-                console.error('Document contains no viewables.');
-                return;
-            }
+            // Initialize the viewer with options
+            Autodesk.Viewing.Initializer(options, function () {
+                var htmlDiv = document.getElementById('forgeViewer');
+                viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv);
+                var startedCode = viewer.start();
 
-            // Define the names to hide
-            const namesToHide = ['Site', 'Planting', 'Entourage', 'Lines', 'Grids', 'Generic Models', 'Walls'];
+                if (startedCode > 0) {
+                    console.error('Failed to create a Viewer: WebGL not supported.');
+                    return;
+                }
 
-            // Load the first viewable by default
-            viewer.loadDocumentNode(viewerDocument, viewables[0]);
+                console.log('Initialization complete, loading a model next...');
 
-            // Hide elements by name after the model is loaded
-            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
-                console.log('GEOMETRY_LOADED_EVENT triggered');
-                hideElementsByCategory(viewer, namesToHide);
+                const documentId = 'urn:' + MODEL_URN; // Your model URN
+                Autodesk.Viewing.Document.load(documentId, function(viewerDocument) {
+                    const viewables = viewerDocument.getRoot().search({ 'type': 'geometry' });
+                    if (viewables.length === 0) {
+                        console.error('Document contains no viewables.');
+                        return;
+                    }
+
+                    // Load the first viewable by default
+                    viewer.loadDocumentNode(viewerDocument, viewables[0]);
+
+                    // After loading the model, hide unwanted elements
+                    viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
+                        console.log('GEOMETRY_LOADED_EVENT triggered');
+                        hideElementsByCategory(viewer, excludeNames); // Use the hiding logic
+                    });
+                }, onDocumentLoadFailure);
             });
         }
 
@@ -137,21 +176,20 @@
         }
 
         // Function to hide elements by name
-function hideElementsByCategory(viewer, namesToHide) {
-    viewer.getObjectTree(function (tree) {
-        console.log('Traversing model hierarchy...');
-        tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-            viewer.getProperties(dbId, function (props) {
-                console.log('Checking element:', dbId, props.name);
-                if (props.name && namesToHide.some(name => props.name.includes(name))) {
-                    console.log('Hiding element:', dbId, props.name);
-                    viewer.impl.visibilityManager.setNodeOff(dbId, true); // Hide the element completely
-                }
+        function hideElementsByCategory(viewer, namesToHide) {
+            viewer.getObjectTree(function (tree) {
+                console.log('Traversing model hierarchy...');
+                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
+                    viewer.getProperties(dbId, function (props) {
+                        console.log('Checking element:', dbId, props.name);
+                        if (props.name && namesToHide.some(name => props.name.includes(name))) {
+                            console.log('Hiding element:', dbId, props.name);
+                            viewer.impl.visibilityManager.setNodeOff(dbId, true); // Hide the element completely
+                        }
+                    });
+                }, true); // Recursively traverse the tree
             });
-        }, true); // Recursively traverse the tree
-    });
-}
-
+        }
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

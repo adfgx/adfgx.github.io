@@ -109,28 +109,29 @@
             }, 45 * 60 * 1000); // 45 minutes
         }
 
-        function onDocumentLoadSuccess(viewerDocument) {
-            var viewerapp = viewerDocument.getRoot();
+        async function onDocumentLoadSuccess(viewerDocument) {
+    var viewerapp = viewerDocument.getRoot();
+    const viewables = viewerapp.search({ 'type': 'geometry' });
 
-            // Get all viewables (geometry) in the document
-            const viewables = viewerapp.search({ 'type': 'geometry' });
-            if (viewables.length === 0) {
-                console.error('Document contains no viewables.');
-                return;
-            }
+    if (viewables.length === 0) {
+        console.error('Document contains no viewables.');
+        return;
+    }
 
-            // Define the names to exclude
-            const namesToExclude = ['Site', 'Planting', 'Entourage', 'Generic Models'];
+    const namesToExclude = ['Site', 'Planting', 'Entourage', 'Generic Models'];
+    const viewable = viewables[0];
 
-            // Get the first viewable
-            const viewable = viewables[0];
+    // Wait for the filtering to complete before loading
+    const filteredDbIds = await filterViewable(viewer, namesToExclude);
 
-            // Filter the viewable before loading
-            const filteredDbIds = filterViewable(viewer, namesToExclude);
+    if (filteredDbIds.length === 0) {
+        console.warn('No objects left to display after filtering.');
+        return;
+    }
 
-            // Load the filtered viewable
-            viewer.loadDocumentNode(viewerDocument, viewable, { ids: filteredDbIds });
-        }
+    viewer.loadDocumentNode(viewerDocument, viewable, { ids: filteredDbIds });
+}
+
 
         function onDocumentLoadFailure() {
             console.error('Failed fetching manifest');
@@ -138,21 +139,31 @@
 
         // Function to filter a viewable
         function filterViewable(viewer, namesToExclude) {
-    const filteredDbIds = [];
+    return new Promise((resolve) => {
+        const filteredDbIds = [];
+        
+        viewer.getObjectTree(function (tree) {
+            const rootId = tree.getRootId();
+            const pending = [];
 
-    viewer.getObjectTree(function (tree) {
-        tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-            viewer.getProperties(dbId, function (props) {
-                if (!props.name || !namesToExclude.some(name => props.name.includes(name))) {
-                    filteredDbIds.push(dbId);
-                }
+            tree.enumNodeChildren(rootId, function (dbId) {
+                pending.push(new Promise((resolveDbId) => {
+                    viewer.getProperties(dbId, function (props) {
+                        if (!props.name || !namesToExclude.some(name => props.name.includes(name))) {
+                            filteredDbIds.push(dbId);
+                        }
+                        resolveDbId();
+                    });
+                }));
+            }, true);
+
+            // Wait for all properties to be checked
+            Promise.all(pending).then(() => {
+                resolve(filteredDbIds);
             });
-        }, true); // Recursively traverse the tree
+        });
     });
-
-    return filteredDbIds;
 }
-
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

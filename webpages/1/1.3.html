@@ -137,20 +137,21 @@
         }
 
         // Function to hide elements by name
-        function hideElementsByCategory(viewer, namesToHide) {
-            viewer.getObjectTree(function (tree) {
-                console.log('Traversing model hierarchy...');
-                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-                    viewer.getProperties(dbId, function (props) {
-                        console.log('Checking element:', dbId, props.name);
-                        if (props.name && namesToHide.some(name => props.name.includes(name))) {
-                            console.log('Hiding element:', dbId, props.name);
-                            viewer.hide(dbId); // Hide the element if its name matches one of the specified names
-                        }
-                    });
-                }, true); // Recursively traverse the tree
+function hideElementsByCategory(viewer, namesToHide) {
+    viewer.getObjectTree(function (tree) {
+        console.log('Traversing model hierarchy...');
+        tree.enumNodeChildren(tree.getRootId(), function (dbId) {
+            viewer.getProperties(dbId, function (props) {
+                console.log('Checking element:', dbId, props.name);
+                if (props.name && namesToHide.some(name => props.name.includes(name))) {
+                    console.log('Hiding element:', dbId, props.name);
+                    viewer.impl.visibilityManager.setNodeOff(dbId, true); // Hide the element completely
+                }
             });
-        }
+        }, true); // Recursively traverse the tree
+    });
+}
+
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

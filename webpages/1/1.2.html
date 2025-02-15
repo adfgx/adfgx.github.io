@@ -87,78 +87,71 @@
 
         // Initialize the Autodesk Viewer
         async function initializeViewer() {
-    const ACCESS_TOKEN = await getAccessToken();
-    const options = {
-        env: 'AutodeskProduction2',
-        api: 'streamingV2', // for models uploaded to EMEA, change this to 'streamingV2_EU'
-        getAccessToken: function (onTokenReady) {
-            onTokenReady(ACCESS_TOKEN, 3600); // Token expires in 1 hour (3600 seconds)
+            const ACCESS_TOKEN = await getAccessToken();
+            const options = {
+                env: 'AutodeskProduction2',
+                api: 'streamingV2', // for models uploaded to EMEA, change this to 'streamingV2_EU'
+                getAccessToken: function (onTokenReady) {
+                    onTokenReady(ACCESS_TOKEN, 3600); // Token expires in 1 hour (3600 seconds)
+                }
+            };
+
+            // Initialize the viewer
+            Autodesk.Viewing.Initializer(options, function () {
+                var htmlDiv = document.getElementById('forgeViewer');
+                viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv);
+                var startedCode = viewer.start();
+
+                if (startedCode > 0) {
+                    console.error('Failed to create a Viewer: WebGL not supported.');
+                    return;
+                }
+
+                console.log('Initialization complete, loading a model next...');
+
+                // Load the model automatically
+                const documentId = 'urn:' + MODEL_URN; // Add the string 'urn:' to the actual URN value
+                Autodesk.Viewing.Document.load(documentId, onDocumentLoadSuccess, onDocumentLoadFailure);
+            });
+
+            // Set up token refresh every 45 minutes (2700000 milliseconds)
+            tokenRefreshInterval = setInterval(async () => {
+                const newToken = await getAccessToken();
+                viewer.setAccessToken(newToken, 3600); // Refresh the token
+                console.log('Token refreshed successfully.');
+            }, 45 * 60 * 1000); // 45 minutes
         }
-    };
 
-    // Initialize the viewer
-    Autodesk.Viewing.Initializer(options, function () {
-        var htmlDiv = document.getElementById('forgeViewer');
-        viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv);
-        var startedCode = viewer.start();
+        function onDocumentLoadSuccess(viewerDocument) {
+            var viewerapp = viewerDocument.getRoot();
 
-        if (startedCode > 0) {
-            console.error('Failed to create a Viewer: WebGL not supported.');
-            return;
+            // Load the first viewable by default
+            const viewables = viewerapp.search({ 'type': 'geometry' });
+            if (viewables.length === 0) {
+                console.error('Document contains no viewables.');
+                return;
+            }
+
+            viewer.loadDocumentNode(viewerDocument, viewables[0]);
+
+            // Hide elements by category after the model is loaded
+            const categoriesToHide = ['Site', 'Planting', 'Entourage', 'Generic Models'];
+            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function() {
+                hideElementsByCategory(viewer, categoriesToHide);
+            });
         }
 
-        console.log('Initialization complete, loading a model next...');
+        function onDocumentLoadFailure() {
+            console.error('Failed fetching manifest');
+        }
 
-        // Load the model automatically
-        const documentId = 'urn:' + MODEL_URN; // Add the string 'urn:' to the actual URN value
-        Autodesk.Viewing.Document.load(documentId, onDocumentLoadSuccess, onDocumentLoadFailure);
-    });
+        // Initialize the viewer when the page loads
+        window.onload = initializeViewer;
 
-    // Set up token refresh every 45 minutes (2700000 milliseconds)
-    tokenRefreshInterval = setInterval(async () => {
-        const newToken = await getAccessToken();
-        viewer.setAccessToken(newToken, 3600); // Refresh the token
-        console.log('Token refreshed successfully.');
-    }, 45 * 60 * 1000); // 45 minutes
-}
-
-function onDocumentLoadSuccess(viewerDocument) {
-    var viewerapp = viewerDocument.getRoot();
-
-    // Get all viewables (geometry) in the document
-    const viewables = viewerapp.search({ 'type': 'geometry' });
-    if (viewables.length === 0) {
-        console.error('Document contains no viewables.');
-        return;
-    }
-
-    // Filter out unwanted categories
-    const categoriesToExclude = ['Site', 'Planting', 'Entourage', 'Generic Models'];
-    const filteredViewables = viewables.filter(viewable => {
-        const properties = viewerDocument.getProperties(viewable);
-        return !properties.categories || !properties.categories.some(category => categoriesToExclude.includes(category));
-    });
-
-    if (filteredViewables.length === 0) {
-        console.error('No viewables remain after filtering.');
-        return;
-    }
-
-    // Load the filtered viewables
-    viewer.loadDocumentNode(viewerDocument, filteredViewables[0]);
-}
-
-function onDocumentLoadFailure() {
-    console.error('Failed fetching manifest');
-}
-
-// Initialize the viewer when the page loads
-window.onload = initializeViewer;
-
-// Clear the interval when the page is unloaded
-window.onbeforeunload = () => {
-    clearInterval(tokenRefreshInterval);
-};
+        // Clear the interval when the page is unloaded
+        window.onbeforeunload = () => {
+            clearInterval(tokenRefreshInterval);
+        };
     </script>
 
 </body>

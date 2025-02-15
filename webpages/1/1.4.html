@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
     <meta charset="utf-8">
+    <!-- Autodesk Viewer files -->
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
+    <!--Styling to make the page look presentable-->
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 20px; /* Add padding to create margins around the viewer */
             background-color: #ffffff00;
-            height: 100vh;
+            height: 100vh; /* Ensure the body takes up the full viewport height */
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-sizing: border-box;
+            box-sizing: border-box; /* Include padding in the height calculation */
         }
 
         #forgeViewer {
-            width: 100%;
-            height: 100%;
+            width: 100%; /* Adjust width to leave margins on the sides */
+            height: 100%; /* Adjust height to leave margins at the top and bottom */
             background-color: #F0F8FF;
-            border: 3px solid #000000;
-            box-sizing: border-box;
-            position: relative;
-            overflow: hidden;
+            border: 3px solid #000000; /* Red border for visibility */
+            box-sizing: border-box; /* Ensure the border is included in the width/height */
+            position: relative; /* Required for proper positioning of the viewer canvas */
+            overflow: hidden; /* Prevent the viewer canvas from overflowing */
         }
 
+        /* Ensure the viewer canvas respects the container's borders */
         #forgeViewer canvas {
             position: absolute;
             top: 0;
@@ -38,17 +42,19 @@
 </head>
 
 <body>
+    <!-- This is where the Viewer will be displayed-->
     <div id="forgeViewer"></div>
 
     <script>
+        // Replace these variables with your actual values
         const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID
         const CLIENT_SECRET = 'Dgi6V62fKcKg2AfHrFdEnRStdWuBlLl3f63STSZhek7ZN8ys9s2vm9iU8SS14Vbk'; // Replace with your APS client secret
         const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci9KNzJRK01SNSwlMjBTaGF3aW5pZ2FuLCUyMFFDX2FycS1hLnJ2dA'; // Replace with your model's URN (Base64 encoded)
 
         let viewer;
         let tokenRefreshInterval;
-        const excludeNames = ['Site', 'Planting', 'Entourage', 'Lines', 'Grids', 'Generic Models', 'Walls'];
 
+        // Function to fetch a new access token
         async function getAccessToken() {
             const response = await fetch('https://developer.api.autodesk.com/authentication/v2/token', {
                 method: 'POST',
@@ -66,16 +72,18 @@
             return data.access_token;
         }
 
+        // Initialize the Autodesk Viewer
         async function initializeViewer() {
             const ACCESS_TOKEN = await getAccessToken();
             const options = {
                 env: 'AutodeskProduction2',
-                api: 'streamingV2', 
+                api: 'streamingV2', // for models uploaded to EMEA, change this to 'streamingV2_EU'
                 getAccessToken: function (onTokenReady) {
-                    onTokenReady(ACCESS_TOKEN, 3600);
+                    onTokenReady(ACCESS_TOKEN, 3600); // Token expires in 1 hour (3600 seconds)
                 }
             };
 
+            // Initialize the viewer
             Autodesk.Viewing.Initializer(options, function () {
                 var htmlDiv = document.getElementById('forgeViewer');
                 viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv);
@@ -87,20 +95,24 @@
                 }
 
                 console.log('Initialization complete, loading a model next...');
-                const documentId = 'urn:' + MODEL_URN;
+
+                // Load the model automatically
+                const documentId = 'urn:' + MODEL_URN; // Add the string 'urn:' to the actual URN value
                 Autodesk.Viewing.Document.load(documentId, onDocumentLoadSuccess, onDocumentLoadFailure);
             });
 
+            // Set up token refresh every 45 minutes (2700000 milliseconds)
             tokenRefreshInterval = setInterval(async () => {
                 const newToken = await getAccessToken();
-                viewer.setAccessToken(newToken, 3600);
+                viewer.setAccessToken(newToken, 3600); // Refresh the token
                 console.log('Token refreshed successfully.');
             }, 45 * 60 * 1000); // 45 minutes
         }
 
         function onDocumentLoadSuccess(viewerDocument) {
-            const viewerapp = viewerDocument.getRoot();
+            var viewerapp = viewerDocument.getRoot();
 
+            // Load the first viewable by default
             const viewables = viewerapp.search({ 'type': 'geometry' });
             if (viewables.length === 0) {
                 console.error('Document contains no viewables.');
@@ -108,41 +120,21 @@
             }
 
             viewer.loadDocumentNode(viewerDocument, viewables[0]);
-
-            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
-                console.log('GEOMETRY_LOADED_EVENT triggered');
-                selectivelyUnloadElements(viewer);
-            });
         }
 
         function onDocumentLoadFailure() {
             console.error('Failed fetching manifest');
         }
 
-        function selectivelyUnloadElements(viewer) {
-            viewer.getObjectTree(function (tree) {
-                console.log('Traversing model hierarchy...');
-                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-                    viewer.getProperties(dbId, function (props) {
-                        console.log('Checking element:', dbId, props.name);
-
-                        // If the name is in the exclusion list, remove the element and its children from the scene
-                        if (props.name && excludeNames.some(name => props.name.includes(name))) {
-                            console.log('Removing element:', dbId, props.name);
-                            // Recursively hide/remove the parent and all children
-                            viewer.setVisibility(dbId, false);  // Correct method to hide elements
-                        }
-                    });
-                }, true);
-            });
-        }
-
+        // Initialize the viewer when the page loads
         window.onload = initializeViewer;
 
+        // Clear the interval when the page is unloaded
         window.onbeforeunload = () => {
             clearInterval(tokenRefreshInterval);
         };
     </script>
 
 </body>
+
 </html>

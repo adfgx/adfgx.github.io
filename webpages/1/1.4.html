@@ -130,7 +130,7 @@
                         if (props.name && excludeNames.some(name => props.name.includes(name))) {
                             console.log('Removing element:', dbId, props.name);
                             // Recursively hide/remove the parent and all children
-                            viewer.impl.visibilityManager.setNodeVisibility(dbId, false);  // Set the node and all its children as invisible
+                            viewer.setVisibility(dbId, false);  // Correct method to hide elements
                         }
                     });
                 }, true);
@@ -146,4 +146,3 @@
 
 </body>
 </html>
-

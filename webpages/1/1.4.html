@@ -138,21 +138,22 @@
 
         // Function to selectively load elements (based on their names)
         function selectivelyLoadElements(viewer) {
-            viewer.getObjectTree(function (tree) {
-                console.log('Traversing model hierarchy...');
-                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-                    viewer.getProperties(dbId, function (props) {
-                        console.log('Checking element:', dbId, props.name);
+    viewer.getObjectTree(function (tree) {
+        console.log('Traversing model hierarchy...');
+        tree.enumNodeChildren(tree.getRootId(), function (dbId) {
+            viewer.getProperties(dbId, function (props) {
+                console.log('Checking element:', dbId, props.name);
 
-                        // If the name is in the exclusion list, hide the element
-                        if (props.name && excludeNames.some(name => props.name.includes(name))) {
-                            console.log('Hiding element:', dbId, props.name);
-                            viewer.hide(dbId); // Hide the element if its name matches one of the specified names
-                        }
-                    });
-                }, true); // Recursively traverse the tree
+                // If the name is in the exclusion list, remove the element
+                if (props.name && excludeNames.some(name => props.name.includes(name))) {
+                    console.log('Removing element:', dbId, props.name);
+                    viewer.impl.removeNode(dbId); // Completely remove the element from the scene
+                }
             });
-        }
+        }, true); // Recursively traverse the tree
+    });
+}
+
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

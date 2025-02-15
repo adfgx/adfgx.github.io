@@ -119,59 +119,31 @@
                 return;
             }
 
-            // Define the categories to exclude
-            const categoriesToExclude = ['Site', 'Planting', 'Entourage', 'Generic Models'];
+            // Load the first viewable by default
+            viewer.loadDocumentNode(viewerDocument, viewables[0]);
 
-            // Create a custom loader to exclude specific categories
-            const customLoader = new SelectiveLoader(viewerDocument, categoriesToExclude);
-
-            // Get the dbIds of the first viewable
-            const dbIds = viewerDocument.getRoot().findAllViewables()[0].getChildDbIds();
-
-            // Load the model with selective loading
-            viewer.loadDocumentNode(viewerDocument, dbIds, { loader: customLoader });
+            // Hide elements by category after the model is loaded
+            const categoriesToHide = ['Site', 'Planting', 'Entourage', 'Generic Models'];
+            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
+                hideElementsByCategory(viewer, categoriesToHide);
+            });
         }
 
         function onDocumentLoadFailure() {
             console.error('Failed fetching manifest');
         }
 
-        // Custom SelectiveLoader class
-        class SelectiveLoader extends Autodesk.Viewing.Private.Viewer3DLoader {
-            constructor(viewerDocument, categoriesToExclude) {
-                super(viewerDocument);
-                this.categoriesToExclude = categoriesToExclude;
-            }
-
-            async load(dbIds, options) {
-                try {
-                    // Filter out elements that belong to the excluded categories
-                    const filteredDbIds = await this.filterElements(dbIds);
-                    return super.load(filteredDbIds, options);
-                } catch (error) {
-                    console.error('Error during selective loading:', error);
-                    throw error;
-                }
-            }
-
-            async filterElements(dbIds) {
-                const filteredDbIds = [];
-                for (const dbId of dbIds) {
-                    const properties = await this.getProperties(dbId);
-                    console.log('Properties for dbId:', dbId, properties);
-                    if (!properties.categories || !this.categoriesToExclude.some(category => properties.categories.includes(category))) {
-                        filteredDbIds.push(dbId);
-                    }
-                }
-                console.log('Filtered dbIds:', filteredDbIds);
-                return filteredDbIds;
-            }
-
-            async getProperties(dbId) {
-                return new Promise((resolve, reject) => {
-                    this.viewerDocument.getProperties(dbId, resolve, reject);
-                });
-            }
+        // Function to hide elements by category
+        function hideElementsByCategory(viewer, categoriesToHide) {
+            viewer.getObjectTree(function (tree) {
+                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
+                    viewer.getProperties(dbId, function (props) {
+                        if (props.categories && props.categories.some(category => categoriesToHide.includes(category))) {
+                            viewer.hide(dbId); // Hide the element if it belongs to one of the specified categories
+                        }
+                    });
+                }, true); // Recursively traverse the tree
+            });
         }
 
         // Initialize the viewer when the page loads

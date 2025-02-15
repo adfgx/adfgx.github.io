@@ -120,13 +120,16 @@
             }
 
             // Define the names to exclude
-            const namesToExclude = ['Site', 'Planting', 'Entourage', 'Generic Models', 'Lines', 'Grids'];
+            const namesToExclude = ['Site', 'Planting', 'Entourage', 'Generic Models'];
+
+            // Get the first viewable
+            const viewable = viewables[0];
 
             // Filter the viewable before loading
-            const filteredViewable = filterViewable(viewerDocument, viewables[0], namesToExclude);
+            const filteredDbIds = filterViewable(viewerDocument, viewable, namesToExclude);
 
             // Load the filtered viewable
-            viewer.loadDocumentNode(viewerDocument, filteredViewable);
+            viewer.loadDocumentNode(viewerDocument, viewable, { ids: filteredDbIds });
         }
 
         function onDocumentLoadFailure() {
@@ -136,7 +139,7 @@
         // Function to filter a viewable
         function filterViewable(viewerDocument, viewable, namesToExclude) {
             const root = viewerDocument.getRoot();
-            const dbIds = viewable.getChildDbIds();
+            const dbIds = root.getChildDbIds(viewable);
 
             // Filter out elements that match the criteria
             const filteredDbIds = dbIds.filter(dbId => {
@@ -144,11 +147,7 @@
                 return !props.name || !namesToExclude.some(name => props.name.includes(name));
             });
 
-            // Create a new viewable with the filtered elements
-            const filteredViewable = new Autodesk.Viewing.Viewable(viewable);
-            filteredViewable.setChildDbIds(filteredDbIds);
-
-            return filteredViewable;
+            return filteredDbIds;
         }
 
         // Initialize the viewer when the page loads

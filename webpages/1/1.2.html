@@ -138,13 +138,16 @@
 
         // Function to filter a viewable
         function filterViewable(viewerDocument, viewable, namesToExclude) {
-            const root = viewerDocument.getRoot();
-            const dbIds = root.getChildDbIds(viewable);
+            const filteredDbIds = [];
 
-            // Filter out elements that match the criteria
-            const filteredDbIds = dbIds.filter(dbId => {
-                const props = viewerDocument.getProperties(dbId);
-                return !props.name || !namesToExclude.some(name => props.name.includes(name));
+            // Traverse the model hierarchy
+            viewerDocument.getObjectTree(function (tree) {
+                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
+                    const props = viewerDocument.getProperties(dbId);
+                    if (!props.name || !namesToExclude.some(name => props.name.includes(name))) {
+                        filteredDbIds.push(dbId);
+                    }
+                }, true); // Recursively traverse the tree
             });
 
             return filteredDbIds;

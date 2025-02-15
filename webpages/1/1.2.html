@@ -118,11 +118,13 @@
         return;
     }
 
-    const namesToExclude = ['Site', 'Planting', 'Entourage', 'Generic Models'];
+    // Define categories to exclude
+    const excludedCategories = ["Entourage", "Planting", "Generic Models", "Site"];
+
     const viewable = viewables[0];
 
-    // Wait for the filtering to complete before loading
-    const filteredDbIds = await filterViewable(viewer, namesToExclude);
+    // Wait for filtering to complete before loading
+    const filteredDbIds = await filterViewable(viewer, excludedCategories);
 
     if (filteredDbIds.length === 0) {
         console.warn('No objects left to display after filtering.');
@@ -133,12 +135,13 @@
 }
 
 
+
         function onDocumentLoadFailure() {
             console.error('Failed fetching manifest');
         }
 
         // Function to filter a viewable
-        function filterViewable(viewer, namesToExclude) {
+        function filterViewable(viewer, excludedCategories) {
     return new Promise((resolve) => {
         const filteredDbIds = [];
         
@@ -149,8 +152,11 @@
             tree.enumNodeChildren(rootId, function (dbId) {
                 pending.push(new Promise((resolveDbId) => {
                     viewer.getProperties(dbId, function (props) {
-                        if (!props.name || !namesToExclude.some(name => props.name.includes(name))) {
-                            filteredDbIds.push(dbId);
+                        if (props && props.name) {
+                            // Check if the object category should be excluded
+                            if (!excludedCategories.some(category => props.name.includes(category))) {
+                                filteredDbIds.push(dbId);
+                            }
                         }
                         resolveDbId();
                     });
@@ -164,6 +170,7 @@
         });
     });
 }
+
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

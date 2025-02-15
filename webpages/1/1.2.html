@@ -11,25 +11,26 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 20px; /* Add padding to create margins around the viewer */
             background-color: #ffffff00;
-            height: 100vh;
+            height: 100vh; /* Ensure the body takes up the full viewport height */
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-sizing: border-box;
+            box-sizing: border-box; /* Include padding in the height calculation */
         }
 
         #forgeViewer {
-            width: 100%;
-            height: 100%;
+            width: 100%; /* Adjust width to leave margins on the sides */
+            height: 100%; /* Adjust height to leave margins at the top and bottom */
             background-color: #F0F8FF;
-            border: 3px solid #000000;
-            box-sizing: border-box;
-            position: relative;
-            overflow: hidden;
+            border: 3px solid #000000; /* Red border for visibility */
+            box-sizing: border-box; /* Ensure the border is included in the width/height */
+            position: relative; /* Required for proper positioning of the viewer canvas */
+            overflow: hidden; /* Prevent the viewer canvas from overflowing */
         }
 
+        /* Ensure the viewer canvas respects the container's borders */
         #forgeViewer canvas {
             position: absolute;
             top: 0;
@@ -69,51 +70,6 @@
             });
             const data = await response.json();
             return data.access_token;
-        }
-
-        // Function to load and apply visibility settings
-        async function applyVisibilitySettings(viewer, settingsUrl) {
-            try {
-                const response = await fetch(settingsUrl);
-                const settings = await response.json();
-
-                // Wait for the model to finish loading
-                viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
-                    const instanceTree = viewer.model.getData().instanceTree;
-
-                    // Hide elements
-                    if (settings.HiddenElements && settings.HiddenElements.length > 0) {
-                        settings.HiddenElements.forEach(revitId => {
-                            // Convert Revit ID to Forge dbId
-                            const dbId = instanceTree.getNodeIdByExternalId(revitId.toString());
-                            if (dbId) {
-                                viewer.hide([dbId]);
-                            } else {
-                                console.warn(`Element with Revit ID ${revitId} not found in the model.`);
-                            }
-                        });
-                    }
-
-                    // Apply overrides
-                    if (settings.Overrides) {
-                        Object.keys(settings.Overrides).forEach(revitId => {
-                            const override = settings.Overrides[revitId];
-                            const dbId = instanceTree.getNodeIdByExternalId(revitId);
-                            if (dbId) {
-                                if (override.Halftone) {
-                                    viewer.setThemingColor(dbId, new THREE.Vector4(0.5, 0.5, 0.5, 0.5)); // Apply halftone effect
-                                }
-                            } else {
-                                console.warn(`Element with Revit ID ${revitId} not found in the model.`);
-                            }
-                        });
-                    }
-
-                    console.log('Visibility settings applied successfully.');
-                });
-            } catch (error) {
-                console.error('Failed to apply visibility settings:', error);
-            }
         }
 
         // Initialize the Autodesk Viewer
@@ -163,14 +119,7 @@
                 return;
             }
 
-            viewer.loadDocumentNode(viewerDocument, viewables[0]).then(() => {
-                // Wait for the model to finish loading
-                viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
-                    // Apply visibility settings after the model is loaded
-                    const settingsUrl = 'https://adfgx.github.io/json/VisibilitySettings.json'; // Path to your JSON file
-                    applyVisibilitySettings(viewer, settingsUrl);
-                });
-            });
+            viewer.loadDocumentNode(viewerDocument, viewables[0]);
         }
 
         function onDocumentLoadFailure() {

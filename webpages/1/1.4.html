@@ -127,7 +127,7 @@
 
             // Hide elements by name after the model is loaded
             viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, function () {
-                //console.log('GEOMETRY_LOADED_EVENT triggered');
+                console.log('GEOMETRY_LOADED_EVENT triggered');
                 hideElementsByCategory(viewer, namesToHide);
             });
         }

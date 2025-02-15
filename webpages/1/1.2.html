@@ -126,7 +126,7 @@
             const viewable = viewables[0];
 
             // Filter the viewable before loading
-            const filteredDbIds = filterViewable(viewerDocument, viewable, namesToExclude);
+            const filteredDbIds = filterViewable(viewer, namesToExclude);
 
             // Load the filtered viewable
             viewer.loadDocumentNode(viewerDocument, viewable, { ids: filteredDbIds });
@@ -137,21 +137,22 @@
         }
 
         // Function to filter a viewable
-        function filterViewable(viewerDocument, viewable, namesToExclude) {
-            const filteredDbIds = [];
+        function filterViewable(viewer, namesToExclude) {
+    const filteredDbIds = [];
 
-            // Traverse the model hierarchy
-            viewerDocument.getObjectTree(function (tree) {
-                tree.enumNodeChildren(tree.getRootId(), function (dbId) {
-                    const props = viewerDocument.getProperties(dbId);
-                    if (!props.name || !namesToExclude.some(name => props.name.includes(name))) {
-                        filteredDbIds.push(dbId);
-                    }
-                }, true); // Recursively traverse the tree
+    viewer.getObjectTree(function (tree) {
+        tree.enumNodeChildren(tree.getRootId(), function (dbId) {
+            viewer.getProperties(dbId, function (props) {
+                if (!props.name || !namesToExclude.some(name => props.name.includes(name))) {
+                    filteredDbIds.push(dbId);
+                }
             });
+        }, true); // Recursively traverse the tree
+    });
 
-            return filteredDbIds;
-        }
+    return filteredDbIds;
+}
+
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

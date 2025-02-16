@@ -898,7 +898,7 @@ Ctimer1.addEventListener('click', () => {
       function cycle() {
         if (cycleCount < 4) { // Repeat 4 times
           startCountdown(29, 'audio-rest', 'Work', () => {  // 30 seconds "Work" phase
-            startCountdown(9, 'audio-work', 'Rest', () => {  // 10 seconds "Rest" phase
+            startCountdown(14, 'audio-work', 'Rest', () => {  // 15 seconds "Rest" phase
               cycleCount++;
               cycle(); // Start the next cycle
             });

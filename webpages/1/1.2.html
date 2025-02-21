@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
     <meta charset="utf-8">
@@ -44,7 +43,6 @@
         }
     </style>
 </head>
-
 <body>
     <div id="viewables_dropdown" style="display:none">
         <!-- This drop-down is not visible until there is more than one viewable to display-->
@@ -159,6 +157,20 @@
                 var viewablesDIV = document.getElementById("viewables_dropdown");
                 viewablesDIV.style.display = "block";
             }
+
+            // Automatically switch to the desired design option
+            const desiredOption = "Option Set 1 : Option 1 (NM)";
+            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
+                const designOptions = viewer.getDesignOptions();
+                console.log("Available Design Options:", designOptions);
+
+                if (designOptions && designOptions.some(option => option.name === desiredOption)) {
+                    viewer.setDesignOption(desiredOption);
+                    console.log(`Switched to design option: ${desiredOption}`);
+                } else {
+                    console.error(`Design option "${desiredOption}" not found.`);
+                }
+            });
         }
 
         function onDocumentLoadFailure() {
@@ -173,7 +185,5 @@
             clearInterval(tokenRefreshInterval);
         };
     </script>
-
 </body>
-
 </html>

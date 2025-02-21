@@ -12,7 +12,7 @@
         body {
             margin: 0;
             padding: 20px; /* Add padding to create margins around the viewer */
-            background-color: #ffffff00;
+            background-color: #dbc2c2;
             height: 100vh; /* Ensure the body takes up the full viewport height */
             display: flex;
             flex-direction: column;
@@ -21,8 +21,8 @@
         }
 
         #forgeViewer {
-            width: 100%; /* Adjust width to leave margins on the sides */
-            height: 100%; /* Adjust height to leave margins at the top and bottom */
+            width: 75%; /* Adjust width to leave margins on the sides */
+            height: 75%; /* Adjust height to leave margins at the top and bottom */
             background-color: #F0F8FF;
             border: 3px solid #000000; /* Red border for visibility */
             box-sizing: border-box; /* Ensure the border is included in the width/height */
@@ -38,10 +38,23 @@
             width: 100%;
             height: 100%;
         }
+
+        #viewables_dropdown {
+            margin-bottom: 10px; /* Add some spacing below the dropdown */
+        }
     </style>
 </head>
 
 <body>
+    <div id="viewables_dropdown" style="display:none">
+        <!-- This drop-down is not visible until there is more than one viewable to display-->
+        <br>
+        <br>
+        <label for="viewables">Choose a viewable:</label>
+        <select id="viewables" onchange="selectViewable()"></select>
+        <br>
+        <br>
+    </div>
     <!-- This is where the Viewer will be displayed-->
     <div id="forgeViewer"></div>
 
@@ -49,9 +62,11 @@
         // Replace these variables with your actual values
         const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID
         const CLIENT_SECRET = 'Dgi6V62fKcKg2AfHrFdEnRStdWuBlLl3f63STSZhek7ZN8ys9s2vm9iU8SS14Vbk'; // Replace with your APS client secret
-        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci8zMy4wMC5ydnQ'; // Replace with your model's URN (Base64 encoded)
+        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci80NDdfQmx2ZC5TYW1zb25fTGF2YWxfUUNfSDdYXzFKNS5ydnQ'; // Replace with your model's URN (Base64 encoded)
 
         let viewer;
+        let md_ViewerDocument;
+        let md_viewables;
         let tokenRefreshInterval;
 
         // Function to fetch a new access token
@@ -109,66 +124,46 @@
             }, 45 * 60 * 1000); // 45 minutes
         }
 
-        async function onDocumentLoadSuccess(viewerDocument) {
-    var viewerapp = viewerDocument.getRoot();
-    const viewables = viewerapp.search({ 'type': 'geometry' });
+        // This is called when an option is selected from the Choose viewables drop-down
+        function selectViewable() {
+            var indexViewable = document.getElementById("viewables").selectedIndex;
+            // Load another viewable from selectedIndex of drop-down
+            viewer.loadDocumentNode(md_ViewerDocument, md_viewables[indexViewable]);
+        }
 
-    if (viewables.length === 0) {
-        console.error('Document contains no viewables.');
-        return;
-    }
+        function onDocumentLoadSuccess(viewerDocument) {
+            var viewerapp = viewerDocument.getRoot();
 
-    // Define categories to exclude
-    const excludedCategories = ["Entourage", "Planting", "Generic Models", "Site"];
+            md_ViewerDocument = viewerDocument; // Hold the viewerDocument in a global variable
+            md_viewables = viewerapp.search({ 'type': 'geometry' });
 
-    const viewable = viewables[0];
+            if (md_viewables.length === 0) {
+                console.error('Document contains no viewables.');
+                return;
+            }
 
-    // Wait for filtering to complete before loading
-    const filteredDbIds = await filterViewable(viewer, excludedCategories);
+            // Populate the Choose viewables drop-down with the viewable name
+            var sel = document.getElementById('viewables');
+            for (var i = 0; i < md_viewables.length; i++) {
+                var opt = document.createElement('option');
+                opt.innerHTML = md_viewables[i].data.name;
+                opt.value = md_viewables[i].data.name;
+                sel.appendChild(opt);
+            }
 
-    if (filteredDbIds.length === 0) {
-        console.warn('No objects left to display after filtering.');
-        return;
-    }
+            // Load the first viewable by default
+            viewer.loadDocumentNode(viewerDocument, md_viewables[0]);
 
-    viewer.loadDocumentNode(viewerDocument, viewable, { ids: filteredDbIds });
-}
+            // Make the Choose viewable drop-down visible if there are more than one viewables
+            if (md_viewables.length > 1) {
+                var viewablesDIV = document.getElementById("viewables_dropdown");
+                viewablesDIV.style.display = "block";
+            }
+        }
 
         function onDocumentLoadFailure() {
             console.error('Failed fetching manifest');
         }
-
-        // Function to filter a viewable
-        function filterViewable(viewer, excludedCategories) {
-    return new Promise((resolve) => {
-        const filteredDbIds = [];
-        
-        viewer.getObjectTree(function (tree) {
-            const rootId = tree.getRootId();
-            const pending = [];
-
-            tree.enumNodeChildren(rootId, function (dbId) {
-                pending.push(new Promise((resolveDbId) => {
-                    viewer.getProperties(dbId, function (props) {
-                        if (props && props.name) {
-                            // Check if the object category should be excluded
-                            if (!excludedCategories.some(category => props.name.includes(category))) {
-                                filteredDbIds.push(dbId);
-                            }
-                        }
-                        resolveDbId();
-                    });
-                }));
-            }, true);
-
-            // Wait for all properties to be checked
-            Promise.all(pending).then(() => {
-                resolve(filteredDbIds);
-            });
-        });
-    });
-}
-
 
         // Initialize the viewer when the page loads
         window.onload = initializeViewer;

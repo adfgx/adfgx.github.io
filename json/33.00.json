@@ -33,8 +33,8 @@
                     "sceneId": "scene1"
                 },
                 {
-                    "pitch": -10,
-                    "yaw": 60,
+                    "pitch": -15,
+                    "yaw": 65,
                     "type": "scene",
                     "text": "Go to Panorama 3",
                     "sceneId": "scene3"

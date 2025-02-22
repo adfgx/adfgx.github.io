@@ -8,7 +8,82 @@
             "title": "Panorama 1",
             "panorama": "https://i.imgur.com/1yto2x7.jpg",
             "autoRotate":-4,
-            "autoRotateInactivityDelay":2500
+            "autoRotateInactivityDelay":2500,
+            "hotSpots": [
+                {
+                    "pitch": -5,
+                    "yaw": 40,
+                    "type": "scene",
+                    "text": "Go to Panorama 2",
+                    "sceneId": "scene2"
+                }
+            ]
+        },
+        "scene2": {
+            "title": "Panorama 2",
+            "panorama": "https://i.imgur.com/gPoARk5.jpg",
+            "autoRotate":-4,
+            "autoRotateInactivityDelay":2500,
+            "hotSpots": [
+                {
+                    "pitch": -5,
+                    "yaw": -45,
+                    "type": "scene",
+                    "text": "Go to Panorama 1",
+                    "sceneId": "scene1"
+                },
+                {
+                    "pitch": -10,
+                    "yaw": 65,
+                    "type": "scene",
+                    "text": "Go to Panorama 3",
+                    "sceneId": "scene3"
+                },
+                {
+                    "pitch": -2.5,
+                    "yaw": 50,
+                    "type": "scene",
+                    "text": "Go to Panorama 4",
+                    "sceneId": "scene4"
+                }
+            ]
+        },
+        "scene3": {
+            "title": "Panorama 3",
+            "panorama": "https://i.imgur.com/KTx4JCV.jpg",
+            "autoRotate":-4,
+            "autoRotateInactivityDelay":2500,
+            "hotSpots": [
+                {
+                    "pitch": -5,
+                    "yaw": -40,
+                    "type": "scene",
+                    "text": "Go to Panorama 2",
+                    "sceneId": "scene2"
+                }
+            ]
+        },
+        "scene4": {
+            "title":"Panorama 4",
+            "panorama":"https://i.imgur.com/XYsYCI4.jpg",
+            "autoRotate":-4,
+            "autoRotateInactivityDelay":2500,
+            "hotSpots":[
+                {
+                    "pitch": -30,
+                    "yaw": 70,
+                    "type":"scene",
+                    "text":"Go to Panorama 1",
+                    "sceneId":"scene1"
+                },
+                {
+                    "pitch": -25,
+                    "yaw": -10,
+                    "type": "scene",
+                    "text": "Go to Panorama 2",
+                    "sceneId": "scene2"
+                }
+            ]
         }
     }
 }

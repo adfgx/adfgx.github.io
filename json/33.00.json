@@ -67,6 +67,13 @@
                     "type": "scene",
                     "text": "Go to Panorama 4",
                     "sceneId": "scene4"
+                },
+                {
+                    "pitch": -5,
+                    "yaw": -45,
+                    "type": "scene",
+                    "text": "Go to Panorama 1",
+                    "sceneId": "scene1"
                 }
             ]
         },

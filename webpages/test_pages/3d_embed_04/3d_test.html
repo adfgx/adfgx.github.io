@@ -3,36 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3d embed</title>
+    <title>3D Embed with Buttons in Viewer</title>
     <style>
-        /* Wrapper to maintain aspect ratio */
-        .video-wrapper {
+        /* Container for the Pannellum viewer */
+        #panoramaViewer {
+            width: 100%;
+            height: 500px;
             position: relative;
-            width: 100%;
-            max-width: 100%;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            height: 0;
-            margin-bottom: 250px; /* Add space between video wrappers */
         }
-        /* Responsive iframe */
-        .video-wrapper iframe {
+        /* Custom button styling */
+        .custom-button {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
+            bottom: 20px;
+            z-index: 1000;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
         }
-        body {
-            background-color: #dbc2c2;
+        .custom-button:hover {
+            background-color: #45a049;
+        }
+        #panorama1Button {
+            left: 20px;
+        }
+        #panorama2Button {
+            left: 150px;
+        }
+        #panorama3Button {
+            left: 280px;
         }
     </style>
+    <!-- Include Pannellum CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.pannellum.org/2.5/pannellum.css">
+    <script src="https://cdn.pannellum.org/2.5/pannellum.js"></script>
 </head>
 <body>
-    <div class="video-wrapper">
-        <iframe width="100%" height="500" allowfullscreen style="border-style:none;" 
-                src="https://cdn.pannellum.org/2.5/pannellum.htm#config=https://adfgx.github.io/json/33.00.json">
-        </iframe>
-    </div>
+    <!-- Pannellum Viewer Container -->
+    <div id="panoramaViewer"></div>
+
+    <!-- Custom Buttons -->
+    <button id="panorama1Button" class="custom-button" onclick="loadPanorama('https://adfgx.github.io/json/33.00.json')">Panorama 1</button>
+    <button id="panorama2Button" class="custom-button" onclick="loadPanorama('https://adfgx.github.io/json/34.00.json')">Panorama 2</button>
+    <button id="panorama3Button" class="custom-button" onclick="loadPanorama('https://adfgx.github.io/json/35.00.json')">Panorama 3</button>
+
+    <script>
+        // Initialize Pannellum viewer
+        var viewer = pannellum.viewer('panoramaViewer', {
+            "type": "equirectangular",
+            "panorama": "https://adfgx.github.io/json/33.00.json",
+            "autoLoad": true
+        });
+
+        // Function to load a new panorama
+        function loadPanorama(configUrl) {
+            viewer.loadPanorama(configUrl);
+        }
+    </script>
 </body>
 </html>

@@ -6,7 +6,7 @@
     "scenes": {
         "scene1": {
             "title": "Panorama 1",
-            "panorama": "https://imgur.com/1yto2x7",
+            "panorama": "https://i.imgur.com/1yto2x7",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
             "hotSpots": [
@@ -28,7 +28,7 @@
         },
         "scene2": {
             "title": "Panorama 2",
-            "panorama": "https://imgur.com/gPoARk5",
+            "panorama": "https://i.imgur.com/gPoARk5",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
             "hotSpots": [
@@ -57,7 +57,7 @@
         },
         "scene3": {
             "title": "Panorama 3",
-            "panorama": "https://imgur.com/KTx4JCV",
+            "panorama": "https://i.imgur.com/KTx4JCV",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
             "hotSpots": [

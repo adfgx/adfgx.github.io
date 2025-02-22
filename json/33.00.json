@@ -6,7 +6,7 @@
     "scenes": {
         "scene1": {
             "title": "Panorama 1",
-            "panorama": "https://imgur.com/1yto2x7.jpg",
+            "panorama": "https://i.imgur.com/1yto2x7.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
             "hotSpots": [

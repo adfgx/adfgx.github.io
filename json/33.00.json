@@ -12,7 +12,7 @@
             "hotSpots": [
                 {
                     "pitch": -5,
-                    "yaw": 45,
+                    "yaw": 40,
                     "type": "scene",
                     "text": "Go to Panorama 2",
                     "sceneId": "scene2"

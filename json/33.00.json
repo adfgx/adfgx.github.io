@@ -72,7 +72,7 @@
         },
         "scene4": {
             "title":"Panorama 4",
-            "panorama":"https://imgur.com/XYsYCI4",
+            "panorama":"https://i.imgur.com/XYsYCI4.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
             "hotSpots":[

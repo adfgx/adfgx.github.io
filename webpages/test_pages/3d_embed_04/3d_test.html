@@ -46,21 +46,21 @@
     <div id="panoramaViewer"></div>
 
     <!-- Custom Buttons -->
-    <button id="panorama1Button" class="custom-button" onclick="loadPanorama('https://adfgx.github.io/json/33.00.json')">Panorama 1</button>
-    <button id="panorama2Button" class="custom-button" onclick="loadPanorama('https://adfgx.github.io/json/34.00.json')">Panorama 2</button>
-    <button id="panorama3Button" class="custom-button" onclick="loadPanorama('https://adfgx.github.io/json/35.00.json')">Panorama 3</button>
+    <button id="panorama1Button" class="custom-button" onclick="loadPanorama('https://i.imgur.com/1yto2x7.jpg')">Panorama 1</button>
+    <button id="panorama2Button" class="custom-button" onclick="loadPanorama('https://i.imgur.com/gPoARk5.jpg')">Panorama 2</button>
+    <button id="panorama3Button" class="custom-button" onclick="loadPanorama('https://i.imgur.com/KTx4JCV.jpg')">Panorama 3</button>
 
     <script>
         // Initialize Pannellum viewer
         var viewer = pannellum.viewer('panoramaViewer', {
             "type": "equirectangular",
-            "panorama": "https://adfgx.github.io/json/33.00.json",
+            "panorama": "https://i.imgur.com/fXnRDHl.jpg", // Initial panorama
             "autoLoad": true
         });
 
         // Function to load a new panorama
-        function loadPanorama(configUrl) {
-            viewer.loadPanorama(configUrl);
+        function loadPanorama(imageUrl) {
+            viewer.loadPanorama(imageUrl);
         }
     </script>
 </body>

@@ -84,11 +84,18 @@
             "autoRotateInactivityDelay":2500,
             "hotSpots":[
                 {
-                    "pitch": -10,
-                    "yaw": -35,
+                    "pitch": -2.5,
+                    "yaw": -25,
                     "type": "scene",
                     "text": "Go to Panorama 2",
                     "sceneId": "scene2"
+                },
+                {
+                    "pitch": -7.5,
+                    "yaw": 65,
+                    "type": "scene",
+                    "text": "Go to Panorama 3",
+                    "sceneId": "scene3"
                 }
             ]
         }

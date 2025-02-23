@@ -6,7 +6,7 @@
     "scenes": {
         "scene1": {
             "title": "Panorama 1",
-            "panorama": "https://i.imgur.com/HK6k9WV.jpg",
+            "panorama": "https://i.imgur.com/0F4xIxn.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
             "hotSpots": [
@@ -21,7 +21,7 @@
         },
         "scene2": {
             "title": "Panorama 2",
-            "panorama": "https://i.imgur.com/kWPACaA.jpg",
+            "panorama": "https://i.imgur.com/F2wijRy.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
             "hotSpots": [
@@ -50,7 +50,7 @@
         },
         "scene3": {
             "title": "Panorama 3",
-            "panorama": "https://i.imgur.com/upWAsBW.jpg",
+            "panorama": "https://i.imgur.com/soXIJS3.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
             "hotSpots": [
@@ -79,7 +79,7 @@
         },
         "scene4": {
             "title":"Panorama 4",
-            "panorama":"https://i.imgur.com/NdtJdAe.jpg",
+            "panorama":"https://i.imgur.com/Ct15RJW.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
             "hotSpots":[

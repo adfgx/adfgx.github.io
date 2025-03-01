@@ -63,7 +63,7 @@
                 },
                 {
                     "pitch": -5,
-                    "yaw": 65,
+                    "yaw": 60,
                     "type": "scene",
                     "text": "Go to Panorama 4",
                     "sceneId": "scene4"

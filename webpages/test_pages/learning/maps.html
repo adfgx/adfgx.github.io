@@ -2,22 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Zoomable Large Image</title>
+  <title>Mobile-Friendly Large Image Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=10.0">
   <style>
     html, body {
       margin: 0;
-      height: 100%;
-      overflow: hidden;
+      padding: 0;
       background: #111;
+      overflow: hidden;
+      height: 100%;
+      touch-action: none; /* Prevent scrolling during gestures */
     }
     #viewer {
       width: 100%;
       height: 100%;
-      cursor: grab;
       overflow: hidden;
       position: relative;
+      touch-action: none;
     }
     #image {
+      display: block;
       transform-origin: top left;
       user-select: none;
       pointer-events: none;
@@ -33,21 +37,36 @@
     const viewer = document.getElementById('viewer');
     const img = document.getElementById('image');
 
-    let scale = 0.1; // initial zoom (10% to fit better)
+    let scale = 0.1;
     let originX = 0;
     let originY = 0;
     let isDragging = false;
-    let startX, startY;
+    let startX = 0, startY = 0;
+    let lastTouchDist = 0;
+    let lastMid = null;
 
     function updateTransform() {
       img.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+    }
+
+    function getTouchDistance(touches) {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(dx, dy);
+    }
+
+    function getMidpoint(touches) {
+      return {
+        x: (touches[0].clientX + touches[1].clientX) / 2,
+        y: (touches[0].clientY + touches[1].clientY) / 2
+      };
     }
 
     viewer.addEventListener('wheel', (e) => {
       e.preventDefault();
       const delta = e.deltaY > 0 ? 0.9 : 1.1;
       scale *= delta;
-      scale = Math.max(0.01, Math.min(scale, 5)); // clamp scale
+      scale = Math.max(0.01, Math.min(scale, 10));
       updateTransform();
     });
 
@@ -75,7 +94,48 @@
       viewer.style.cursor = 'grab';
     });
 
-    updateTransform(); // initial render
+    // Touch Events
+    viewer.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        startX = e.touches[0].clientX - originX;
+        startY = e.touches[0].clientY - originY;
+      } else if (e.touches.length === 2) {
+        lastTouchDist = getTouchDistance(e.touches);
+        lastMid = getMidpoint(e.touches);
+      }
+    });
+
+    viewer.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (e.touches.length === 1) {
+        originX = e.touches[0].clientX - startX;
+        originY = e.touches[0].clientY - startY;
+        updateTransform();
+      } else if (e.touches.length === 2) {
+        const newDist = getTouchDistance(e.touches);
+        const mid = getMidpoint(e.touches);
+        const scaleChange = newDist / lastTouchDist;
+        scale *= scaleChange;
+        scale = Math.max(0.01, Math.min(scale, 10));
+
+        // Optional: Adjust pan origin to keep zoom centered on fingers
+        const dx = mid.x - lastMid.x;
+        const dy = mid.y - lastMid.y;
+        originX += dx;
+        originY += dy;
+
+        lastTouchDist = newDist;
+        lastMid = mid;
+        updateTransform();
+      }
+    }, { passive: false });
+
+    viewer.addEventListener('touchend', () => {
+      if (scale < 0.01) scale = 0.01;
+      if (scale > 10) scale = 10;
+    });
+
+    updateTransform();
   </script>
 </body>
 </html>

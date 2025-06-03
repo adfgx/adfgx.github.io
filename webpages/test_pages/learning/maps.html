@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
+    <meta charset="utf-8">
+    <!-- Autodesk Viewer files -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
+    <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js" integrity="sha512-..."></script>
+    <!--Styling to make the page look presentable-->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #dbc2c2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        #forgeViewer {
+            width: 75%; /* Adjust width to leave margins on the sides */
+            height: 75vh; /* Set height to 75% of the viewport height */
+            background-color: #F0F8FF;
+            border: 3px solid #000000; /* Red border for visibility */
+            box-sizing: border-box;
+            position: relative; /* Required for proper positioning of the viewer canvas */
+            overflow: hidden; /* Prevent the viewer canvas from overflowing */
+            margin-top: 20px; /* Add some spacing at the top */
+        }
+
+        /* Ensure the viewer canvas respects the container's borders */
+        #forgeViewer canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #viewables_dropdown {
+            margin-bottom: 10px; /* Add some spacing below the dropdown */
+        }
+
+        #pdfViewerContainer {
+            width: 75%; /* Match Forge Viewer */
+            margin-top: 20px; /* Space between Forge Viewer and PDF */
+            background-color: #ffffff;
+            border: 3px solid #000000;
+            box-sizing: border-box;
+            overflow: auto; /* Allow scrolling for the PDF */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px; /* Add padding inside the container */
+        }
+
+        .pdfPage {
+            width: 100%; /* Scale width to fit container */
+            margin-bottom: 20px; /* Add spacing between pages */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow to make pages distinct */
+        }
+
+        #downloadButton {
+            margin-top: 20px; /* Add spacing above the button */
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #downloadButton:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="viewables_dropdown" style="display:none">
+        <!-- This drop-down is not visible until there is more than one viewable to display-->
+        <br>
+        <br>
+        <label for="viewables">Choose a viewable:</label>
+        <select id="viewables" onchange="selectViewable()"></select>
+        <br>
+        <br>
+    </div>
+    <!-- This is where the Viewer will be displayed-->
+    <div id="forgeViewer"></div>
+
+    <!-- PDF Viewer -->
+    <div id="pdfViewerContainer">
+        <!-- PDF pages will be rendered here -->
+    </div>
+
+    <!-- Download PDF Button -->
+    <button id="downloadButton">Download PDF</button>
+
+    <script>
+        // Replace these variables with your actual values
+        const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID
+        const CLIENT_SECRET = 'Dgi6V62fKcKg2AfHrFdEnRStdWuBlLl3f63STSZhek7ZN8ys9s2vm9iU8SS14Vbk'; // Replace with your APS client secret
+        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3YvRUVDLjE2X0NCTV9UcmF2YWlsJTIwZGUlMjBzZXNzaW9uJTIwMDF2Mi5pYW0'; // Replace with your model's URN (Base64 encoded)
+
+        let viewer;
+        let md_ViewerDocument;
+        let md_viewables;
+        let tokenRefreshInterval;
+
+        // Function to fetch a new access token
+        async function getAccessToken() {
+            const response = await fetch('https://developer.api.autodesk.com/authentication/v2/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    client_id: CLIENT_ID,
+                    client_secret: CLIENT_SECRET,
+                    grant_type: 'client_credentials',
+                    scope: 'viewables:read',
+                }),
+            });
+            const data = await response.json();
+            return data.access_token;
+        }
+
+        // Initialize the Autodesk Viewer
+        async function initializeViewer() {
+            const ACCESS_TOKEN = await getAccessToken();
+            const options = {
+                env: 'AutodeskProduction2',
+                api: 'streamingV2', // for models uploaded to EMEA, change this to 'streamingV2_EU'
+                getAccessToken: function (onTokenReady) {
+                    onTokenReady(ACCESS_TOKEN, 3600); // Token expires in 1 hour (3600 seconds)
+                }
+            };
+
+            // Initialize the viewer
+            Autodesk.Viewing.Initializer(options, function () {
+                var htmlDiv = document.getElementById('forgeViewer');
+                viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv);
+                var startedCode = viewer.start();
+
+                if (startedCode > 0) {
+                    console.error('Failed to create a Viewer: WebGL not supported.');
+                    return;
+                }
+
+                console.log('Initialization complete, loading a model next...');
+
+                // Load the model automatically
+                const documentId = 'urn:' + MODEL_URN; // Add the string 'urn:' to the actual URN value
+                Autodesk.Viewing.Document.load(documentId, onDocumentLoadSuccess, onDocumentLoadFailure);
+            });
+
+            // Set up token refresh every 45 minutes (2700000 milliseconds)
+            tokenRefreshInterval = setInterval(async () => {
+                const newToken = await getAccessToken();
+                viewer.setAccessToken(newToken, 3600); // Refresh the token
+                console.log('Token refreshed successfully.');
+            }, 45 * 60 * 1000); // 45 minutes
+        }
+
+        // This is called when an option is selected from the Choose viewables drop-down
+        function selectViewable() {
+            var indexViewable = document.getElementById("viewables").selectedIndex;
+            // Load another viewable from selectedIndex of drop-down
+            viewer.loadDocumentNode(md_ViewerDocument, md_viewables[indexViewable]);
+        }
+
+        function onDocumentLoadSuccess(viewerDocument) {
+            var viewerapp = viewerDocument.getRoot();
+
+            md_ViewerDocument = viewerDocument; // Hold the viewerDocument in a global variable
+            md_viewables = viewerapp.search({ 'type': 'geometry' });
+
+            if (md_viewables.length === 0) {
+                console.error('Document contains no viewables.');
+                return;
+            }
+
+            // Populate the Choose viewables drop-down with the viewable name
+            var sel = document.getElementById('viewables');
+            for (var i = 0; i < md_viewables.length; i++) {
+                var opt = document.createElement('option');
+                opt.innerHTML = md_viewables[i].data.name;
+                opt.value = md_viewables[i].data.name;
+                sel.appendChild(opt);
+            }
+
+            // Load the first viewable by default
+            viewer.loadDocumentNode(viewerDocument, md_viewables[0]);
+
+            // Make the Choose viewable drop-down visible if there are more than one viewables
+            if (md_viewables.length > 1) {
+                var viewablesDIV = document.getElementById("viewables_dropdown");
+                viewablesDIV.style.display = "block";
+            }
+        }
+
+        function onDocumentLoadFailure() {
+            console.error('Failed fetching manifest');
+        }
+
+        // Function to render all pages of the PDF using PDF.js
+        async function renderPDF() {
+            const pdfUrl = 'https://adfgx.github.io/documents/EEC.16_CBM_Travail_de_session_01v2.pdf';
+            const container = document.getElementById('pdfViewerContainer');
+
+            // Load the PDF
+            const loadingTask = pdfjsLib.getDocument(pdfUrl);
+            const pdf = await loadingTask.promise;
+
+            // Render each page
+            for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                const page = await pdf.getPage(pageNumber);
+
+                // Create a canvas for the page
+                const canvas = document.createElement('canvas');
+                canvas.className = 'pdfPage';
+                container.appendChild(canvas);
+
+                // Set the scale based on the container width
+                const scale = container.offsetWidth / page.getViewport({ scale: 1 }).width;
+                const viewport = page.getViewport({ scale });
+
+                // Set the canvas dimensions
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                // Render the PDF page into the canvas
+                const renderContext = {
+                    canvasContext: canvas.getContext('2d'),
+                    viewport: viewport,
+                };
+                await page.render(renderContext).promise;
+            }
+        }
+
+        // Function to handle PDF download
+        function downloadPDF() {
+            const pdfUrl = 'https://adfgx.github.io/documents/EEC.16_CBM_Travail_de_session_01v2.pdf';
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = 'EEC.16_CBM_Travail_de_session_01v2.pdf'; // Name of the downloaded file
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initialize the viewer and render the PDF when the page loads
+        window.onload = function () {
+            initializeViewer();
+            renderPDF(); // Render the PDF using PDF.js
+
+            // Add event listener for the download button
+            document.getElementById('downloadButton').addEventListener('click', downloadPDF);
+        };
+
+        // Clear the interval when the page is unloaded
+        window.onbeforeunload = () => {
+            clearInterval(tokenRefreshInterval);
+        };
+    </script>
+
+</body>
+
+</html>

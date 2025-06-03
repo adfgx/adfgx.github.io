@@ -3,52 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PDF Viewer</title>
+  <title>Responsive PDF Viewer</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
+      font-family: sans-serif;
     }
-    #pdf-render {
-      border: 1px solid #ccc;
-      margin-top: 10px;
+
+    #pdf-container {
+      width: 100%;
+      max-width: 100vw;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+      background: #f4f4f4;
     }
+
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
     #controls {
-      margin-top: 10px;
+      padding: 10px;
+      background: #fff;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <h2>PDF Viewer</h2>
-  <canvas id="pdf-render"></canvas>
   <div id="controls">
     <button onclick="zoomOut()">- Zoom Out</button>
     <button onclick="zoomIn()">+ Zoom In</button>
   </div>
+  <div id="pdf-container">
+    <canvas id="pdf-render"></canvas>
+  </div>
 
-  <!-- Load PDF.js from CDN -->
+  <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
-    const url = 'https://adfgx.github.io/documents/Astronomy.pdf'; // Replace with your PDF file path
-
+    const url = 'https://adfgx.github.io/documents/Astronomy.pdf'; // Replace with your PDF file
     let pdfDoc = null;
     let pageNum = 1;
     let scale = 1.0;
     const canvas = document.getElementById('pdf-render');
     const ctx = canvas.getContext('2d');
+    const container = document.getElementById('pdf-container');
 
-    pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
-      pdfDoc = pdfDoc_;
-      renderPage(pageNum);
-    });
+    function getAutoScale(page) {
+      const containerWidth = container.clientWidth;
+      const unscaledViewport = page.getViewport({ scale: 1 });
+      return containerWidth / unscaledViewport.width;
+    }
 
     function renderPage(num) {
       pdfDoc.getPage(num).then(page => {
-        const viewport = page.getViewport({ scale });
-        canvas.height = viewport.height;
+        const autoScale = getAutoScale(page);
+        const viewport = page.getViewport({ scale: scale * autoScale });
+
         canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
         const renderContext = {
           canvasContext: ctx,
@@ -67,6 +97,13 @@
       scale = Math.max(0.2, scale - 0.2);
       renderPage(pageNum);
     }
+
+    pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
+      pdfDoc = pdfDoc_;
+      renderPage(pageNum);
+    });
+
+    window.addEventListener('resize', () => renderPage(pageNum));
   </script>
 </body>
 </html>

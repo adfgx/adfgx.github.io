@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #pdf-render {
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+    #controls {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>PDF Viewer</h2>
+  <canvas id="pdf-render"></canvas>
+  <div id="controls">
+    <button onclick="zoomOut()">- Zoom Out</button>
+    <button onclick="zoomIn()">+ Zoom In</button>
+  </div>
+
+  <!-- Load PDF.js from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    const url = 'sample.pdf'; // Replace with your PDF file path
+
+    let pdfDoc = null;
+    let pageNum = 1;
+    let scale = 1.0;
+    const canvas = document.getElementById('pdf-render');
+    const ctx = canvas.getContext('2d');
+
+    pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
+      pdfDoc = pdfDoc_;
+      renderPage(pageNum);
+    });
+
+    function renderPage(num) {
+      pdfDoc.getPage(num).then(page => {
+        const viewport = page.getViewport({ scale });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+        page.render(renderContext);
+      });
+    }
+
+    function zoomIn() {
+      scale += 0.2;
+      renderPage(pageNum);
+    }
+
+    function zoomOut() {
+      scale = Math.max(0.2, scale - 0.2);
+      renderPage(pageNum);
+    }
+  </script>
+</body>
+</html>

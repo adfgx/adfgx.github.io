@@ -30,23 +30,27 @@
 <body>
   <div id="container">
     <div id="svg-container">
-      <!-- Inline the SVG here -->
-      <!-- The file content will be pasted here by you -->
+      <object id="svgObject" type="image/svg+xml" data="Astronomy 2e.svg" style="width:100%; height:100%;">
+        Your browser does not support SVGs.
+      </object>
     </div>
   </div>
 
-  <!-- Panzoom library -->
   <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.min.js"></script>
   <script>
-    const element = document.getElementById('svg-container').querySelector('svg');
-    const panzoom = Panzoom(element, {
-      maxScale: 10,
-      minScale: 0.01,
-      contain: 'outside',
-      cursor: 'grab'
+    const object = document.getElementById('svgObject');
+    object.addEventListener('load', () => {
+      const svgDoc = object.contentDocument;
+      const svg = svgDoc.querySelector('svg');
+      const panzoom = Panzoom(svg, {
+        maxScale: 10,
+        minScale: 0.01,
+        contain: 'outside',
+        cursor: 'grab'
+      });
+      svg.addEventListener('wheel', panzoom.zoomWithWheel);
+      svg.addEventListener('pointerdown', panzoom.pan);
     });
-    element.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
-    element.parentElement.addEventListener('pointerdown', panzoom.pan);
   </script>
 </body>
 </html>

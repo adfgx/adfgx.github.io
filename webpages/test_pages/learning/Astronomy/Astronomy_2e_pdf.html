@@ -43,6 +43,7 @@
 
   <!-- PDF.js library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+  <script> pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';</script>
   <script>
     const url = 'https://adfgx.github.io/webpages/test_pages/learning/Astronomy/Astronomy_2e.pdf'; // Change to your large PDF path
     let pdfDoc = null;

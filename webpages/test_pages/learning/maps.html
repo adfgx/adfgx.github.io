@@ -34,108 +34,121 @@
   </div>
 
   <script>
-    const viewer = document.getElementById('viewer');
-    const img = document.getElementById('image');
+  const viewer = document.getElementById('viewer');
+  const img = document.getElementById('image');
 
-    let scale = 0.1;
-    let originX = 0;
-    let originY = 0;
-    let isDragging = false;
-    let startX = 0, startY = 0;
-    let lastTouchDist = 0;
-    let lastMid = null;
+  let scale = 0.1;
+  let originX = 0;
+  let originY = 0;
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let lastTouchDist = 0;
+  let lastMid = null;
 
-    function updateTransform() {
-      img.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
-    }
+  function updateTransform() {
+    img.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+  }
 
-    function getTouchDistance(touches) {
-      const dx = touches[0].clientX - touches[1].clientX;
-      const dy = touches[0].clientY - touches[1].clientY;
-      return Math.hypot(dx, dy);
-    }
+  function getTouchDistance(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.hypot(dx, dy);
+  }
 
-    function getMidpoint(touches) {
-      return {
-        x: (touches[0].clientX + touches[1].clientX) / 2,
-        y: (touches[0].clientY + touches[1].clientY) / 2
-      };
-    }
+  function getMidpoint(touches) {
+    return {
+      x: (touches[0].clientX + touches[1].clientX) / 2,
+      y: (touches[0].clientY + touches[1].clientY) / 2
+    };
+  }
 
-    viewer.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? 0.9 : 1.1;
-      scale *= delta;
-      scale = Math.max(0.01, Math.min(scale, 10));
-      updateTransform();
-    });
+  // Desktop Zoom with Cursor-Centered Adjustment
+  viewer.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const rect = viewer.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
 
-    viewer.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startX = e.clientX - originX;
-      startY = e.clientY - originY;
-      viewer.style.cursor = 'grabbing';
-    });
+    const prevScale = scale;
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale *= delta;
+    scale = Math.max(0.01, Math.min(scale, 10));
 
-    viewer.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      originX = e.clientX - startX;
-      originY = e.clientY - startY;
-      updateTransform();
-    });
-
-    viewer.addEventListener('mouseup', () => {
-      isDragging = false;
-      viewer.style.cursor = 'grab';
-    });
-
-    viewer.addEventListener('mouseleave', () => {
-      isDragging = false;
-      viewer.style.cursor = 'grab';
-    });
-
-    // Touch Events
-    viewer.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        startX = e.touches[0].clientX - originX;
-        startY = e.touches[0].clientY - originY;
-      } else if (e.touches.length === 2) {
-        lastTouchDist = getTouchDistance(e.touches);
-        lastMid = getMidpoint(e.touches);
-      }
-    });
-
-    viewer.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      if (e.touches.length === 1) {
-        originX = e.touches[0].clientX - startX;
-        originY = e.touches[0].clientY - startY;
-        updateTransform();
-      } else if (e.touches.length === 2) {
-        const newDist = getTouchDistance(e.touches);
-        const mid = getMidpoint(e.touches);
-        const scaleChange = newDist / lastTouchDist;
-        scale *= scaleChange;
-        scale = Math.max(0.01, Math.min(scale, 10));
-
-        // Optional: Adjust pan origin to keep zoom centered on fingers
-        const dx = mid.x - lastMid.x;
-        const dy = mid.y - lastMid.y;
-        originX += dx;
-        originY += dy;
-
-        lastTouchDist = newDist;
-        lastMid = mid;
-        updateTransform();
-      }
-    }, { passive: false });
-
-    viewer.addEventListener('touchend', () => {
-      if (scale < 0.01) scale = 0.01;
-      if (scale > 10) scale = 10;
-    });
+    // Adjust origin so zoom centers on mouse
+    originX -= (mouseX - originX) * (scale / prevScale - 1);
+    originY -= (mouseY - originY) * (scale / prevScale - 1);
 
     updateTransform();
-  </script>
+  });
+
+  // Desktop Drag
+  viewer.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX - originX;
+    startY = e.clientY - originY;
+    viewer.style.cursor = 'grabbing';
+  });
+
+  viewer.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    originX = e.clientX - startX;
+    originY = e.clientY - startY;
+    updateTransform();
+  });
+
+  viewer.addEventListener('mouseup', () => {
+    isDragging = false;
+    viewer.style.cursor = 'grab';
+  });
+
+  viewer.addEventListener('mouseleave', () => {
+    isDragging = false;
+    viewer.style.cursor = 'grab';
+  });
+
+  // Touch Start
+  viewer.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+      startX = e.touches[0].clientX - originX;
+      startY = e.touches[0].clientY - originY;
+    } else if (e.touches.length === 2) {
+      lastTouchDist = getTouchDistance(e.touches);
+      lastMid = getMidpoint(e.touches);
+    }
+  });
+
+  // Touch Move (pan or pinch-to-zoom)
+  viewer.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      originX = e.touches[0].clientX - startX;
+      originY = e.touches[0].clientY - startY;
+      updateTransform();
+    } else if (e.touches.length === 2) {
+      const newDist = getTouchDistance(e.touches);
+      const mid = getMidpoint(e.touches);
+
+      const prevScale = scale;
+      const scaleChange = newDist / lastTouchDist;
+      scale *= scaleChange;
+      scale = Math.max(0.01, Math.min(scale, 10));
+
+      // Zoom toward the midpoint of the pinch
+      originX -= (mid.x - originX) * (scale / prevScale - 1);
+      originY -= (mid.y - originY) * (scale / prevScale - 1);
+
+      lastTouchDist = newDist;
+      lastMid = mid;
+      updateTransform();
+    }
+  }, { passive: false });
+
+  viewer.addEventListener('touchend', () => {
+    if (scale < 0.01) scale = 0.01;
+    if (scale > 10) scale = 10;
+  });
+
+  updateTransform();
+</script>
 </body>
 </html>

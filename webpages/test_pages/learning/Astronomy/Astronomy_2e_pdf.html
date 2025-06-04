@@ -1,91 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>PDF Viewer</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Astronomy 2e Viewer</title>
   <style>
     html, body {
       margin: 0;
+      padding: 0;
       height: 100%;
       overflow: hidden;
+      background: #111;
     }
-    #viewerContainer {
+    #container {
       width: 100vw;
       height: 100vh;
-      overflow: scroll;
-      background: #eee;
     }
-    #pdfCanvas {
-      display: block;
-      margin: auto;
+    #svg-container {
+      width: 100%;
+      height: 100%;
+      touch-action: none;
     }
-    #controls {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-      background: white;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    svg {
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
 <body>
-  <div id="controls">
-    <button onclick="zoomIn()">Zoom In</button>
-    <button onclick="zoomOut()">Zoom Out</button>
-    <span id="zoomLevel">100%</span>
-  </div>
-  <div id="viewerContainer">
-    <canvas id="pdfCanvas"></canvas>
+  <div id="container">
+    <div id="svg-container">
+      <!-- Inline the SVG here -->
+      <!-- The file content will be pasted here by you -->
+    </div>
   </div>
 
-  <!-- PDF.js library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+  <!-- Panzoom library -->
+  <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.min.js"></script>
   <script>
-    // Setup PDF.js worker
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
-  </script>
-
-  <script>
-    const url = 'https://adfgx.github.io/webpages/test_pages/learning/Astronomy/Astronomy_2e.pdf';
-    let pdfDoc = null;
-    let pageNum = 1;
-    let scale = 1.0;
-    const canvas = document.getElementById('pdfCanvas');
-    const ctx = canvas.getContext('2d');
-    const zoomDisplay = document.getElementById('zoomLevel');
-
-    function renderPage() {
-      pdfDoc.getPage(pageNum).then(function(page) {
-        const viewport = page.getViewport({ scale: scale });
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        const renderContext = {
-          canvasContext: ctx,
-          viewport: viewport
-        };
-        page.render(renderContext);
-        zoomDisplay.textContent = Math.round(scale * 100) + '%';
-      });
-    }
-
-    function zoomIn() {
-      scale *= 1.2;
-      renderPage();
-    }
-
-    function zoomOut() {
-      scale /= 1.2;
-      renderPage();
-    }
-
-    pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
-      pdfDoc = pdfDoc_;
-      renderPage();
+    const element = document.getElementById('svg-container').querySelector('svg');
+    const panzoom = Panzoom(element, {
+      maxScale: 10,
+      minScale: 0.01,
+      contain: 'outside',
+      cursor: 'grab'
     });
+    element.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
+    element.parentElement.addEventListener('pointerdown', panzoom.pan);
   </script>
 </body>
 </html>

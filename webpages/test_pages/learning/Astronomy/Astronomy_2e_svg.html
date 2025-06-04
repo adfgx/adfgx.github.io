@@ -15,42 +15,41 @@
     #container {
       width: 100vw;
       height: 100vh;
+      overflow: hidden;
     }
-    #svg-container {
+    #viewer-wrapper {
       width: 100%;
       height: 100%;
       touch-action: none;
+      cursor: grab;
     }
-    svg {
+    #viewer-wrapper:active {
+      cursor: grabbing;
+    }
+    #svg-embed {
       width: 100%;
       height: 100%;
+      pointer-events: none; /* important for CSS transform panning */
     }
   </style>
 </head>
 <body>
   <div id="container">
-    <div id="svg-container">
-      <object id="svgObject" type="image/svg+xml" data="Astronomy_2e.svg" style="width:100%; height:100%;">
-        Your browser does not support SVGs.
-      </object>
+    <div id="viewer-wrapper">
+      <embed id="svg-embed" type="image/svg+xml" src="Astronomy_2e.svg" />
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.min.js"></script>
   <script>
-    const object = document.getElementById('svgObject');
-    object.addEventListener('load', () => {
-      const svgDoc = object.contentDocument;
-      const svg = svgDoc.querySelector('svg');
-      const panzoom = Panzoom(svg, {
-        maxScale: 10,
-        minScale: 0.01,
-        contain: 'outside',
-        cursor: 'grab'
-      });
-      svg.addEventListener('wheel', panzoom.zoomWithWheel);
-      svg.addEventListener('pointerdown', panzoom.pan);
+    const viewerWrapper = document.getElementById('viewer-wrapper');
+    const panzoom = Panzoom(viewerWrapper, {
+      maxScale: 10,
+      minScale: 0.01,
+      contain: 'outside',
     });
+    viewerWrapper.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
+    viewerWrapper.addEventListener('pointerdown', panzoom.pan);
   </script>
 </body>
 </html>

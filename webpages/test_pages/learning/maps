@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Main Page</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #dbc2c2;
+    }
+    h1 {
+      font-size: 6em;
+      color: #333;
+    }
+    a {
+      font-size: 5em;
+      color: white;
+      background-color: #007bff;
+      padding: 10px 10px;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    a:hover {
+      background-color: #0056b3;
+    }
+    #xqc {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 15vh;
+      width: 20vh;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>1</h1>
+  <a href="/webpages/1/1.1.html">1.1 CBM tds 1</a>
+  <a href="/webpages/1/1.2.html">rvt, full, design option</a>
+  <a href="/webpages/1/1.3.html">rvt, full, no viewables</a>
+  <a href="/webpages/1/1.4.html">rvt, hidden no viewables</a>
+  <img id="xqc" src="/videos/flex-dance.gif">
+</body>
+</html>

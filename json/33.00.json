@@ -29,6 +29,7 @@
                 {
                     "pitch": -5,
                     "yaw": -45,
+                    "hfov": 60,
                     "type": "scene",
                     "text": "Go to Panorama 1",
                     "sceneId": "scene1"
@@ -36,6 +37,7 @@
                 {
                     "pitch": -7.5,
                     "yaw": 60,
+                    "hfov": 60,
                     "type": "scene",
                     "text": "Go to Panorama 3",
                     "sceneId": "scene3"
@@ -43,6 +45,7 @@
                 {
                     "pitch": -2.5,
                     "yaw": 45,
+                    "hfov": 60,
                     "type": "scene",
                     "text": "Go to Panorama 4",
                     "sceneId": "scene4"

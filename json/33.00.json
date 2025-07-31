@@ -25,6 +25,7 @@
             "panorama": "https://i.imgur.com/w2cSk1q.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
+            "hfov": 80,
             "hotSpots": [
                 {
                     "pitch": -5,
@@ -54,6 +55,7 @@
             "panorama": "https://i.imgur.com/cXPBhJc.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
+            "hfov": 80,
             "hotSpots": [
                 {
                     "pitch": -7.5,
@@ -83,6 +85,7 @@
             "panorama":"https://i.imgur.com/h7LRrV6.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
+            "hfov": 80,
             "hotSpots":[
                 {
                     "pitch": -3,

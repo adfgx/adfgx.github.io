@@ -9,6 +9,7 @@
             "panorama": "https://i.imgur.com/qaMPJys.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
+            "hfov": 80,
             "hotSpots": [
                 {
                     "pitch": -5,
@@ -31,6 +32,7 @@
             "panorama": "https://i.imgur.com/PLqEIEX.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
+            "hfov": 80,
             "hotSpots": [
                 {
                     "pitch": -5,
@@ -60,6 +62,7 @@
             "panorama": "https://i.imgur.com/xZdHofb.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
+            "hfov": 80,
             "hotSpots": [
                 {
                     "pitch": -5,
@@ -75,6 +78,7 @@
             "panorama":"https://i.imgur.com/nTsvDhs.jpg",
             "autoRotate":-4,
             "autoRotateInactivityDelay":2500,
+            "hfov": 80,
             "hotSpots":[
                 {
                     "pitch": -30,

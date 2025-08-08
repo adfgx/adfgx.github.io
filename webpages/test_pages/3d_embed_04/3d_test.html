@@ -103,9 +103,6 @@
                     return;
                 }
 
-                // Switch to Perspective with Ortho Faces after the geometry loads
-                viewer.setViewType(1);
-
                 // Load the model automatically
                 const documentId = 'urn:' + MODEL_URN; // Add the string 'urn:' to the actual URN value
                 Autodesk.Viewing.Document.load(documentId, onDocumentLoadSuccess, onDocumentLoadFailure);

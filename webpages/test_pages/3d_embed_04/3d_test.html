@@ -46,9 +46,10 @@
     <div id="forgeViewer"></div>
 
     <div style="margin: 10px;">
-        <button onclick="isolateLevel('Sol')">Sol</button>
-        <button onclick="isolateLevel('Rez de chaussée')">Rez de chaussée</button>
-        <button onclick="isolateLevel('Sous-sol')">Sous-sol</button>
+        <button onclick="isolateLevel('Sol - N')">Sol</button>
+        <button onclick="isolateLevel('Sous-sol N')">Sous-sol</button>
+        <button onclick="isolateLevel('Étage N')">Étage</button>
+        <button onclick="isolateLevel('Parapet N')">Parapet</button>
         <button onclick="resetModel()">Voir tout</button>
     </div>
 
@@ -102,7 +103,8 @@
                     return;
                 }
 
-                //console.log('Initialization complete, loading a model next...');
+                // Switch to Perspective with Ortho Faces after the geometry loads
+                viewer.setViewType(1);
 
                 // Load the model automatically
                 const documentId = 'urn:' + MODEL_URN; // Add the string 'urn:' to the actual URN value

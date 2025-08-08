@@ -38,15 +38,6 @@
             width: 100%;
             height: 100%;
         }
-
-        .floor-selector-btn {
-            background-color: #f0f0f0;
-            color: #000;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 4px;
-        }
-
     </style>
 </head>
 
@@ -54,11 +45,20 @@
     <!-- This is where the Viewer will be displayed-->
     <div id="forgeViewer"></div>
 
+    <div style="margin: 10px;">
+        <button onclick="isolateLevel('Sous-sol CAVE - E')">Sous-sol CAVE</button>
+        <button onclick="isolateLevel('Rez de chaussée - E')">Rez de chaussée</button>
+        <button onclick="isolateLevel('Étage - E')">Étage</button>
+        <button onclick="isolateLevel('Toit - Existant')">Toit</button>
+        <button onclick="resetModel()">Voir tout</button>
+    </div>
+
+
     <script>
         // Replace these variables with your actual values
         const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID
         const CLIENT_SECRET = 'Dgi6V62fKcKg2AfHrFdEnRStdWuBlLl3f63STSZhek7ZN8ys9s2vm9iU8SS14Vbk'; // Replace with your APS client secret
-        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci8zMi4wNS5ydnQ'; // Replace with your model's URN (Base64 encoded)
+        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6M2RfYWRfYXBpX3Zfci8zMi4wNC5ydnQ'; // Replace with your model's URN (Base64 encoded)
 
         let viewer;
         let tokenRefreshInterval;
@@ -103,10 +103,6 @@
                     return;
                 }
 
-                // Register your custom toolbar extension
-                Autodesk.Viewing.theExtensionManager.registerExtension('FloorSelectorExtension', FloorSelectorExtension);
-                viewer.loadExtension('FloorSelectorExtension');
-
                 //console.log('Initialization complete, loading a model next...');
 
                 // Load the model automatically
@@ -135,49 +131,23 @@
             viewer.loadDocumentNode(viewerDocument, viewables[0]);
         }
 
-        function FloorSelectorExtension(viewer, options) {
-            Autodesk.Viewing.Extension.call(this, viewer, options);
-
-            this.load = function () {
-                const toolbarButtonGroup = new Autodesk.Viewing.UI.ControlGroup('floor-selector-group');
-
-                const levels = [
-                    { name: 'Sous-sol CAVE - E', label: 'Sous-sol CAVE' },
-                    { name: 'Rez de chaussée - E', label: 'Rez-de-chaussée' },
-                    { name: 'Étage - E', label: 'Étage' },
-                    { name: 'Toit - Existant', label: 'Toit' }
-                ];
-
-                levels.forEach(level => {
-                    const button = new Autodesk.Viewing.UI.Button('btn-' + level.name);
-                    button.setToolTip('Voir ' + level.label);
-                    button.onClick = function () {
-                        isolateLevel(level.name);
-                    };
-                    button.addClass('floor-selector-btn');
-                    button.container.innerText = level.label;
-                    toolbarButtonGroup.addControl(button);
-                });
-
-                // Add reset button
-                const resetBtn = new Autodesk.Viewing.UI.Button('btn-reset-view');
-                resetBtn.setToolTip('Voir tout');
-                resetBtn.onClick = resetModel;
-                resetBtn.addClass('floor-selector-btn');
-                resetBtn.container.innerText = 'Voir tout';
-                toolbarButtonGroup.addControl(resetBtn);
-
-                viewer.toolbar.addControl(toolbarButtonGroup);
-
-                return true;
-            };
-
-            this.unload = function () {
-                return true;
-            };
+        function isolateLevel(levelName) {
+        viewer.search(levelName, function (dbIds) {
+            if (dbIds.length === 0) {
+            alert("Aucun élément trouvé pour : " + levelName);
+            return;
+            }
+            viewer.isolate(dbIds);
+            viewer.fitToView(dbIds);
+        }, function (error) {
+            console.error("Erreur lors de la recherche du niveau :", levelName, error);
+        });
         }
-        FloorSelectorExtension.prototype = Object.create(Autodesk.Viewing.Extension.prototype);
-        FloorSelectorExtension.prototype.constructor = FloorSelectorExtension;
+
+        function resetModel() {
+        viewer.isolate([]);     // Show everything
+        viewer.fitToView();     // Zoom out
+        }
 
 
         function onDocumentLoadFailure() {

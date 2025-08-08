@@ -58,6 +58,14 @@
     <!-- This is where the Viewer will be displayed-->
     <div id="forgeViewer"></div>
 
+    <div style="margin: 10px;">
+        <button onclick="isolateLevel('Sous-sol CAVE - E')">Sous-sol CAVE</button>
+        <button onclick="isolateLevel('Rez de chaussée - E')">Rez de chaussée</button>
+        <button onclick="isolateLevel('Étage - E')">Étage</button>
+        <button onclick="isolateLevel('Toit - Existant')">Toit</button>
+        <button onclick="resetModel()">Voir tout</button>
+    </div>
+
     <script>
         // Replace these variables with your actual values
         const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID
@@ -159,6 +167,24 @@
                 var viewablesDIV = document.getElementById("viewables_dropdown");
                 viewablesDIV.style.display = "block";
             }
+        }
+
+        function isolateLevel(levelName) {
+        viewer.search(levelName, function (dbIds) {
+            if (dbIds.length === 0) {
+            alert("Aucun élément trouvé pour : " + levelName);
+            return;
+            }
+            viewer.isolate(dbIds);
+            viewer.fitToView(dbIds);
+        }, function (error) {
+            console.error("Erreur lors de la recherche du niveau :", levelName, error);
+        });
+        }
+
+        function resetModel() {
+        viewer.isolate([]);     // Show everything
+        viewer.fitToView();     // Zoom out
         }
 
         function onDocumentLoadFailure() {

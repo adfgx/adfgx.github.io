@@ -38,6 +38,15 @@
             width: 100%;
             height: 100%;
         }
+
+        .floor-selector-btn {
+            background-color: #f0f0f0;
+            color: #000;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
     </style>
 </head>
 
@@ -94,6 +103,10 @@
                     return;
                 }
 
+                // Register your custom toolbar extension
+                Autodesk.Viewing.theExtensionManager.registerExtension('FloorSelectorExtension', FloorSelectorExtension);
+                viewer.loadExtension('FloorSelectorExtension');
+
                 //console.log('Initialization complete, loading a model next...');
 
                 // Load the model automatically
@@ -121,6 +134,51 @@
 
             viewer.loadDocumentNode(viewerDocument, viewables[0]);
         }
+
+        function FloorSelectorExtension(viewer, options) {
+            Autodesk.Viewing.Extension.call(this, viewer, options);
+
+            this.load = function () {
+                const toolbarButtonGroup = new Autodesk.Viewing.UI.ControlGroup('floor-selector-group');
+
+                const levels = [
+                    { name: 'Sous-sol CAVE - E', label: 'Sous-sol CAVE' },
+                    { name: 'Rez de chaussée - E', label: 'Rez-de-chaussée' },
+                    { name: 'Étage - E', label: 'Étage' },
+                    { name: 'Toit - Existant', label: 'Toit' }
+                ];
+
+                levels.forEach(level => {
+                    const button = new Autodesk.Viewing.UI.Button('btn-' + level.name);
+                    button.setToolTip('Voir ' + level.label);
+                    button.onClick = function () {
+                        isolateLevel(level.name);
+                    };
+                    button.addClass('floor-selector-btn');
+                    button.container.innerText = level.label;
+                    toolbarButtonGroup.addControl(button);
+                });
+
+                // Add reset button
+                const resetBtn = new Autodesk.Viewing.UI.Button('btn-reset-view');
+                resetBtn.setToolTip('Voir tout');
+                resetBtn.onClick = resetModel;
+                resetBtn.addClass('floor-selector-btn');
+                resetBtn.container.innerText = 'Voir tout';
+                toolbarButtonGroup.addControl(resetBtn);
+
+                viewer.toolbar.addControl(toolbarButtonGroup);
+
+                return true;
+            };
+
+            this.unload = function () {
+                return true;
+            };
+        }
+        FloorSelectorExtension.prototype = Object.create(Autodesk.Viewing.Extension.prototype);
+        FloorSelectorExtension.prototype.constructor = FloorSelectorExtension;
+
 
         function onDocumentLoadFailure() {
             //console.error('Failed fetching manifest');

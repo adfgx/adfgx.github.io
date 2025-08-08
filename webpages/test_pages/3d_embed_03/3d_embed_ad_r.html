@@ -159,7 +159,10 @@
             }
 
             // Load the first viewable by default
-            viewer.loadDocumentNode(viewerDocument, md_viewables[0]);
+            viewer.loadDocumentNode(viewerDocument, md_viewables[0]).then(() => {
+                // Switch to Perspective with Ortho Faces after the geometry loads
+                viewer.setViewType(Autodesk.Viewing.ViewType.PERSPECTIVE);
+            });
 
             // Make the Choose viewable drop-down visible if there are more than one viewables
             if (md_viewables.length > 1) {

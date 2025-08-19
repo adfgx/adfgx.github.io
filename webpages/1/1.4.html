@@ -142,7 +142,7 @@
             var viewerapp = viewerDocument.getRoot();
 
             md_ViewerDocument = viewerDocument; // Hold the viewerDocument in a global variable
-            md_viewables = viewerapp.search({ 'type': 'geometry' });
+            md_viewables = viewerapp.search({  'type': 'geometry', 'role': '3d' });
 
             if (md_viewables.length === 0) {
                 console.error('Document contains no viewables.');
@@ -150,27 +150,40 @@
             }
 
             // Populate the Choose viewables drop-down with the viewable name
-            var sel = document.getElementById('viewables');
-            for (var i = 0; i < md_viewables.length; i++) {
-                var opt = document.createElement('option');
-                opt.innerHTML = md_viewables[i].data.name;
-                opt.value = md_viewables[i].data.name;
-                sel.appendChild(opt);
-            }
+    var sel = document.getElementById('viewables');
+    sel.innerHTML = ""; // clear old options
+    for (var i = 0; i < md_viewables.length; i++) {
+        var opt = document.createElement('option');
+        opt.innerHTML = md_viewables[i].data.name; // will show "Default 3D View" or "1st Level Slice"
+        opt.value = i;
+        sel.appendChild(opt);
+    }
 
-            // Load the first viewable by default
-            viewer.loadDocumentNode(viewerDocument, md_viewables[0]).then(() => {
-                // Switch to Perspective with Ortho Faces after the geometry loads
-                viewer.setViewType(3);
-            });
-
-            // Make the Choose viewable drop-down visible if there are more than one viewables
-            if (md_viewables.length > 1) {
-                var viewablesDIV = document.getElementById("viewables_dropdown");
-                viewablesDIV.style.display = "block";
-            }
+             // 🔹 Load a specific viewable automatically by name if it exists
+    let defaultIndex = 0; // fallback: Default 3D View
+    for (let i = 0; i < md_viewables.length; i++) {
+        if (md_viewables[i].data.name === "1st Level Slice") {
+            defaultIndex = i;
+            break;
         }
+    }
 
+    viewer.loadDocumentNode(viewerDocument, md_viewables[defaultIndex]).then(() => {
+        viewer.setViewType(3); // Perspective with Ortho Faces
+    });
+
+            // Make the drop-down visible if there are more than one viewables
+    if (md_viewables.length > 1) {
+        document.getElementById("viewables_dropdown").style.display = "block";
+    }
+        }
+        // This is called when an option is selected from the Choose viewables drop-down
+function selectViewable() {
+    var indexViewable = document.getElementById("viewables").selectedIndex;
+    viewer.loadDocumentNode(md_ViewerDocument, md_viewables[indexViewable]).then(() => {
+        viewer.setViewType(3);
+    });
+}
         function isolateLevel(levelName) {
         viewer.search(levelName, function (dbIds) {
             if (dbIds.length === 0) {

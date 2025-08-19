@@ -150,40 +150,41 @@
             }
 
             // Populate the Choose viewables drop-down with the viewable name
-    var sel = document.getElementById('viewables');
-    sel.innerHTML = ""; // clear old options
-    for (var i = 0; i < md_viewables.length; i++) {
-        var opt = document.createElement('option');
-        opt.innerHTML = md_viewables[i].data.name; // will show "Default 3D View" or "1st Level Slice"
-        opt.value = i;
-        sel.appendChild(opt);
-    }
+            var sel = document.getElementById('viewables');
+            sel.innerHTML = ""; // clear old options
+            for (var i = 0; i < md_viewables.length; i++) {
+                var opt = document.createElement('option');
+                opt.innerHTML = md_viewables[i].data.name; // will show "Default 3D View" or "1st Level Slice"
+                opt.value = i;
+                sel.appendChild(opt);
+            }
 
              // 🔹 Load a specific viewable automatically by name if it exists
-    let defaultIndex = 0; // fallback: Default 3D View
-    for (let i = 0; i < md_viewables.length; i++) {
-        if (md_viewables[i].data.name === "1st Level Slice") {
-            defaultIndex = i;
-            break;
-        }
-    }
+            let defaultIndex = 0; // fallback: Default 3D View
+            for (let i = 0; i < md_viewables.length; i++) {
+                if (md_viewables[i].data.name === "1st Level Slice") {
+                    defaultIndex = i;
+                    break;
+                }
+            }
 
-    viewer.loadDocumentNode(viewerDocument, md_viewables[defaultIndex]).then(() => {
-        viewer.setViewType(3); // Perspective with Ortho Faces
-    });
+            viewer.loadDocumentNode(viewerDocument, md_viewables[defaultIndex]).then(() => {
+                viewer.setViewType(3); // Perspective with Ortho Faces
+            });
 
-            // Make the drop-down visible if there are more than one viewables
-    if (md_viewables.length > 1) {
-        document.getElementById("viewables_dropdown").style.display = "block";
-    }
-        }
-        // This is called when an option is selected from the Choose viewables drop-down
-function selectViewable() {
-    var indexViewable = document.getElementById("viewables").selectedIndex;
-    viewer.loadDocumentNode(md_ViewerDocument, md_viewables[indexViewable]).then(() => {
-        viewer.setViewType(3);
-    });
-}
+                    // Make the drop-down visible if there are more than one viewables
+            if (md_viewables.length > 1) {
+                document.getElementById("viewables_dropdown").style.display = "block";
+            }
+                }
+                // This is called when an option is selected from the Choose viewables drop-down
+            function selectViewable() {
+                var indexViewable = document.getElementById("viewables").selectedIndex;
+                viewer.loadDocumentNode(md_ViewerDocument, md_viewables[indexViewable]).then(() => {
+                    viewer.setViewType(3);
+                });
+            }
+            
         function isolateLevel(levelName) {
         viewer.search(levelName, function (dbIds) {
             if (dbIds.length === 0) {

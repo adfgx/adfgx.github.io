@@ -69,7 +69,7 @@
         // Replace these variables with your actual values
         const CLIENT_ID = 'XtVAoS3rpmt1k8Ax7Bj7bcZIYVWtGL16AivFXLipu1bGzTyv'; // Replace with your APS client ID
         const CLIENT_SECRET = 'Dgi6V62fKcKg2AfHrFdEnRStdWuBlLl3f63STSZhek7ZN8ys9s2vm9iU8SS14Vbk'; // Replace with your APS client secret
-        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWxfZGVyaXZhdGl2ZV9yZXZpdF9hZF8wMS9ybWVfYWR2YW5jZWRfc2FtcGxlX3Byb2plY3QucnZ0'; // Replace with your model's URN (Base64 encoded)
+        const MODEL_URN = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWxfZGVyaXZhdGl2ZV9yZXZpdF9hZF8wMS9ybWVfYWR2YW5jZWRfc2FtcGxlX3Byb2plY3RfMDEucnZ0'; // Replace with your model's URN (Base64 encoded)
 
         let viewer;
         let md_ViewerDocument;
@@ -184,7 +184,7 @@
                     viewer.setViewType(3);
                 });
             }
-            
+
         function isolateLevel(levelName) {
         viewer.search(levelName, function (dbIds) {
             if (dbIds.length === 0) {

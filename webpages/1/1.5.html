@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Side-by-Side PDF Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        .viewer-container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 100vw;
+            height: 90vh;
+        }
+        .pdf-frame {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 0;
+        }
+        .controls {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        @media (max-width: 768px) {
+            .viewer-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .pdf-frame {
+                height: 80vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Side-by-Side PDF Viewer</h2>
+    <div class="controls">
+        <p>Each viewer has built-in zoom (+/- buttons) and pan (click & drag)</p>
+    </div>
+    
+    <div class="viewer-container">
+        <!-- First PDF -->
+        <iframe 
+            class="pdf-frame"
+            src="https://onedrive.live.com/embed?cid=691320abcde85872&id=691320ABCDE85872!s1d5e1caa41cc4dfeb8d7b45b437998f5&resid=691320ABCDE85872!s1d5e1caa41cc4dfeb8d7b45b437998f5&ithint=file,pdf&embed=1&migratedtospo=true&redeem=aHR0cHM6Ly8xZHJ2Lm1zL2IvYy82OTEzMjBBQkNERTg1ODcyL0lRU3FIRjRkekVILVRialh0RnREZVpqMUFkSV9UcVZvTjdrZHgwV2RKUklLSFhJ"
+            frameborder="0"
+            scrolling="no"
+            allow="autoplay; fullscreen">
+        </iframe>
+        
+        <!-- Second PDF -->
+        <iframe 
+            class="pdf-frame"
+            src="https://onedrive.live.com/embed?cid=691320abcde85872&id=691320ABCDE85872!s0177caa20f254152afd635b03c60618e&resid=691320ABCDE85872!s0177caa20f254152afd635b03c60618e&ithint=file,pdf&embed=1&migratedtospo=true&redeem=aHR0cHM6Ly8xZHJ2Lm1zL2IvYy82OTEzMjBBQkNERTg1ODcyL0lRU2l5bmNCSlE5U1FhX1dOYkE4WUdHT0FjcXBFNXZzSDM5QXNOR194Smh4bUhz"
+            frameborder="0"
+            scrolling="no"
+            allow="autoplay; fullscreen">
+        </iframe>
+    </div>
+</body>
+</html>
